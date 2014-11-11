@@ -1,5 +1,5 @@
 function RoboHAZMAT = InteractiveSim(RoboHAZMAT)
-
+% Run the interactive simulation.
 attempt = 0;
 interactiveSim = input('Begin Interactive Simulation? [Y/N]: ','s');
 
