@@ -1,13 +1,9 @@
-KinematicsSimulation
-====================
+README.txt
 
-The MATLAB code for the Kinematics Simulation for the robot arms.
-
-
- - RoboHAZMAT: Senior Design Project
- - Motion Control Team
- - Gerardo Bledt
- - October 21, 2014
+RoboHAZMAT: Senior Design Project
+Motion Control Team
+Gerardo Bledt
+October 21, 2014
 
 Simulation code 0.1 instructions for the two arms and an arbitrary configuration:
 

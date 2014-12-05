@@ -14,12 +14,14 @@ RobotKinematics.HK = HK;
 
 % Left Manupulator Kinematics
 LMK = LeftManipulatorKinematics;
-LMK = RotateKinematicChain(LMK,[-pi/3;-pi/4;pi/12;-pi/2.5;0;-pi/6;0]);
+%LMK = RotateKinematicChain(LMK,[-pi/3;-pi/4;pi/12;-pi/2.5;0;-pi/6]);
+LMK = RotateKinematicChain(LMK,[0;0;0;0;0;0]);
+
 RobotKinematics.LMK = LMK;
 
 % Right Manipulator Kinematics
 RMK = RightManipulatorKinematics;
-RMK = RotateKinematicChain(RMK,[-pi/6;pi/4;-pi/12;-pi/3;pi;pi/6;0]);
+%RMK = RotateKinematicChain(RMK,[-pi/6;pi/4;-pi/12;-pi/3;pi;pi/6]);
 RobotKinematics.RMK = RMK;
 
 % Create the RoboHAZMAT Robot object
