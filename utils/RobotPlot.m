@@ -1,16 +1,18 @@
 function RobotPlot(Robot)
 
-% Clears the 
+% Clears the figure
 clf;
+LW = 6; % line width
+MS = 20; % marker size
 
 fields = fieldnames(Robot.KinematicChains);
 
 % Plotting the Frame Body
-plot3([0,0,0],[-.179,0,.179],[.371,.371,.371],'LineWidth',10,...
+plot3([0,0,0],[-.179,0,.179],[.371,.371,.371],'LineWidth',LW,...
     'Color',[0 0 0]);
 hold on; grid on;
-plot3([0,0,0],[0,0,0],[0,0.371,0.589],'LineWidth',10,'Color',[0 0 0],...
-    'Marker','.','MarkerEdgeColor',0.5*[1 1 1],'MarkerSize',35);
+plot3([0,0,0],[0,0,0],[0,0.371,0.589],'LineWidth',LW,'Color',[0 0 0],...
+    'Marker','.','MarkerEdgeColor',0.5*[1 1 1],'MarkerSize',MS);
 hold on; grid on;
 
 % RobotBody;
@@ -19,8 +21,8 @@ for i = 1:length(fields)
     plot3(Robot.KinematicChains.(fields{i}).points.pG(1,:),...
         Robot.KinematicChains.(fields{i}).points.pG(2,:),...
         Robot.KinematicChains.(fields{i}).points.pG(3,:),...
-        'LineWidth',10,'Color',[0 0 0],'Marker','.',...
-        'MarkerEdgeColor',[1 0 0],'MarkerSize',35);
+        'LineWidth',LW,'Color',[0 0 0],'Marker','.',...
+        'MarkerEdgeColor',[1 0 0],'MarkerSize',MS);
     hold on; grid on;
 end
 

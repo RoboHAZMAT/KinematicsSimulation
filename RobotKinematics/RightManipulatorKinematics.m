@@ -15,7 +15,7 @@ RM = struct();
 RM.Name = 'Right Manipulator';
 RM.Field = 'RMK';
 % Number of Degrees of Freedom
-RM.DOF = 7;
+RM.DOF = 6;
 
 % Frame points in each frame
 RM.pts = struct();
@@ -35,7 +35,7 @@ RM.d.d45 = 0.0;
 % Forearm
 RM.d.d56 = 0.257;
 %Wrist morots and brackets
-RM.d.d67 = 0.0; RM.d.d78 = 0.076;
+RM.d.d67 = 0.076;
 
 % Redefining origin points
 RM.pts.o = [0,    0,    0;
@@ -45,11 +45,11 @@ RM.pts.o = [0,    0,    0;
 
 % Physical system constraints, upper and lower bounds
 RM.b = struct();
-RM.b.lb = [-pi,-pi/2,-5*pi/6,-5*pi/6,-pi,-pi/2,-pi/4];
-RM.b.ub = [pi,pi/2,pi/3,0,pi,pi/2,pi/4];
+RM.b.lb = [-pi,-pi/2,-5*pi/6,-5*pi/6,-pi,-pi/2];
+RM.b.ub = [pi,pi/2,pi/3,0,pi,pi/2];
 
 % Weighting on importance of points
-RM.w = [0;0;0;0;0;0;1];
+RM.w = [0;0;0;0;0;1];
 
 % Theta Angles
 RM.th = struct();
@@ -57,14 +57,13 @@ RM.th = struct();
 RM.th.th1 = 0; RM.th.th2 = 0; RM.th.th3 = 0;
 % Elbow: th4 = Pitch, th5 = Yaw
 RM.th.th4 = 0; RM.th.th5 = 0;
-% Wrist: th6 = Pitch, th7 = Roll
-RM.th.th6 = 0; RM.th.th7 = 0;
+% Wrist: th6 = Pitch
+RM.th.th6 = 0;
 
 % Initial Thetas
 RM.th.thi = zeros(RM.DOF,1);
 RM.th.thi(1) = pi/2; RM.th.thi(2) = pi/2; RM.th.thi(3) = pi/2;
 RM.th.thi(4) = pi/2; RM.th.thi(5) = 0; RM.th.thi(6) = -pi/2;
-RM.th.thi(7) = 0;
 
 % % Masses of the frames
 % m0 = 0; m1 = 0; m2 = 0; m3 = 0; m4 = 0; m5 = 0; m6 = 0; m7 = 0;
@@ -85,13 +84,12 @@ RM.th.thi(7) = 0;
 %% ========================Mathematical Modeling===========================
 % DH Convention
 RM.DH = struct();
-RM.DH.alphas = [pi/2; pi/2; pi/2; pi/2; -pi/2; -pi/2; 0];
+RM.DH.alphas = [pi/2; pi/2; pi/2; pi/2; -pi/2; -pi/2];
 RM.DH.thetas = [RM.th.thi(1) + RM.th.th1; RM.th.thi(2) + RM.th.th2;...
     RM.th.thi(3) + RM.th.th3; RM.th.thi(4) + RM.th.th4;...
-    RM.th.thi(5) + RM.th.th5; RM.th.thi(6) + RM.th.th6;...
-    RM.th.thi(7) + RM.th.th7];
-RM.DH.disps = [RM.d.d12; -RM.d.d23; 0; 0; -RM.d.d56; 0; 0];
-RM.DH.offsets = [0; 0; -RM.d.d34; 0; 0; RM.d.d67; -RM.d.d78];
+    RM.th.thi(5) + RM.th.th5; RM.th.thi(6) + RM.th.th6];
+RM.DH.disps = [RM.d.d12; -RM.d.d23; 0; 0; -RM.d.d56; 0];
+RM.DH.offsets = [0; 0; -RM.d.d34; 0; 0; -RM.d.d67];
 
 % Homogeneous transformations
 RM.H.H = double(DHTransforms(RM.DH,false));
