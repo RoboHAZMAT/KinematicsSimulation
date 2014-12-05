@@ -1,5 +1,5 @@
 function RoboHAZMAT = InteractiveSim(RoboHAZMAT)
-% Run the interactive simulation.
+
 attempt = 0;
 interactiveSim = input('Begin Interactive Simulation? [Y/N]: ','s');
 
@@ -48,12 +48,31 @@ if (strcmpi(interactiveSim,'yes') || strcmpi(interactiveSim,'y'))
             z = input(' z = ');
             
             pointsd = zeros(4, size(KC.points.p,2));
+            pointsd(:,4) = [-.2162;0.1087;0.2093;1];
+            %pointsd(:,4) = [0;-0.1790;0.0920;1];
             pointsd(:,size(KC.points.p,2)) = [x;y;z;1];
+            X = optimize(RoboHAZMAT,KCname,pointsd);
             
-            KC = RotateKinematicChain(KC,optimize(RoboHAZMAT,KCname,pointsd));
+            KC = RotateKinematicChain(KC,X);
             RoboHAZMAT.KinematicChains.(KCname) = KC;
             
             RobotPlot(RoboHAZMAT);
+            
+            serialObjIMU = SetupSerial();
+            
+            while (1)
+                [yaw, pitch, roll, readingIMU] = ReadIMU(serialObjIMU);
+                if (~isnan(readingIMU))
+                    X = zeros(6,1);
+                    X(2,1) = (-(yaw))/180*pi;
+                    X(4,1) = (-(pitch + 90))/180*pi;
+                
+                    KC = RotateKinematicChain(KC,X);
+                    RoboHAZMAT.KinematicChains.(KCname) = KC;
+                    RobotPlot(RoboHAZMAT);
+                    drawnow;
+                end
+            end
         else
             fprintf(['\nInvalid Kinematic Chain name. Please choose',...
                 'from the list\n']);
