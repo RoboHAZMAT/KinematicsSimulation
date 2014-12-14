@@ -1,5 +1,5 @@
-README.md
-
+Kinematics Simulation
+=============
 RoboHAZMAT: Senior Design Project
 Motion Control Team
 Gerardo Bledt
