@@ -1,4 +1,4 @@
-README.txt
+README.md
 
 RoboHAZMAT: Senior Design Project
 Motion Control Team
@@ -24,6 +24,8 @@ Simulation code 0.1 instructions for the two arms and an arbitrary configuration
 8. Look at the figure and rotate it around to make sure the right manipulator's last red point is at the specified location.
 
 9. Enter n to quit or y to give another command.
+
+10. When you are done with the test simulation, try the other simulations by running 'RobotSim(#)' where # is an integer 1 to 6. (2, 3, and 6 require the use if the IMU and 6 requires connection to the Arduino so if you don't have these, try 4 or 5).
 
 Code is pretty straight forward... 
 
