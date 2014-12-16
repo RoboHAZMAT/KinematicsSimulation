@@ -8,7 +8,7 @@ function HK = HeadKinematics
 %  - Setup of all physical parameters and the kinematic relationship
 % between them. Numerically solves for the Homogeneous transformation
 % based on the inputed Denavit-Hartenberg convention as determined for the
-% robot's body frame.
+% robot's Head frame.
 
 %% ============================Numerical Setup=============================
 H = struct();
@@ -63,7 +63,7 @@ H.DH.disps = [0; 0];
 H.DH.offsets = [0; 0];
 
 % Homogeneous transformations
-H.H.H = double(DHTransforms(H.DH,false));
+H.H.H = double(DHTransforms(H.DH));
 H.H.HGo = [ 0, 1, 0,     0;
     -1, 0, 0,     0;
     0, 0, 1, H.d.d0c + H.d.dc1;

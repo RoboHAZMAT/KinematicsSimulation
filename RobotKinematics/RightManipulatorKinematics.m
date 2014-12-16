@@ -65,22 +65,6 @@ RM.th.thi = zeros(RM.DOF,1);
 RM.th.thi(1) = pi/2; RM.th.thi(2) = pi/2; RM.th.thi(3) = pi/2;
 RM.th.thi(4) = pi/2; RM.th.thi(5) = 0; RM.th.thi(6) = -pi/2;
 
-% % Masses of the frames
-% m0 = 0; m1 = 0; m2 = 0; m3 = 0; m4 = 0; m5 = 0; m6 = 0; m7 = 0;
-% masses = [m0;m1;m2;m3;m4;m5;m6;m7];
-%
-% % Location of centers of mass in frame
-% gamma0 = 0; gamma1 = 0; gamma2 = 0; gamma3 = 0;
-% gamma4 = 0; gamma5 = 0; gamma6 = 0; gamma7 = 0;
-% gammas = [gamma0;gamma1;gamma2;gamma3;gamma4;gamma5;gamma6;gamma7];
-%
-% % Inertia Matrix
-% I0 = zeros(3,3); I1 = zeros(3,3); I2 = zeros(3,3); I3 = zeros(3,3);
-% I4 = zeros(3,3); I5 = zeros(3,3); I6 = zeros(3,3); I7 = zeros(3,3);
-%
-% Link types
-% rho = [1;1;1;1;1;1;1];
-
 %% ========================Mathematical Modeling===========================
 % DH Convention
 RM.DH = struct();
@@ -92,21 +76,11 @@ RM.DH.disps = [RM.d.d12; -RM.d.d23; 0; 0; -RM.d.d56; 0];
 RM.DH.offsets = [0; 0; -RM.d.d34; 0; 0; -RM.d.d67];
 
 % Homogeneous transformations
-RM.H.H = double(DHTransforms(RM.DH,false));
+RM.H.H = double(DHTransforms(RM.DH));
 RM.H.HGo = [ 0, 1, 0,     0;
     0, 0, 1, -RM.d.dc1;
     1, 0, 0, RM.d.d0c;
     0, 0, 0,     1];
 
 % Transform each point in the global frame
-for i = 1:RM.DOF
-    % the points in Global Coordinates
-    RM.H.HG = RM.H.HGo;
-    
-    for j = 1:i
-        RM.H.HG = RM.H.HG*RM.H.H(:,:,j);
-    end
-    RM.pts.pG(:,i) = RM.H.HG*RM.pts.p(:,i);
-end
-
-RMK = KinematicSystem(RM);
+RMK = RotateKinematicChain(KinematicSystem(RM), zeros(RM.DOF, 1));
