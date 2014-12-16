@@ -1,8 +1,8 @@
-function [H]=DHTransforms(DH,symb)
+function [H]=DHTransforms(DH)
 %
-%   Return the homogeneous transforms for a kinematic chain 
+%   Return the homogeneous transforms for a kinematic chain
 %   described by the DH parameters.
-%   
+%
 %   Input variables:
 %       thetas(i)   -   rotation of link i for i=1...ndof
 %       alphas(i)   -   twist of link i for i=1...ndof
@@ -18,31 +18,59 @@ disps = DH.disps;
 offsets = DH.offsets;
 DOF=length(thetas);
 H=zeros(4,4,DOF);
-if (symb)
-    H = sym(H);
-end
+Ht = zeros(4,4);
+
+a=offsets(1);
+d=disps(1);
+st = sin(thetas(1));
+ct = cos(thetas(1));
+sa = sin(alphas(1));
+ca = cos(alphas(1));
 %
-for i=1:DOF
+%   rotation
+%
+H(1,1,1)=ct;
+H(1,2,1)=-st*ca;
+H(1,3,1)=st*sa;
+H(2,1,1)=st;
+H(2,2,1)=ct*ca;
+H(2,3,1)=-ct*sa;
+% H(3,1,1)=0;
+H(3,2,1)=sa;
+H(3,3,1)=ca;
+%
+%   displacement
+%
+H(1,4,1)=a*ct;
+H(2,4,1)=a*st;
+H(3,4,1)=d;
+H(4,4,1)=1;
+
+for i=2:DOF
     a=offsets(i);
     d=disps(i);
+    st = sin(thetas(i));
+    ct = cos(thetas(i));
+    sa = sin(alphas(i));
+    ca = cos(alphas(i));
     %
     %   rotation
     %
-    H(1,1,i)=cos(thetas(i));
-    H(1,2,i)=-sin(thetas(i))*cos(alphas(i));
-    H(1,3,i)=sin(thetas(i))*sin(alphas(i));
-    H(2,1,i)=sin(thetas(i));
-    H(2,2,i)=cos(thetas(i))*cos(alphas(i));
-    H(2,3,i)=-cos(thetas(i))*sin(alphas(i));
-    H(3,1,i)=0;
-    H(3,2,i)=sin(alphas(i));
-    H(3,3,i)=cos(alphas(i));
+    Ht(1,1)=ct;
+    Ht(1,2)=-st*ca;
+    Ht(1,3)=st*sa;
+    Ht(2,1)=st;
+    Ht(2,2)=ct*ca;
+    Ht(2,3)=-ct*sa;
+    % Ht(3,1)=0;
+    Ht(3,2)=sa;
+    Ht(3,3)=ca;
     %
     %   displacement
     %
-    H(1,4,i)=a*cos(thetas(i));
-    H(2,4,i)=a*sin(thetas(i));
-    H(3,4,i)=d;
-    H(4,4,i)=1;
+    Ht(1,4)=a*ct;
+    Ht(2,4)=a*st;
+    Ht(3,4)=d;
+    Ht(4,4)=1;
+    H(:,:,i) = H(:,:,i-1)*Ht;
 end
-    
