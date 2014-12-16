@@ -39,13 +39,13 @@ E.th.thi = [];
 
 % DH Convention 
 E.DH = struct();
-E.DH.alphas = [];
-E.DH.thetas = [];
-E.DH.disps = [];
-E.DH.offsets = [];
+E.DH.alphas = [0];
+E.DH.thetas = [0];
+E.DH.disps = [0];
+E.DH.offsets = [0];
 
 % Homogeneous transformations
-E.H = double(DHTransforms(E.DH,false));
+E.H = double(DHTransforms(E.DH));
 
 %% =============================Simulation ================================
 % Transform each point in the global frame

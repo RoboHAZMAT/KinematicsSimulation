@@ -76,7 +76,7 @@ LM.DH.disps = [LM.d.d12; -LM.d.d23; 0; 0; -LM.d.d56; 0];
 LM.DH.offsets = [0; 0; -LM.d.d34; 0; 0; -LM.d.d67];
 
 % Homogeneous transformations
-LM.H.H = double(DHTransforms(LM.DH,false));
+LM.H.H = double(DHTransforms(LM.DH));
 LM.H.HGo = [ 0, 1, 0,     0;
     0, 0, 1, LM.d.dc1;
     1, 0, 0, LM.d.d0c;
@@ -84,14 +84,4 @@ LM.H.HGo = [ 0, 1, 0,     0;
 
 %% =============================Simulation ================================
 % Transform each point in the global frame
-for i = 1:LM.DOF
-    % the points in Global Coordinates
-    LM.H.HG = LM.H.HGo;
-    
-    for j = 1:i
-        LM.H.HG = LM.H.HG*LM.H.H(:,:,j);
-    end
-    LM.pts.pG(:,i) = LM.H.HG*LM.pts.p(:,i);
-end
-
-LMK = KinematicSystem(LM);
+LMK = RotateKinematicChain(KinematicSystem(LM), zeros(LM.DOF, 1));

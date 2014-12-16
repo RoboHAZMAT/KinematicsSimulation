@@ -1,4 +1,7 @@
 function error = errorFunc(X, kinematicChain, pointsd)
+% The error function that uses the Euclidean norm to minimize the distance 
+% between the desired and actual points. 
+
 error = 0;
 kinematicChain = RotateKinematicChain(kinematicChain, X);
 pointsi = kinematicChain.points.pG;
