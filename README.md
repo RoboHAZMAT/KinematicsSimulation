@@ -8,15 +8,25 @@ Gerardo Bledt
 
 October 21, 2014
 
-Simulation code 0.1 instructions for the two arms and an arbitrary configuration:
+
+##**Project Goals:**
+
+The RobotHAZMAT project is a design team made up of 10 Virginia Tech Senior Mechanical Engineers. The primary goal is to develop a method of intuitive gesture control for a robotic system for hazardous response situations. Current hazardous response robots require large amounts of training time and unintuitive button-joystick controls. We hope to increase the range of motion as well as reduces the training time required to operate these systems.
+
+ - This is a first year project serving as a proof of concept that two arm robots can be intuitively controlled through human movement.
+
+ - We hope to be able to develop the robot as well as the wearable user interface using readily available, inexpensive parts.
+
+
+##**Simulation code Instructions:**
 
 1. In the 'RoboHAZMAT' directory, run 'addpath_RoboHAZMAT.m' to get access to all the Kinematics and utility files needed to run the simulation.
 
-2. In 'RobotSim.m' uncomment lines 12, 17, 22 for arbitrary joint angles for the simulation to show ability to control the motor angles.
+2. In 'RobotSim.m' uncomment lines 52, 57, 62 for arbitrary joint angles for the simulation to show ability to control the motor angles.
 
-3. Run 'RobotSim.m' as 'RobotSim;' to get the full simulation using arbitrary joint angles for each of the DOF within the RoboHAZMAT Robot object's KinematicChains (the left and right manipulators). If this worked it will generate a plot with the T-shaped robot frame body and two arms in an arbitrary configuration. The red markers are joints that can be controlled via 'RoboHAZMAT.KinematicChains.{L|R}MK.thetas.th{1|2|3|4|5|6|7}' where you choose one of the values in the '{}'. The grey markers are cold or rigid joints.
+3. Run 'RobotSim.m' as 'RobotSim;' to see the simulated RoboHAZMAT robot using predefined joint angles for the robot's DOF. Red markers are movable joints and grey markers are unmovable intersection points.
 
-4. To run the interactive simulation (using inverse kinematics to position the arm grippers at the final x,y,z location) run 'RobotSim(1);'
+4. To run the interactive simulation run 'RobotSim(#);' where '#' is any number 1 through 6. However 2, 3, and 6 require the use of the IMU sensor and the Arduino. Try # = 1 first.
 
 5. When prompted, enter y to begin the sim.
 
@@ -28,19 +38,17 @@ Simulation code 0.1 instructions for the two arms and an arbitrary configuration
 
 9. Enter n to quit or y to give another command.
 
-10. When you are done with the test simulation, try the other simulations by running 'RobotSim(#)' where # is an integer 1 to 6. (2, 3, and 6 require the use if the IMU and 6 requires connection to the Arduino so if you don't have these, try 4 or 5).
+10. When you are done with the test simulation, try the other simulations by running 'RobotSim(#)' and check the 'InteractiveSim.m' file for a description of each simulation.
 
 Code is pretty straight forward... 
 
 Each of the '{Left|Right}ManipulatorKinematics.m' files use the DH parameters and the rotation and translation in the ground frame to give an accurate simulation of the manipulators given thetas for each DOF. Also has the lengths of each link and the physical constraints. All parameters are packaged in a struct and outputed for later use.
-
-The 'TrajectoryPlanningOptimization' directory is currently being built. Will include the constrained nonliner optimization code. That will allow the user to specify an (x,y,z) location to put one of the manipulators in and it will find the best possible configuration to get there if it is a valid point to reach.
 
 
  TO DO:
 
 - Current version needs to be cleaned up, documented, and organized.
 
-- The interactive simulation needs to be fully completed... allows the user to input commands and have the robot execute the commands.
+- Add more commands and interactive simulations for full usage of the  system.
 
-- Work on communicating ith Arduino to input commands remotely.
+- Add pictures and videos of the full capabilities.
