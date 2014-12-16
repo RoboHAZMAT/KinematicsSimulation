@@ -1,3 +1,13 @@
+%% ===========================Kinematic System=============================
+% RoboHAZMAT: Senior Design Project
+% Motion Control Team
+% Gerardo Bledt
+% November 15, 2014
+%
+% Class definition for the Kinematic System. Composed of a given name for 
+% easy recognition and all of the necessary describing features of a 
+% kinematic system as defined in the '{}Kinematics.m' files.
+
 classdef KinematicSystem
     properties
         Name;           % Name of the kinematic system

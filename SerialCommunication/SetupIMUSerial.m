@@ -1,8 +1,15 @@
 function serialObjIMU = SetupIMUSerial(IMUCOM)
+%% =======================Serial IMU Communication=========================
+% RoboHAZMAT: Senior Design Project
+% Motion Control Team
+% Gerardo Bledt
+% December 15, 2014
+%
+% Ability to connect to the IMU sensor and read in data over Serial.
 
 % Setup Serial Communication with IMU
 disp('Setup Serial Communication...');
-serialObjIMU = serial(IMUCOM,'BAUD',38400,'InputBufferSize',256);%,'Timeout',0.25,'InputBufferSize',512);
+serialObjIMU = serial(IMUCOM,'BAUD',38400,'InputBufferSize',256);
 fopen(serialObjIMU);
 pause(2);
 
