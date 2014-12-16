@@ -294,7 +294,8 @@ if (strcmpi(interactiveSim,'yes') || strcmpi(interactiveSim,'y'))
             KC = Robot.KinematicChains.MAK;
             X = zeros(5,1);
             
-            % Constant running while loop
+            % Constant running while loop: 
+            % To quit: 'Ctrl+C' (May try to find a better way)
             while (mode == 6)
                 
                 % Read the IMU sensor

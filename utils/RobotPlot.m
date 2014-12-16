@@ -10,8 +10,6 @@ function RobotPlot(Robot)
 
 % Clears the figure
 cla;
-LW = 6; % line width
-MS = 20; % marker size
 
 %% ===========================Plotting of Base=============================
 fields = fieldnames(Robot.KinematicChains);
@@ -21,6 +19,8 @@ fields = fieldnames(Robot.KinematicChains);
 
 % Sets up the base frame of the RoboHAZMAT Robot
 if (strcmp(Robot.Name, 'RoboHAZMAT'))
+    LW = 6; % line width
+    MS = 20; % marker size
     % Plotting the Frame Body
     plot3([0,0,0],[-.179,0,.179],[.371,.371,.371],'LineWidth',LW,...
         'Color',[0 0 0]);
@@ -29,14 +29,22 @@ if (strcmp(Robot.Name, 'RoboHAZMAT'))
         'Marker','.','MarkerEdgeColor',0.5*[1 1 1],'MarkerSize',MS);
     hold on; grid on;
     
-% Sets up the base frame of the Mechatronic Arm
+    % Sets up the base frame of the Mechatronic Arm
 elseif (strcmp(Robot.Name, 'Mechatronic Arm'))
-    % Plotting the Base
-    plot3([0,0],[0,0],[0,0.06],'LineWidth',LW,...
-        'Color',[0 0 0]);
-    hold on; grid on;
-    plot3([0,0],[0,0],[0,0.05],'LineWidth',LW,'Color',[0 0 0],...
-        'Marker','.','MarkerEdgeColor',0.5*[1 1 1],'MarkerSize',MS);
+    LW = 15; % line width
+    MS = 30; % marker size
+    
+    % Plotting the Base filled in cylinder
+    r = 0.04;
+    h = 0.0585;
+    color = 0.2;
+    [x,y,z] = cylinder(r);
+    z(2, :) = h;
+    surf(x,y,z, 'FaceColor', color*[1,1,1]);
+    theta = 0:0.15*pi:2*pi;
+    x = r*cos(theta);
+    y = r*sin(theta);
+    patch(x,y,h*ones(size(x)), color*[1,1,1]);
     hold on; grid on;
 end
 

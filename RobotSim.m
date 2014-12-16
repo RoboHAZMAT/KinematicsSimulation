@@ -49,17 +49,18 @@ RobotKinematics = struct();
 
 % Head Kinematics
 HK = HeadKinematics;
-HK = RotateKinematicChain(HK,[-pi/24;-pi/6]);
+%HK = RotateKinematicChain(HK,[-pi/24;-pi/6]);
 RobotKinematics.HK = HK;
 
 % Left Manupulator Kinematics
 LMK = LeftManipulatorKinematics;
-LMK = RotateKinematicChain(LMK,[-pi/6;-pi/12;pi/12;-pi/2.2;0;-pi/6]);
+%LMK = RotateKinematicChain(LMK,[-pi/4;-pi/6;pi/12;-pi/3;0;-pi/3]);
 RobotKinematics.LMK = LMK;
 
 % Right Manipulator Kinematics
 RMK = RightManipulatorKinematics;
-RMK = RotateKinematicChain(RMK,[-pi/6;pi/4;-pi/12;-pi/3;pi;pi/6]);
+%RMK = RotateKinematicChain(RMK,[-pi/6;pi/4;-pi/12;-pi/3;pi;pi/6]);
+%RMK = RotateKinematicChain(RMK,[-pi/2.5;-pi/10;-pi/12;-pi/3;pi;pi/6]);
 RobotKinematics.RMK = RMK;
 
 % Create the RoboHAZMAT Robot object
