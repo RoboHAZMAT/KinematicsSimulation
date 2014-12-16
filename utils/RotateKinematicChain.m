@@ -1,4 +1,10 @@
 function KC = RotateKinematicChain(KC, X)
+%% ========================Rotate Kinematic Chain==========================
+% RoboHAZMAT: Senior Design Project
+% Motion Control Team
+% Gerardo Bledt
+% October 20, 2014
+%
 % Rotates a Kinematic chain specified by the X vector of angle rotations.
 % Absolute rotation from the initial point.
 

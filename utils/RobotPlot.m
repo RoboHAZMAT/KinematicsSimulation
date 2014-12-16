@@ -1,14 +1,25 @@
 function RobotPlot(Robot)
-% Plots a given Robot object
+%% ==============================Robot Plot================================
+% RoboHAZMAT: Senior Design Project
+% Motion Control Team
+% Gerardo Bledt
+% October 20, 2014
+%
+% Plots the given Robot object in the figure. Adds a base object if
+% necessary and plots the kinematic chains that make up the robot.
 
 % Clears the figure
 cla;
 LW = 6; % line width
 MS = 20; % marker size
 
+%% ===========================Plotting of Base=============================
 fields = fieldnames(Robot.KinematicChains);
 
-% Sets up the figure for plotting the RoboHAZMAT Robot
+% Add another elseif statement if another named robot will be used with
+% a stationary base structure.
+
+% Sets up the base frame of the RoboHAZMAT Robot
 if (strcmp(Robot.Name, 'RoboHAZMAT'))
     % Plotting the Frame Body
     plot3([0,0,0],[-.179,0,.179],[.371,.371,.371],'LineWidth',LW,...
@@ -18,7 +29,7 @@ if (strcmp(Robot.Name, 'RoboHAZMAT'))
         'Marker','.','MarkerEdgeColor',0.5*[1 1 1],'MarkerSize',MS);
     hold on; grid on;
     
-% Sets up the figure for plotting the Mechatronic Arm
+% Sets up the base frame of the Mechatronic Arm
 elseif (strcmp(Robot.Name, 'Mechatronic Arm'))
     % Plotting the Base
     plot3([0,0],[0,0],[0,0.06],'LineWidth',LW,...
@@ -32,6 +43,7 @@ end
 % Uncomment next line to plot a square robot base (glitchy)
 % RobotBody;
 
+%% ===================Plotting of all Kinematic Chains=====================
 % Plots the Kinematic chains that make up the robot
 for i = 1:length(fields)
     plot3(Robot.KinematicChains.(fields{i}).points.pG(1,:),...

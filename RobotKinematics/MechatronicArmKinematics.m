@@ -1,5 +1,5 @@
 function MAK = MechatronicArmKinematics
-%% =====================Left Manipulator Kinematics========================
+%% ======================Mechatronic Arm Kinematics========================
 % RoboHAZMAT: Senior Design Project
 % Motion Control Team
 % Gerardo Bledt
