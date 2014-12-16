@@ -1,13 +1,4 @@
-function serialObjIMU = SetupSerial
-
-% Specify COM port for the IMU
-IMUCOM = 'COM8';
-
-% Close and delete all COM ports
-if (instrfindall ~= [])
-    fclose(instrfindall);
-end
-delete(instrfindall);
+function serialObjIMU = SetupIMUSerial(IMUCOM)
 
 % Setup Serial Communication with IMU
 disp('Setup Serial Communication...');
@@ -41,13 +32,5 @@ disp('DMP Enabled. Ready for use.');
 
 % Clear current buffer
 while (serialObjIMU.BytesAvailable > 0)
-    readingIMU = fscanf(serialObjIMU);
-    %disp(readingIMU);
+    fscanf(serialObjIMU);
 end
-% Change input size to match incoming IMU data
-%while (1)
-[yaw, pitch, roll, readingIMU] = ReadIMU(serialObjIMU);
-%disp(readingIMU);
-%disp(yaw);
-%disp(pitch);
-%end
