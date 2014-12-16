@@ -1,13 +1,14 @@
 classdef Robot
     properties
-        Name = 'RoboHAZMAT';
+        Name;
         KinematicChains;
         
     end
     
     methods
-        function Robot = Robot(KC)
-            Robot.KinematicChains = (KC);
+        function Robot = Robot(KCStruct)
+            Robot.KinematicChains = (KCStruct.KC);
+            Robot.Name = (KCStruct.name); 
         end
     end
 end
