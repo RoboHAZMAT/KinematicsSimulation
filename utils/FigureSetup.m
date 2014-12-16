@@ -21,12 +21,12 @@ if (strcmp(Robot.Name, 'RoboHAZMAT'))
 elseif (strcmp(Robot.Name, 'Mechatronic Arm'))
     % Figure setup for Mechatronic Arm
     set(gcf,'Name','Mechatronic Arm Simulation');
-    pbaspect([1 1 1]);
+    pbaspect([1 1 3/5]);
     set(gca, 'color', [1 1 1]); set(gcf, 'color', [1 1 1]);
     FS = 18;xlabel('X [m]','FontSize',FS);
     title('Mechtronic Arm Simulation','FontSize',FS);
     ylabel('Y [m]','FontSize',FS);zlabel('Z [m]','FontSize',FS);
-    axis([-0.3 0.3 -0.3 0.3 -0.1 0.5]);
+    axis([-0.25 0.25 -0.25 0.25 -0.05 0.25]);
     
 else
     % Figure setup for generic robot
