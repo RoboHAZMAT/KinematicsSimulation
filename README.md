@@ -8,6 +8,7 @@ Gerardo Bledt
 
 October 21, 2014
 
+#####Click here for video: [Prototype Demo!](https://www.youtube.com/watch?v=z-hz2B_SR1c&feature=youtu.be)
 
 ##**Project Goals:**
 
