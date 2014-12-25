@@ -17,6 +17,7 @@ if (strcmp(Robot.Name, 'RoboHAZMAT'))
     title('RoboHAZMAT Simulation','FontSize',FS);
     ylabel('Y [m]','FontSize',FS);zlabel('Z [m]','FontSize',FS);
     axis([-0.4 0.8 -0.6 0.6 -0.4 0.8]);
+    hold on; grid on;
     
 elseif (strcmp(Robot.Name, 'Mechatronic Arm'))
     % Figure setup for Mechatronic Arm
@@ -27,6 +28,7 @@ elseif (strcmp(Robot.Name, 'Mechatronic Arm'))
     title('Mechtronic Arm Simulation','FontSize',FS);
     ylabel('Y [m]','FontSize',FS);zlabel('Z [m]','FontSize',FS);
     axis([-0.25 0.25 -0.25 0.25 -0.05 0.25]);
+    hold on; grid on;
     
 else
     % Figure setup for generic robot
@@ -37,4 +39,5 @@ else
     title('Robot Simulation','FontSize',FS);
     ylabel('Y [m]','FontSize',FS);zlabel('Z [m]','FontSize',FS);
     axis([-1 1 -1 1 -1 1]);
+    hold on; grid on;
 end
