@@ -132,7 +132,7 @@ if (strcmpi(interactiveSim,'yes') || strcmpi(interactiveSim,'y'))
             IMUCOM = SetupCOM;
             
             % Right Manipulator simulation controlled by IMU
-            serialObjIMU = SetupIMUSerial(IMUCOM);
+            serialObjIMU = SetupIMUSerial(IMUCOM(1,:));
             
             KC = Robot.KinematicChains.RMK;
             while (mode == 2)
@@ -161,7 +161,7 @@ if (strcmpi(interactiveSim,'yes') || strcmpi(interactiveSim,'y'))
             IMUCOM = SetupCOM;
             
             % Left Manipulator simulation controlled by IMU
-            serialObjIMU = SetupIMUSerial(IMUCOM);
+            serialObjIMU = SetupIMUSerial(IMUCOM(1,:));
             
             KC = Robot.KinematicChains.LMK;
             %calibrateIMU();
@@ -276,12 +276,12 @@ if (strcmpi(interactiveSim,'yes') || strcmpi(interactiveSim,'y'))
             
         elseif (mode == 6)
             %% IMU controlled Mechatronic Arm through Arduino
-
+            
             % Setup COM ports
             [IMUCOM, motorControlCOM] = SetupCOM;
             
             % Setup communication with IMU and Arm
-            serialObjIMU = SetupIMUSerial(IMUCOM);
+            serialObjIMU = SetupIMUSerial(IMUCOM(1,:));
             [serialMotorControl, motor] = ...
                 SetupMotorControlSerial(motorControlCOM);
             
@@ -290,11 +290,11 @@ if (strcmpi(interactiveSim,'yes') || strcmpi(interactiveSim,'y'))
             serialMotorControl.servoWrite(motor.wristPitch, round(30));
             %serialMotorControl.servoWrite(motor.wristRoll, round(110));
             
-            % Get the kinematic chain 
+            % Get the kinematic chain
             KC = Robot.KinematicChains.MAK;
             X = zeros(5,1);
             
-            % Constant running while loop: 
+            % Constant running while loop:
             % To quit: 'Ctrl+C' (May try to find a better way)
             while (mode == 6)
                 
@@ -323,7 +323,76 @@ if (strcmpi(interactiveSim,'yes') || strcmpi(interactiveSim,'y'))
                     drawnow;
                 end
             end
+        elseif (mode == 7)
+            %% IMU controlled Mechatronic Arm through Arduino
+            IMUCOM = SetupCOM;
+            serialObjIMU(1) = SetupIMUSerial(IMUCOM(1,:));
+            serialObjIMU(2) = SetupIMUSerial(IMUCOM(2,:));
             
+            KC = Robot.KinematicChains.RMK;
+            KC.weightings(4) = 300;
+            KC.weightings(5) = 100;
+            KC.weightings(6) = 200;
+            
+            shoulder = [0,-0.179,0.371];
+            link(1,:) = [.279,0,0];
+            link(2,:) = [0.257,0,0];
+            link(3,:) = [0,0,-0.076];
+            
+            linkRot = zeros(2,3);
+            q = zeros(2,4);
+            pointsd = zeros(4, size(Robot.KinematicChains.RMK.points.p,2));
+            
+            psi = [0, 0];
+            
+            while (1)
+                [qw(1), qx(1), qy(1), qz(1), reset(1)] = ReadIMUQuaternion(serialObjIMU(1));
+                [qw(2), qx(2), qy(2), qz(2), reset(2)] = ReadIMUQuaternion(serialObjIMU(2));
+                if (~isnan(qw(1)) && ~isnan(qw(2)))
+                    
+                    for i = 1:3
+                        if i == 3
+                            q(i,:) = [qw(2), qx(2), qy(2), qz(2)];
+                            linkRot(i,:) = quatrotate(q(i,:),link(i,:));
+                            linkRot(i,:) = zeroYaw(linkRot(i,:), psi(2));
+                        else
+                            q(i,:) = [qw(i), qx(i), qy(i), qz(i)];
+                            linkRot(i,:) = quatrotate(q(i,:),link(i,:));
+                            if (reset(i) == 1)
+                                psi(i) = yawOffset(linkRot(i,:));
+                            end
+                            linkRot(i,:) = zeroYaw(linkRot(i,:), psi(i));
+                        end
+                    end
+                    
+                    elbow = [shoulder(1,1) + linkRot(1,1),...
+                        shoulder(1,2) + linkRot(1,2),shoulder(1,3) + linkRot(1,3)];
+                    wrist = [elbow(1,1) + linkRot(2,1),...
+                        elbow(1,2) + linkRot(2,2),elbow(1,3) + linkRot(2,3)];
+                    hand = [wrist(1,1) + linkRot(3,1),...
+                        wrist(1,2) + linkRot(3,2),wrist(1,3) + linkRot(3,3)];
+                    
+                    pointsd(:,3) = [elbow';1];
+                    pointsd(:,4) = [elbow';1];
+                    pointsd(:,5) = [wrist';1];
+                    pointsd(:,6) = [hand';1];
+                    
+                    X = optimize(Robot,'RMK',pointsd);
+                    
+                    % Rotates and plots the right arm to optimized value
+                    KC = RotateKinematicChain(KC,X);
+                    Robot.KinematicChains.RMK = KC;
+                    RobotPlot(Robot);
+                    
+                    LW = 3; MS = 15;
+                    plot3([shoulder(1,1),elbow(1,1),wrist(1,1),hand(1,1)],...
+                        [shoulder(1,2),elbow(1,2),wrist(1,2),hand(1,2)],...
+                        [shoulder(1,3),elbow(1,3),wrist(1,3),hand(1,3)],...
+                        'LineWidth',LW,'Color',[0 0 0],'Marker','.',...
+                        'MarkerEdgeColor',[1 0 0],'MarkerSize',MS);
+                    drawnow;
+                end
+            end
         else
             
             % Incorrect mode input loop. Asks the user to enter a supported

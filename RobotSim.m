@@ -35,7 +35,7 @@ function [RoboHAZMAT, MechatronicArm] = RobotSim(options)
 %   - Add better commenting and documentation
 %   - Create instructions file for how to take advantage of all functions
 
-close all; clc; tic;
+close all; clc;
 
 %% ========================RoboHAZMAT Simulation===========================
 % Creation of the various kinematic chain elements in the RoboHAZMAT robot.
@@ -60,7 +60,6 @@ RobotKinematics.LMK = LMK;
 % Right Manipulator Kinematics
 RMK = RightManipulatorKinematics;
 %RMK = RotateKinematicChain(RMK,[-pi/6;pi/4;-pi/12;-pi/3;pi;pi/6]);
-%RMK = RotateKinematicChain(RMK,[-pi/2.5;-pi/10;-pi/12;-pi/3;pi;pi/6]);
 RobotKinematics.RMK = RMK;
 
 % Create the RoboHAZMAT Robot object
@@ -90,10 +89,10 @@ MechatronicArm = Robot(MAKStruct);
 % Plots the RoboHAZMAT simulation as a default using the 'RobotPlot.m' and
 % the 'FigureSetup.m' utils with the Robot object.
 
-% Plot the robot
-RobotPlot(RoboHAZMAT);
 % Run a one time figure setup
 FigureSetup(RoboHAZMAT);
+% Plot the robot
+RobotPlot(RoboHAZMAT);
 
 %% ========================Interactive Simulation==========================
 % Interactive Simulation for the Robots. Mode options are 1 - 6 currently.
@@ -101,14 +100,14 @@ FigureSetup(RoboHAZMAT);
 
 if (nargin == 1)
     mode = options(1);
-    if (mode - 5 <= 0)
+    if (mode - 5 <= 0 || mode == 7)
         % Enter the Interactive Simulation with the RoboHAZMAT Robot
         RoboHAZMAT = InteractiveSim(RoboHAZMAT, mode);
     else
-        % Plot the arm
-        RobotPlot(MechatronicArm);
         % Run a one time figure setup
         FigureSetup(MechatronicArm);
+        % Plot the arm
+        RobotPlot(MechatronicArm);
         
         % Enter the Interactive Simulation with the Mechatronic arm
         RoboHAZMAT = InteractiveSim(MechatronicArm, mode);
@@ -117,4 +116,3 @@ end
 
 % Ending the Simulation
 fprintf('\nFinished Simulation.\nDone.\n\n');
-toc
