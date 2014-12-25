@@ -24,10 +24,8 @@ if (strcmp(Robot.Name, 'RoboHAZMAT'))
     % Plotting the Frame Body
     plot3([0,0,0],[-.179,0,.179],[.371,.371,.371],'LineWidth',LW,...
         'Color',[0 0 0]);
-    hold on; grid on;
     plot3([0,0,0],[0,0,0],[0,0.371,0.589],'LineWidth',LW,'Color',[0 0 0],...
         'Marker','.','MarkerEdgeColor',0.5*[1 1 1],'MarkerSize',MS);
-    hold on; grid on;
     
     % Sets up the base frame of the Mechatronic Arm
 elseif (strcmp(Robot.Name, 'Mechatronic Arm'))
@@ -45,7 +43,6 @@ elseif (strcmp(Robot.Name, 'Mechatronic Arm'))
     x = r*cos(theta);
     y = r*sin(theta);
     patch(x,y,h*ones(size(x)), color*[1,1,1]);
-    hold on; grid on;
 end
 
 % Uncomment next line to plot a square robot base (glitchy)
@@ -59,5 +56,4 @@ for i = 1:length(fields)
         Robot.KinematicChains.(fields{i}).points.pG(3,:),...
         'LineWidth',LW,'Color',[0 0 0],'Marker','.',...
         'MarkerEdgeColor',[1 0 0],'MarkerSize',MS);
-    hold on; grid on;
 end

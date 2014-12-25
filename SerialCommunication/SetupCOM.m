@@ -9,7 +9,7 @@ end
 delete(instrfindall);
 
 % Specify COM port for the IMU
-IMUCOM = 'COM9';
+IMUCOM = ['COM8';'COM9'];
 
 % Specify COM port for the Motor Control
 motorControlCOM = 'COM11';

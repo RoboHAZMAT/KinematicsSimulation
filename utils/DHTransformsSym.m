@@ -1,4 +1,4 @@
-function [H]=DHTransforms(DH,symb)
+function [H]=DHTransformsSym(DH)
 %
 %   Return the homogeneous transforms for a kinematic chain 
 %   described by the DH parameters.
@@ -18,9 +18,7 @@ disps = DH.disps;
 offsets = DH.offsets;
 DOF=length(thetas);
 H=zeros(4,4,DOF);
-if (symb)
-    H = sym(H);
-end
+H = sym(H);
 %
 for i=1:DOF
     a=offsets(i);
