@@ -53,25 +53,30 @@ RM.w = [0;0;0;0;0;1];
 
 % Theta Angles
 RM.th = struct();
-% Shoulder: th1 = Pitch, th2 = Yaw, th3 = Roll
-RM.th.th1 = 0; RM.th.th2 = 0; RM.th.th3 = 0;
-% Elbow: th4 = Pitch, th5 = Yaw
-RM.th.th4 = 0; RM.th.th5 = 0;
-% Wrist: th6 = Pitch
-RM.th.th6 = 0;
+
+% Theta Angle Definitions 
+RM.th.thDef = ['  Shoulder Pitch';'  Shoulder Yaw  ';'  Shoulder Roll ';...
+    '  Elbow Pitch   ';'  Elbow Yaw     ';'  Wrist Pitch   '];
 
 % Initial Thetas
 RM.th.thi = zeros(RM.DOF,1);
 RM.th.thi(1) = pi/2; RM.th.thi(2) = pi/2; RM.th.thi(3) = pi/2;
 RM.th.thi(4) = pi/2; RM.th.thi(5) = 0; RM.th.thi(6) = -pi/2;
 
+% Initial Thetas
+RM.th.thiSym = sym(zeros(RM.DOF,1));
+RM.th.thiSym(1) = pi/2; RM.th.thiSym(2) = pi/2; RM.th.thiSym(3) = pi/2;
+RM.th.thiSym(4) = pi/2; RM.th.thiSym(5) = 0; RM.th.thiSym(6) = -pi/2;
+
 %% ========================Mathematical Modeling===========================
 % DH Convention
+syms th1 th2 th3 th4 th5 th6
 RM.DH = struct();
+RM.DH.alphasSym = sym([pi/2; pi/2; pi/2; pi/2; -pi/2; -pi/2]);
+RM.DH.thetasSym = sym([th1;th2;th3;th4;th5;th6]);
 RM.DH.alphas = [pi/2; pi/2; pi/2; pi/2; -pi/2; -pi/2];
-RM.DH.thetas = [RM.th.thi(1) + RM.th.th1; RM.th.thi(2) + RM.th.th2;...
-    RM.th.thi(3) + RM.th.th3; RM.th.thi(4) + RM.th.th4;...
-    RM.th.thi(5) + RM.th.th5; RM.th.thi(6) + RM.th.th6];
+RM.DH.thetas = [RM.th.thi(1); RM.th.thi(2); RM.th.thi(3);...
+    RM.th.thi(4); RM.th.thi(5); RM.th.thi(6)];
 RM.DH.disps = [RM.d.d12; -RM.d.d23; 0; 0; -RM.d.d56; 0];
 RM.DH.offsets = [0; 0; -RM.d.d34; 0; 0; -RM.d.d67];
 

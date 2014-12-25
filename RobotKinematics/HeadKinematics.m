@@ -70,14 +70,4 @@ H.H.HGo = [ 0, 1, 0,     0;
     0, 0, 0,     1];
 
 % Transform each point in the global frame
-for i = 1:H.DOF
-    % the points in Global Coordinates
-    H.H.HG = H.H.HGo;
-    
-    for j = 1:i
-        H.H.HG = H.H.HG*H.H.H(:,:,j);
-    end
-    H.pts.pG(:,i) = H.H.HG*H.pts.p(:,i);
-end
-
-HK = KinematicSystem(H);
+HK = RotateKinematicChain(KinematicSystem(H), zeros(H.DOF, 1));
