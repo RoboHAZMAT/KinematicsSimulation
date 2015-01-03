@@ -9,7 +9,7 @@ function serialObjIMU = SetupIMUSerial(IMUCOM)
 
 % Setup Serial Communication with IMU
 disp('Setup Serial Communication...');
-serialObjIMU = serial(IMUCOM,'BAUD',38400,'InputBufferSize',256);
+serialObjIMU = serial(IMUCOM,'BAUD',9600,'InputBufferSize',32);
 fopen(serialObjIMU);
 pause(2);
 
@@ -41,3 +41,8 @@ disp('DMP Enabled. Ready for use.');
 while (serialObjIMU.BytesAvailable > 0)
     fscanf(serialObjIMU);
 end
+
+disp('Calibrating IMU...');
+pause(5);
+
+disp('Ready to use!');

@@ -28,9 +28,6 @@ function [RoboHAZMAT, MechatronicArm] = RobotSim(options)
 %   - Designed for easy expandability and additions
 %
 % Still to do:
-%   - Add functional quaternion rotations of vectors
-%   - Multiple IMU communication for full human arm vector representation
-%   - Inverse kinematics using IMU sensor estimated human arm positioning
 %   - Optimize speed of the code as much as possible
 %   - Add better commenting and documentation
 %   - Create instructions file for how to take advantage of all functions
@@ -100,7 +97,7 @@ RobotPlot(RoboHAZMAT);
 
 if (nargin == 1)
     mode = options(1);
-    if (mode - 5 <= 0 || mode == 7)
+    if (mode - 6 <= 0)
         % Enter the Interactive Simulation with the RoboHAZMAT Robot
         RoboHAZMAT = InteractiveSim(RoboHAZMAT, mode);
     else

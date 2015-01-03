@@ -11,7 +11,6 @@ classdef Robot
     properties
         Name;
         KinematicChains;
-        
     end
     
     methods
