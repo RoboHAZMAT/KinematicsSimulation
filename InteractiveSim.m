@@ -40,6 +40,13 @@ function Robot = InteractiveSim(Robot, mode)
 %         control the arm as well as display a simulated version of the arm
 %         in a MATLAB figure.
 %
+%   ** 7: Uses two IMU sensors, one on the wrist and one in the middle of
+%         the upper arm to estimate arm orientations. The estimated arm
+%         orientations are used to calculate desired elbow, wrist, and hand
+%         locations in 3D. An inverse kinematics optimization is run to
+%         calculate the optimal theta angles for the simulated robot
+%         kinematic chains to mimic the user's arm.
+%
 %   * Signifies connection required to the IMU running the IMUArm.ino
 %     program on arduino.
 %
@@ -114,7 +121,7 @@ if (strcmpi(interactiveSim,'yes') || strcmpi(interactiveSim,'y'))
                 % Inverse kinematics
                 pointsd = zeros(4, size(KC.points.p,2));
                 pointsd(:,size(KC.points.p,2)) = [x;y;z;1];
-                X = optimize(Robot,KCname,pointsd);
+                X = InverseKinematicOptimization(Robot,KCname,pointsd);
                 
                 % Rotates and plots the kinematic chain
                 KC = RotateKinematicChain(KC,X);
@@ -210,7 +217,7 @@ if (strcmpi(interactiveSim,'yes') || strcmpi(interactiveSim,'y'))
                 
                 % Inverse kinematics
                 pointsd(:,size(KC.points.p,2)) = [x;y;z;1];
-                X = optimize(Robot,'RMK',pointsd);
+                X = InverseKinematicOptimization(Robot,'RMK',pointsd);
                 
                 % Rotates and plots the Robot object
                 KC = RotateKinematicChain(KC,X);
@@ -257,7 +264,7 @@ if (strcmpi(interactiveSim,'yes') || strcmpi(interactiveSim,'y'))
                 % kinematics on the noisy trajectory
                 pointsd(:,size(KC.points.p,2)) = [x + noiseCalc; ...
                     y + noiseCalc; z + noiseCalc;1];
-                X = optimize(Robot,'RMK',pointsd);
+                X = InverseKinematicOptimization(Robot,'RMK',pointsd);
                 
                 % Rotates and plots the right arm to optimized value
                 KC = RotateKinematicChain(KC,X);
@@ -324,77 +331,85 @@ if (strcmpi(interactiveSim,'yes') || strcmpi(interactiveSim,'y'))
                 end
             end
         elseif (mode == 7)
-            %% IMU controlled Mechatronic Arm through Arduino
+            %% Robot Right Arm Controlled by Two Wearable IMUs
+            
+            % Sets up the Serial communication with the IMUs
             IMUCOM = SetupCOM;
             serialObjIMU(1) = SetupIMUSerial(IMUCOM(1,:));
             serialObjIMU(2) = SetupIMUSerial(IMUCOM(2,:));
+            % serialObjIMU(3) = SetupIMUSerial(IMUCOM(3,:));
+            % serialObjIMU(4) = SetupIMUSerial(IMUCOM(4,:));
             
-            KC = Robot.KinematicChains.RMK;
-            KC.weightings(4) = 300;
-            KC.weightings(5) = 100;
-            KC.weightings(6) = 200;
+            % Specifies the arm and points to be controlled
+            KCR = Robot.KinematicChains.RMK;
+            KCR.weightings(4) = 300;
+            KCR.weightings(5) = 100;
+            KCR.weightings(6) = 200;
+            % KCL = Robot.KinematicChains.LMK;
+            % KCL.weightings(4) = 300;
+            % KCL.weightings(5) = 100;
+            % KCL.weightings(6) = 200;
             
-            shoulder = [0,-0.179,0.371];
-            link(1,:) = [.279,0,0];
-            link(2,:) = [0.257,0,0];
-            link(3,:) = [0,0,-0.076];
+            % Sets up the estimated actual arm position
+            shoulderR = [0,-0.179,0.371];
+            linkR(1,:) = [.279,0,0];
+            linkR(2,:) = [0.257,0,0];
+            linkR(3,:) = [0,0,-0.076];
+            % shoulderL = [0,0.179,0.371];
+            % linkL(1,:) = [.279,0,0];
+            % linkL(2,:) = [0.257,0,0];
+            % linkL(3,:) = [0,0,-0.076];
             
-            linkRot = zeros(2,3);
-            q = zeros(2,4);
-            pointsd = zeros(4, size(Robot.KinematicChains.RMK.points.p,2));
+            % Initializes the desired points
+            pointsdR = zeros(4, size(KCR.points.p,2));
+            % pointsdL = zeros(4, size(KCL.points.p,2));
             
-            psi = [0, 0];
+            % Yaw angle offset initialization at zero
+            psiR = zeros(1,3);
+            % psiL = zeros(1,3);
             
+            % Constant running while loop
+            % 1. Read IMU for quaternions
+            % 2. Estimate arm link orientations
+            % 3. Reconstruct arm positioning
+            % 4. Inverse Kinematic Optimization to estimate joint angles
+            % 5. Rotate arm kinematic chain
             while (1)
-                [qw(1), qx(1), qy(1), qz(1), reset(1)] = ReadIMUQuaternion(serialObjIMU(1));
-                [qw(2), qx(2), qy(2), qz(2), reset(2)] = ReadIMUQuaternion(serialObjIMU(2));
-                if (~isnan(qw(1)) && ~isnan(qw(2)))
+                tic
+                % 1. Gets the two IMU readings from the sensors
+                [qR(1,:), resetR(1)] = ReadIMUQuaternion(serialObjIMU(1));
+                [qR(2,:), resetR(2)] = ReadIMUQuaternion(serialObjIMU(2));
+                % [qL(1,:), resetL(1)] = ReadIMUQuaternion(serialObjIMU(3));
+                % [qL(2,:), resetL(2)] = ReadIMUQuaternion(serialObjIMU(4));
+                
+                % If readings are found from both
+                if (~isnan(qR(1,1)) && ~isnan(qR(2,1)))
+                    % if (~isnan(qR(1,1)) && ~isnan(qR(2,1)) && ~isnan(qL(1,1)) && ~isnan(qL(2,1)))
+                    % 2. Estimates the orientation of the arm links
+                    [linkRRot, psiR] = ...
+                        EstimateArmOrientation(linkR, qR, resetR, psiR);
+                    % [linkLRot, psiL] = EstimateArmOrientation(linkL, qL, resetL, psiL);
                     
-                    for i = 1:3
-                        if i == 3
-                            q(i,:) = [qw(2), qx(2), qy(2), qz(2)];
-                            linkRot(i,:) = quatrotate(q(i,:),link(i,:));
-                            linkRot(i,:) = zeroYaw(linkRot(i,:), psi(2));
-                        else
-                            q(i,:) = [qw(i), qx(i), qy(i), qz(i)];
-                            linkRot(i,:) = quatrotate(q(i,:),link(i,:));
-                            if (reset(i) == 1)
-                                psi(i) = yawOffset(linkRot(i,:));
-                            end
-                            linkRot(i,:) = zeroYaw(linkRot(i,:), psi(i));
-                        end
-                    end
+                    % 3. Reconstructs the user's arm and desired points
+                    pointsdR = ReconstructArm(shoulderR, linkRRot);                    
+                    % pointsdL = ReconstructArm(shoulderL, linkLRot);
                     
-                    elbow = [shoulder(1,1) + linkRot(1,1),...
-                        shoulder(1,2) + linkRot(1,2),shoulder(1,3) + linkRot(1,3)];
-                    wrist = [elbow(1,1) + linkRot(2,1),...
-                        elbow(1,2) + linkRot(2,2),elbow(1,3) + linkRot(2,3)];
-                    hand = [wrist(1,1) + linkRot(3,1),...
-                        wrist(1,2) + linkRot(3,2),wrist(1,3) + linkRot(3,3)];
+                    % 4. Inverse Kinematic optimization for joint angles
+                    XR = InverseKinematicOptimization(Robot,'RMK',pointsdR);
+                    % XL = InverseKinematicOptimization(Robot,'LMK',pointsdL);
                     
-                    pointsd(:,3) = [elbow';1];
-                    pointsd(:,4) = [elbow';1];
-                    pointsd(:,5) = [wrist';1];
-                    pointsd(:,6) = [hand';1];
-                    
-                    X = optimize(Robot,'RMK',pointsd);
-                    
-                    % Rotates and plots the right arm to optimized value
-                    KC = RotateKinematicChain(KC,X);
-                    Robot.KinematicChains.RMK = KC;
+                    % 5. Rotates and plots the right arm to optimized value
+                    Robot.KinematicChains.RMK = RotateKinematicChain(KCR,XR);
+%                     KCR = RotateKinematicChain(KCR,XR);
+%                     Robot.KinematicChains.RMK = KCR;
+                    % KCL = RotateKinematicChain(KCL,XL);
+                    % Robot.KinematicChains.LMK = KCL;
                     RobotPlot(Robot);
-                    
-                    LW = 3; MS = 15;
-                    plot3([shoulder(1,1),elbow(1,1),wrist(1,1),hand(1,1)],...
-                        [shoulder(1,2),elbow(1,2),wrist(1,2),hand(1,2)],...
-                        [shoulder(1,3),elbow(1,3),wrist(1,3),hand(1,3)],...
-                        'LineWidth',LW,'Color',[0 0 0],'Marker','.',...
-                        'MarkerEdgeColor',[1 0 0],'MarkerSize',MS);
                     drawnow;
                 end
+                toc
             end
         else
-            
             % Incorrect mode input loop. Asks the user to enter a supported
             % simulation mode or to quit.
             while (mode - 6 > 0 || mode < 0)
