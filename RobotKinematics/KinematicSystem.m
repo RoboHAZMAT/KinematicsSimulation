@@ -41,7 +41,5 @@ classdef KinematicSystem
             KS.DHParams = KSStruct.DH;
             KS.DHTransforms = KSStruct.H;
         end
-        
-        
     end
 end
