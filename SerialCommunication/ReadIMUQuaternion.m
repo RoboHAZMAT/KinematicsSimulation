@@ -19,8 +19,10 @@ reset = NaN;
 readingIMU = NaN;
 
 % Reads the incoming buffer stream and clears it
-while(serialObjIMU.BytesAvailable > 0)
-    readingIMU = fscanf(serialObjIMU);
+while (isnan(readingIMU))
+    while(serialObjIMU.BytesAvailable > 0)
+        readingIMU = fscanf(serialObjIMU);
+    end
 end
 
 % If a reading is found from the IMU

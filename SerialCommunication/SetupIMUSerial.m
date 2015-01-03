@@ -41,3 +41,8 @@ disp('DMP Enabled. Ready for use.');
 while (serialObjIMU.BytesAvailable > 0)
     fscanf(serialObjIMU);
 end
+
+disp('Calibrating IMU...');
+pause(5);
+
+disp('Ready to use!');
