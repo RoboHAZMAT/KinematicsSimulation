@@ -2,3 +2,4 @@
 addpath ..\TrajectoryPlanningOptimization\
 addpath ..\utils\
 addpath ..\SerialCommunication\
+addpath ..\IntuitiveRobotControl\
