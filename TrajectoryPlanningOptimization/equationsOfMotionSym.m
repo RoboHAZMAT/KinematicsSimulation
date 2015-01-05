@@ -19,9 +19,9 @@ for i = 2:KC.DOF
 end
 
 % Calculation of the points in global frame
-points = [zeros(3,6);ones(1,6)];
-pointsG = sym(zeros(4,6));
-for i = 1:6
+points = [zeros(3,KC.DOF);ones(1,KC.DOF)];
+pointsG = sym(zeros(4,KC.DOF));
+for i = 1:KC.DOF
     pointsG(:,i) = H(:,:,i)*points(:,i);
 end
 
@@ -44,7 +44,7 @@ error = sum(err);
 
 syms th1 th2 th3 th4 th5 th6
 % Gradient Vector
-Gradient = sym(zeros(6,1));
+Gradient = sym(zeros(KC.DOF,1));
 
 Gradient(1) = diff(error, th1);
 Gradient(2) = diff(error, th2);
@@ -54,7 +54,7 @@ Gradient(5) = diff(error, th5);
 Gradient(6) = diff(error, th6);
 
 % Hessian Matrix
-Hessian = sym(zeros(6,6));
+Hessian = sym(zeros(KC.DOF,KC.DOF));
 
 Hessian(1,1) = diff(Gradient(1), th1);
 Hessian(1,2) = diff(Gradient(1), th2);
