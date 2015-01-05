@@ -25,13 +25,14 @@ MA.pts.p = [zeros(3,MA.DOF);ones(1,MA.DOF)];
 % Length of the links
 MA.d = struct();
 % Base height
-MA.d.d12 = 0.06; 
+MA.d.d12 = 0.061; 
 % First link
-MA.d.d23 = 0.1;
+MA.d.d23 = 0.092;
 % Second link
-MA.d.d34 = 0.08;
+MA.d.d34 = 0.068;
 % Wrist to gripper tip
-MA.d.d45 = 0.08;
+MA.d.d45 = 0.0275;
+MA.d.d56 = 0.0775;
 
 % Redefining origin points
 MA.pts.o = [0;
@@ -41,34 +42,39 @@ MA.pts.o = [0;
 
 % Physical system constraints, upper and lower bounds
 MA.b = struct();
-MA.b.lb = [-pi/2,-pi/2,-pi/2,-pi/2,-pi/2];
-MA.b.ub = [pi/2,pi/2,pi/2,pi/2,pi/2];
+MA.b.lb = [-pi/2,-pi/2,-pi/2,0,-pi];
+MA.b.ub = [pi/2,pi/2,pi/2,pi/2,pi];
 
 % Weighting on importance of points
-MA.w = [0;0;0;0;1];
+MA.w = [0;0;0;0;100];
 
 % Theta Angles
 MA.th = struct();
-% Base: th1 = Yaw, th2 = Pitch 
-MA.th.th1 = 0; MA.th.th2 = 0; 
-% Elbow: th3 = Pitch
-MA.th.th3 = 0;
-% Wrist: th4 = Pitch, th5 = Roll
-MA.th.th4 = 0; MA.th.th5 = 0;
+
+% Theta Angle Definitions 
+MA.th.thDef = ['  Base Yaw   ';'  Base Pitch ';'  Elbow Pitch';...
+    '  Wrist Pitch';'  Wrist Roll '];
 
 % Initial Thetas
 MA.th.thi = zeros(MA.DOF,1);
-MA.th.thi(1) = 0; MA.th.thi(2) = pi/2; MA.th.thi(3) = 0;
-MA.th.thi(4) = 0; MA.th.thi(5) = 0;
+MA.th.thi(1) = 0; MA.th.thi(2) = -pi/2; MA.th.thi(3) = 0;
+MA.th.thi(4) = -pi/2; MA.th.thi(5) = 0;
+
+% Initial Thetas
+MA.th.thiSym = sym(zeros(MA.DOF,1));
+MA.th.thiSym(1) = 0; MA.th.thiSym(2) = -pi/2; MA.th.thiSym(3) = 0;
+MA.th.thiSym(4) = -pi/2; MA.th.thiSym(5) = 0;
 
 %% ========================Mathematical Modeling===========================
 % DH Convention
+syms th1 th2 th3 th4 th5 th6
 MA.DH = struct();
-MA.DH.alphas = [pi/2; 0; 0; -pi/2; 0];
-MA.DH.thetas = [MA.th.thi(1) + MA.th.th1; MA.th.thi(2) + MA.th.th2;...
-    MA.th.thi(3) + MA.th.th3; MA.th.thi(4) + MA.th.th4;...
-    MA.th.thi(5) + MA.th.th5];
-MA.DH.disps = [MA.d.d12; 0; 0; 0; 0];
+MA.DH.alphasSym = sym([-pi/2; 0; 0; -pi/2; 0]);
+MA.DH.thetasSym = sym([th1;th2;th3;th4;th5]);
+MA.DH.alphas = [-pi/2; 0; 0; -pi/2; 0];
+MA.DH.thetas = [MA.th.thi(1); MA.th.thi(2); MA.th.thi(3); ...
+    MA.th.thi(4); MA.th.thi(5)];
+MA.DH.disps = [MA.d.d12; 0; 0; 0; MA.d.d56];
 MA.DH.offsets = [0; MA.d.d23; MA.d.d34; MA.d.d45; 0];
 
 % Homogeneous transformations
