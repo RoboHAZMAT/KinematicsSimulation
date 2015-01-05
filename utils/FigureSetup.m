@@ -27,7 +27,7 @@ elseif (strcmp(Robot.Name, 'Mechatronic Arm'))
     FS = 18;xlabel('X [m]','FontSize',FS);
     title('Mechtronic Arm Simulation','FontSize',FS);
     ylabel('Y [m]','FontSize',FS);zlabel('Z [m]','FontSize',FS);
-    axis([-0.25 0.25 -0.25 0.25 -0.05 0.25]);
+    axis([-0.25 0.25 -0.25 0.25 0.0 0.30]);
     hold on; grid on;
     
 else

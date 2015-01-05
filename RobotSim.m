@@ -73,7 +73,7 @@ RoboHAZMAT = Robot(RKStruct);
 % Mechatronic Arm Kinematics
 MAKinematics = struct();
 MAK = MechatronicArmKinematics;
-MAK = RotateKinematicChain(MAK,[pi/12;pi/4;pi/3;pi/6;0]);
+%MAK = RotateKinematicChain(MAK,[0;pi/3;pi/3;pi/3;0]);
 MAKinematics.MAK = MAK;
 
 % Mechatronic Arm Robot
@@ -107,7 +107,7 @@ if (nargin == 1)
         RobotPlot(MechatronicArm);
         
         % Enter the Interactive Simulation with the Mechatronic arm
-        RoboHAZMAT = InteractiveSim(MechatronicArm, mode);
+        MechatronicArm = InteractiveSim(MechatronicArm, mode);
     end
 end
 
