@@ -7,11 +7,6 @@ serialObjIMU(2) = SetupIMUSerial(IMUCOM(2,:));
 % serialObjIMU(3) = SetupIMUSerial(IMUCOM(3,:));
 % serialObjIMU(4) = SetupIMUSerial(IMUCOM(4,:));
 
-begin = 'n';
-while (~strcmpi(begin,'y'))
-    begin = input('\nBegin control? [Y/N]: ','s');
-end
-
 % Specifies the arm and points to be controlled
 KCR = Robot.KinematicChains.RMK;
 KCR.weightings(4) = 300;
@@ -25,13 +20,19 @@ KCR.weightings(6) = 200;
 % Sets up the estimated actual arm position
 shoulderR = [0,-0.179,0.371];
 % shoulderL = [0,0.179,0.371];
-linkR(1,:) = [.279,0,0];
-linkR(2,:) = [0.257,0,0];
-linkR(3,:) = [0,0,-0.076];
+link(1,:) = [.279,0,0];
+link(2,:) = [0.257,0,0];
+link(3,:) = [0,0,-0.076];
 
 % Yaw angle offset initialization at zero
 psiR = zeros(1,3);
 % psiL = zeros(1,3);
+
+% Wait for user to be ready
+begin = 'n';
+while (~strcmpi(begin,'y'))
+    begin = input('\nBegin control? [Y/N]: ','s');
+end
 
 % Constant running while loop
 % 1. Read IMU for quaternions
@@ -49,9 +50,9 @@ while (1)
     
     % 2. Estimates the orientation of the arm links
     [linkRRot, psiR] = ...
-        EstimateArmOrientation(linkR, qR, resetR, psiR);
+        EstimateArmOrientation(link, qR, resetR, psiR);
     % [linkLRot, psiL] = ...
-    %     EstimateArmOrientation(linkL, qL, resetL, psiL);
+    %     EstimateArmOrientation(link, qL, resetL, psiL);
     
     % 3. Reconstructs the user's arm and desired points
     pointsdR = ReconstructArm(shoulderR, linkRRot);

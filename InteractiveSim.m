@@ -112,11 +112,19 @@ if (strcmpi(interactiveSim,'yes') || strcmpi(interactiveSim,'y'))
         elseif (mode == 7)
             % IMU controlled Mechatronic Arm through Arduino
             Robot = Simulation7(Robot);
-           
+            
+        elseif (mode == 8)
+            % IMU controlled Mechatronic Arm through Arduino
+            Robot = Simulation8(Robot);
+            
+        elseif (mode == 9)
+            % IMU controlled Mechatronic Arm through Arduino
+            Robot = Simulation9(Robot);
+            
         else
-            %% Incorrect mode input loop. 
+            %% Incorrect mode input loop.
             % Asks the user to enter a supported simulation mode or quit.
-            while (mode - 7 > 0 || mode < 0)
+            while (mode - 9 > 0 || mode < 0)
                 fprintf(['\nMode %i is not supported.\n Choose 1 - 6,',...
                     ' q to quit:\n'],mode);
                 modeString = input(' > ','s');

@@ -19,7 +19,7 @@ X = zeros(5,1);
 
 % Constant running while loop:
 % To quit: 'Ctrl+C' (May try to find a better way)
-while (mode == 6)
+while (1)
     
     % Read the IMU sensor
     [yaw, pitch, roll, readingIMU] = ReadIMU(serialObjIMU);
