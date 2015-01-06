@@ -1,4 +1,4 @@
-function rout = quaternionRotate(q, r)
+function rout = QuaternionRotate(q, r)
 %% =========================Quaternion Rotation============================
 % RoboHAZMAT: Senior Design Project
 % Motion Control Team
