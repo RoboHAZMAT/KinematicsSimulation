@@ -21,9 +21,6 @@ for i = 1:size(linkRot, 1)
     % Rotate link by quaternion
     linkRot(i,:) = quaternionRotate(q(i,:),link(i,:));
     
-    % Calculate a rotation matrix for yaw if reset requested
-    if (reset(i)), psi(i) = yawOffset(linkRot(i,:)); end;
-    
     % Zero the rotated link to the specified zero
-    linkRot(i,:) = zeroYaw(linkRot(i,:), psi(i));
+    [linkRot(i,:), psi(i)] = ZeroYaw(linkRot(i,:), psi(i), reset(i));
 end
