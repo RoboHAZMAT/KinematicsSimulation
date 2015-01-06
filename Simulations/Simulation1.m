@@ -1,5 +1,5 @@
 function Robot = Simulation1(Robot)
-%% Inverse kinematics with user inputting points
+%% ============Inverse kinematics With User Inputting Points===============
 
 % Position defined inverse kinematics
 fprintf('\nChoose Kinematic Chain to move.\n');
@@ -15,7 +15,7 @@ valid = false;
 
 % Get the kinematic chain
 for i = 1:length(fields)
-    if (strcmpi(KCstring, fields{i}))
+    if (strcmp(KCstring, fields{i}))
         valid = true;
         KCname = fields{i};
         KC = Robot.KinematicChains.(fields{i});

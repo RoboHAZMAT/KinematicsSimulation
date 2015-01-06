@@ -97,7 +97,7 @@ RobotPlot(RoboHAZMAT);
 
 if (nargin == 1)
     mode = options(1);
-    if (mode - 6 <= 0)
+    if (mode - 10 <= 0)
         % Enter the Interactive Simulation with the RoboHAZMAT Robot
         RoboHAZMAT = InteractiveSim(RoboHAZMAT, mode);
     else

@@ -1,28 +1,69 @@
 function Robot = Simulation3(Robot)
+%% ================IMU Controlled Manipulators Simulation==================
 
 % Sets up the COM ports
 IMUCOM = SetupCOM;
 
-% Left Manipulator simulation controlled by IMU
-serialObjIMU = SetupIMUSerial(IMUCOM(1,:));
+% Setup IMU Serial communication
+serialObjIMU(1) = SetupIMUSerial(IMUCOM(1,:));
+serialObjIMU(2) = SetupIMUSerial(IMUCOM(2,:));
 
-KC = Robot.KinematicChains.LMK;
-%calibrateIMU();
-while (mode == 3)
-    % Reads the IMU
-    [yaw, pitch, roll, readingIMU] = ReadIMU(serialObjIMU);
-    if (~isnan(readingIMU))
-        % Rotation vector
-        X = zeros(6,1);
-        X(2,1) = (-(yaw))/180*pi;
-        X(4,1) = (-(pitch + 90))/180*pi;
-        X(5,1) = (-(roll))/180*pi;
-        X(6,1) = (90)/180*pi;
-        
-        % Rotates and plots the kinematic chain
-        KC = RotateKinematicChain(KC,X);
-        Robot.KinematicChains.LMK = KC;
-        RobotPlot(Robot);
-        drawnow;
+% Initializes KCs
+KCR = Robot.KinematicChains.RMK;
+KCL = Robot.KinematicChains.LMK;
+
+% Setup offests
+psiR = 0;
+psiL = 0;
+
+% Wait for user to be ready
+begin = '';
+while (~strcmpi(begin,'y') && ~strcmpi(begin,'n'))
+    begin = input('Begin control? [Y/N]: ','s');
+    if (strcmpi(begin,'y'))
+        disp(' '); disp(' ');
+        disp('   Robot ARM Control   ');
+        disp(' ');
     end
+end
+
+%calibrateIMU();
+while (strcmpi(begin,'y'))
+    % Reads the IMUs
+    [qR, resetR] = ReadIMUQuaternion(serialObjIMU(1));
+    [qL, resetL] = ReadIMUQuaternion(serialObjIMU(2));
+    
+    % Convert quaternions to yaw, pitch, roll
+    yprR = QuaternionToYPR(qR);
+    yprL = QuaternionToYPR(qL);
+    
+    % Reset the yaws if requested 
+    if (resetR)
+        psiR = yprR(1);
+    end
+    if (resetL)
+        psiL = yprL(1);        
+    end
+    yprR(1) = yprR(1) - psiR;
+    yprL(1) = yprL(1) - psiL;
+    
+    % Rotation vector for RMK
+    XR = zeros(6,1);
+    XR(2,1) = (-(yprR(1)));
+    XR(4,1) = (-(yprR(2) + pi/2));
+    XR(5,1) = (-(yprR(3)));
+    XR(6,1) = pi/2;
+    
+    % Rotation vector for RMK
+    XL = zeros(6,1);
+    XL(2,1) = (-(yprL(1)));
+    XL(4,1) = (-(yprL(2) + pi/2));
+    XL(5,1) = (-(yprL(3)));
+    XL(6,1) = pi/2;
+    
+    % Rotates and plots the kinematic chain
+    Robot.KinematicChains.RMK = RotateKinematicChain(KCR,XR);
+    Robot.KinematicChains.LMK = RotateKinematicChain(KCL,XL);
+    RobotPlot(Robot);
+    drawnow;
 end

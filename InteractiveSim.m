@@ -84,47 +84,49 @@ end
 if (strcmpi(interactiveSim,'yes') || strcmpi(interactiveSim,'y'))
     fprintf('\nBeginning Interactive Simulation...\n');
     while (strcmpi(interactiveSim,'yes') || strcmpi(interactiveSim,'y'))
-        %% Simulation selections
+        clc;
+        fprintf('====================================\n\n');
+        fprintf('     Interactive Simulation: %i\n\n', mode);
+        fprintf('====================================\n\n');
+        fprintf('       Running Simulation...\n');
+        fprintf('         {Ctrl+C to quit}\n');
+        %% RoboHAZMAT {1 - 10} and Mechatronic Arm {11 - 20} Simulations
         if (mode == 1)
-            % Inverse kinematics with user inputting points
+            % Inverse kinematics With User Inputting Points
             Robot = Simulation1(Robot);
             
         elseif (mode == 2)
-            % IMU controlled Right manipulator simulation
+            % Inverse Kinematic Tracing Trajectories
             Robot = Simulation2(Robot);
             
         elseif (mode == 3)
-            % IMU controlled Left manipulator simulation
+            % IMU Controlled Manipulators Simulation
             Robot = Simulation3(Robot);
             
         elseif (mode == 4)
-            % Inverse kinematic tracing of noisy trajectory
+            % IMU Controlled Robot Arm Simulation
             Robot = Simulation4(Robot);
             
-        elseif (mode == 5)
-            % Figure 8 inverse kinematics tracing in real-time
-            Robot = Simulation5(Robot);
+        elseif (mode == 11)
+            % Mechatronic Arm Inverse Kinematics Trajectory Simulation
+            Robot = SimulationM1(Robot);
             
-        elseif (mode == 6)
-            % Robot Right Arm Controlled by Two Wearable IMUs
-            Robot = Simulation6(Robot);
+        elseif (mode == 12)
+            % IMU controlled Mechatronic Arm Through Arduino (ypr)
+            Robot = SimulationM2(Robot);
             
-        elseif (mode == 7)
-            % IMU controlled Mechatronic Arm through Arduino
-            Robot = Simulation7(Robot);
-            
-        elseif (mode == 8)
-            % IMU controlled Mechatronic Arm through Arduino
-            Robot = Simulation8(Robot);
-            
-        elseif (mode == 9)
-            % IMU controlled Mechatronic Arm through Arduino
-            Robot = Simulation9(Robot);
+        elseif (mode == 13)
+            % Mechatronic Arm Controlled Through Arduino
+            Robot = SimulationM3(Robot);
+        
+        elseif (mode == 14)
+            % IMU controlled Mechatronic Arm Through Arduino (IK)
+            Robot = SimulationM4(Robot);
             
         else
             %% Incorrect mode input loop.
             % Asks the user to enter a supported simulation mode or quit.
-            while (mode - 9 > 0 || mode < 0)
+            while (mode - 14 > 0 || mode < 0)
                 fprintf(['\nMode %i is not supported.\n Choose 1 - 6,',...
                     ' q to quit:\n'],mode);
                 modeString = input(' > ','s');
