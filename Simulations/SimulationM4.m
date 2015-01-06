@@ -1,4 +1,4 @@
-function Robot = Simulation8(Robot)
+function Robot = SimulationM4(Robot)
 
 % Sets up the Serial communication with the IMUs and motor control
 [IMUCOM, motorControlCOM] = SetupCOM;

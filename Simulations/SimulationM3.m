@@ -1,4 +1,4 @@
-function Robot = Simulation9(Robot)
+function Robot = SimulationM3(Robot)
 
 % Initializes communication with Mechatronic Arm
 [IMUCOM, motorControlCOM] = SetupCOM;
@@ -7,6 +7,7 @@ function Robot = Simulation9(Robot)
 
 % Sets up the kinematics
 KC = Robot.KinematicChains.MAK;
+KC.optimization.weightings(5) = 100;
 pointsd = zeros(4, size(KC.points.p,2));
 
 % History vectors for trajectories
@@ -17,27 +18,47 @@ xHistT = zeros(1,360);
 yHistT = zeros(1,360);
 zHistT = zeros(1,360);
 
-% Set velocity: {1,..,.5}
-velocity = 5;
-n = 60;
+% Trajectory parameters
+traj = 3;
+velocity = 5; % Set velocity: {1,..,.5}
+runs = 3;     % Number of runs
+trajDur = 60; % Trajectory segment duration
+n = 6;        % 6 for a full 360 cycle
 
 while (1)
     serialMotorControl.servoWrite(motor.gripper, 0);
     pause(0.5);
     % Runs the trajectory multiple times
-    for i = 1:velocity:(13*n - 1)
+    for i = 1:velocity:(n*runs*trajDur - 1)
+        
+        % Open and close the gripper
+        if (mod(i-1, n) == 0)
+            if (i-1 == n)
+                serialMotorControl.servoWrite(motor.gripper, 180);
+                pause(0.5);
+            elseif (i-1 == 4*n)
+                serialMotorControl.servoWrite(motor.gripper, 0);
+                pause(0.5);
+            elseif (i-1 == 8*n)
+                serialMotorControl.servoWrite(motor.gripper, 180);
+                pause(0.5);
+            elseif (i-1 == 11*n)
+                serialMotorControl.servoWrite(motor.gripper, 0);
+                pause(0.5);
+            end
+        end
         
         % Create the trajectory
-        [x, y, z] = TrajectoriesMechatronicArm(i, 3, serialMotorControl, motor);
+        [x, y, z] = TrajectoriesMechatronicArm(i, traj, trajDur);
         
+        % Assigns the desired trajectory history
         xHist(i) = x;
         yHist(i) = y;
         zHist(i) = z;
         
         % Adds noise to trajectory and carries out inverse
         % kinematics on the noisy trajectory
-        pointsd(:,size(KC.points.p,2)) = [x; ...
-            y; z;1];
+        pointsd(:,size(KC.points.p,2)) = [x; y; z; 1];
         X = InverseKinematicOptimization(Robot,'MAK',pointsd);
         
         % Rotates and plots the right arm to optimized value
@@ -56,6 +77,4 @@ while (1)
         
         MechatronicArmControl(serialMotorControl, motor, X);
     end
-    
 end
-

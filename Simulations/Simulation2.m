@@ -1,27 +1,52 @@
 function Robot = Simulation2(Robot)
+%% ================Inverse Kinematic Tracing Trajectories==================
 
-% Sets up COM ports
-IMUCOM = SetupCOM;
-
-% Right Manipulator simulation controlled by IMU
-serialObjIMU = SetupIMUSerial(IMUCOM(1,:));
-
+% Sets up the kinematics
 KC = Robot.KinematicChains.RMK;
-while (1)
-    % Reads the IMU
-    [yaw, pitch, roll, readingIMU] = ReadIMU(serialObjIMU);
-    if (~isnan(readingIMU))
-        % Rotation vector
-        X = zeros(6,1);
-        X(2,1) = (-(yaw))/180*pi;
-        X(4,1) = (-(pitch + 90))/180*pi;
-        X(5,1) = (-(roll))/180*pi;
-        X(6,1) = (90)/180*pi;
-        
-        % Rotates and plots the kinematic chain
-        KC = RotateKinematicChain(KC,X);
-        Robot.KinematicChains.RMK = KC;
-        RobotPlot(Robot);
-        drawnow;
-    end
+KC.optimization.weightings(6) = 1;
+pointsd = zeros(4, size(KC.points.kP,2));
+
+% History vectors for the trajectories
+xHist = zeros(1,360);
+yHist = zeros(1,360);
+zHist = zeros(1,360);
+xHistT = zeros(1,360);
+yHistT = zeros(1,360);
+zHistT = zeros(1,360);
+
+% Trajectory parameters
+traj = 1;      % {1, 2}
+velocity = 8;  % Set velocity
+runs = 3;      % Number of runs
+trajDur = 60;  % Trajectory segment duration
+n = 6;         % 6 for a full 360 cycle
+
+% Runs the loop a given number of times
+for i = 1:velocity:(n*runs*trajDur - 1)
+    % Create the trajectory
+    [x, y, z] = TrajectoriesRoboHAZMAT(i, traj);
+    
+    % Assigns the desired trajectory history
+    xHist(i) = x;
+    yHist(i) = y;
+    zHist(i) = z;
+    
+    % Inverse kinematics (Noise can be added or removed)
+    pointsd(:,size(KC.points.p,2)) = [x;y;z;1] ...
+        + [NoiseCalc;NoiseCalc;NoiseCalc;1];
+    X = InverseKinematicOptimization(Robot,'RMK',pointsd);
+    
+    % Rotates and plots the Robot object
+    KC = RotateKinematicChain(KC,X);
+    Robot.KinematicChains.RMK = KC;
+    RobotPlot(Robot);
+    
+    % Plots the ghost trajectories
+    xHistT(i) = KC.points.pG(1,6);
+    yHistT(i) = KC.points.pG(2,6);
+    zHistT(i) = KC.points.pG(3,6);
+    
+    plot3(xHist,yHist,zHist,'.','color','green');
+    plot3(xHistT,yHistT,zHistT,'.','color','red');
+    drawnow;
 end

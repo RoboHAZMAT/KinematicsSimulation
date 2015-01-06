@@ -8,6 +8,7 @@ function serialObjIMU = SetupIMUSerial(IMUCOM)
 % Ability to connect to the IMU sensor and read in data over Serial.
 
 % Setup Serial Communication with IMU
+disp(' ');
 disp('Setup Serial Communication...');
 serialObjIMU = serial(IMUCOM,'BAUD',9600,'InputBufferSize',32);
 fopen(serialObjIMU);
@@ -15,25 +16,17 @@ pause(2);
 
 disp('Initializing IMU...');
 % Clear received message in buffer
-while (strcmp(serialObjIMU.fscanf,'Initializing I2C devices...'))
+while (isempty(strfind(serialObjIMU.fscanf,'Initializing I2C devices...')))
 end
-serialObjIMU.fscanf;
 
 % Test Connections
-disp('IMU Connection Successful. Testing Device Connections...');
-while (strcmp(serialObjIMU.fscanf,'Testing device connections...'))
+disp('IMU Connection Successful. Initializing DMP...');
+while (isempty(strfind(serialObjIMU.fscanf,'Initializing DMP...')))
 end
-serialObjIMU.fscanf;
-
-% Initialize DMP
-disp('Device Connection Successful. Initializing DMP...');
-while (strcmp(serialObjIMU.fscanf,'Initializing DMP...'))
-end
-serialObjIMU.fscanf;
 
 % Enable DMP
 disp('DMP Connection Successful. Enabling DMP...');
-while (strcmp(serialObjIMU.fscanf,'Enabling DMP...'))
+while (isempty(strfind(serialObjIMU.fscanf,'Enabling DMP...')))
 end
 disp('DMP Enabled. Ready for use.');
 
@@ -43,6 +36,8 @@ while (serialObjIMU.BytesAvailable > 0)
 end
 
 disp('Calibrating IMU...');
+% CalibrateIMU();
 pause(5);
 
 disp('Ready to use!');
+disp(' ');

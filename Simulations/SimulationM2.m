@@ -1,4 +1,4 @@
-function Robot = Simulation7(Robot)
+function Robot = SimulationM2(Robot)
 
 % Setup COM ports
 [IMUCOM, motorControlCOM] = SetupCOM;

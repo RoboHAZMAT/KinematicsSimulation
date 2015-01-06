@@ -19,8 +19,16 @@ H.DOF = 2;
 
 % Frame points in each frame
 H.pts = struct();
+% Origin points placeholder
 H.pts.o = [];
+% Joint points
 H.pts.p = [zeros(3,H.DOF);ones(1,H.DOF)];
+% Defnining new kinematic points
+kP = [];
+% Kinematic points, can add points other than joints
+H.pts.kP = [H.pts.p,kP];
+% Frames for each of the kinematic points first n = DOF are joints
+H.pts.frames = [1;2];
 
 % Length of the links
 H.d = struct();
@@ -28,46 +36,58 @@ H.d = struct();
 H.d.d0c = 0.371; H.d.dc1 = 0.218;
 % Head to eyes
 H.d.d12 = 0.0; H.d.d23 = 0.084;
-H.pts.p(1,2) = -H.d.d23;
 
-H.pts.o = [   0;
+H.pts.o = [0;
     0;
     H.d.d0c + H.d.dc1;
     1];
 
 % Physical system constraints, upper and lower bounds
-H.b = struct();
-H.b.lb = [-pi/2,pi/3,0]; % second may switch with ub
-H.b.ub = [pi/2,pi/2,0];
-
+H.opt = struct();
+H.opt.bounds = struct();
+H.opt.bounds.lb = [-pi/2,-pi/2.5]; % second may switch with ub
+H.opt.bounds.ub = [pi/2,pi/3];
 
 % Weighting on importance of points
-H.w = [0;1];
+H.opt.weightings = [0;1];
+
 % Theta Angles
 H.th = struct();
-% Body: th0 = Yaw
-H.th.th0 = 0;
-% Neck: th1 = Yaw, th2 = Pitch
-H.th.th1 = 0; H.th.th2 = 0;
+
+% Theta Angle Definitions 
+H.th.thDef = ['  Neck Yaw  ';'  Neck Pitch'];
 
 % Initial Thetas
 H.th.thi = zeros(H.DOF,1);
-H.th.thi(1) = -pi/2; H.th.thi(2) = 0;
+H.th.thi = [0;0];
 
 %% ========================Mathematical Modeling===========================
 % DH Convention
+syms th1 th2
 H.DH = struct();
-H.DH.alphas = [-pi/2; 0];
-H.DH.thetas = [H.th.thi(1) + H.th.th1; H.th.thi(2) + H.th.th2];
+H.DH.alphas = [-pi/2;0];
+H.DH.thetas = H.th.thi;
 H.DH.disps = [0; 0];
-H.DH.offsets = [0; 0];
+H.DH.offsets = [0; H.d.d23];
 
 % Homogeneous transformations
-H.H.H = double(DHTransforms(H.DH));
-H.H.HGo = [ 0, 1, 0,     0;
-    -1, 0, 0,     0;
+H.DH.H = double(DHTransforms(H.DH));
+H.DH.HGo = [ 1, 0, 0,     0;
+    0, 1, 0,     0;
     0, 0, 1, H.d.d0c + H.d.dc1;
     0, 0, 0,     1];
 
-% Transform each point in the global frame
+%% =====================Create Symbolic Definitions========================
+% Creates the symbolic 
+H.symbs = struct();
+syms th1 th2
+H.symbs.thiSym = sym(zeros(H.DOF,1));
+H.symbs.alphasSym = sym(zeros(H.DOF,1));
+H.symbs.thetasSym = sym([th1; th2]);
+for i = 1:H.DOF
+    H.symbs.alphasSym(i) = H.DH.alphas(i);
+    H.symbs.thiSym(i) = H.th.thi(i);
+end
+
+%% ===============Transform each point in the global frame=================
 HK = RotateKinematicChain(KinematicSystem(H), zeros(H.DOF, 1));
