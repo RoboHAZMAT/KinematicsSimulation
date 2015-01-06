@@ -16,11 +16,10 @@ classdef KinematicSystem
         points;         % Struct of points in respective frames and global
                         % o: origin, p: in frame, pG: global
         dists;          % Distances between points
-        bounds;         % Angular theta constraints
-        weightings;     % Weightings on importance of points
         thetas;         % Thetas to rotate each DOF
         DHParams;       % DH parameters for the kinematic chain
-        DHTransforms;   % Homogeneous Transformations from DH parameters
+        symbolic;       % Holds the symbolic variables
+        optimization;   % Optimization parameters, weights and bounds
     end
     
     
@@ -35,11 +34,10 @@ classdef KinematicSystem
             KS.DOF = KSStruct.DOF;
             KS.points = KSStruct.pts;
             KS.dists = KSStruct.d;
-            KS.bounds = KSStruct.b;
-            KS.weightings = KSStruct.w;
+            KS.optimization = KSStruct.opt;
             KS.thetas = KSStruct.th;
             KS.DHParams = KSStruct.DH;
-            KS.DHTransforms = KSStruct.H;
+            KS.symbolic = KSStruct.symbs;
         end
     end
 end

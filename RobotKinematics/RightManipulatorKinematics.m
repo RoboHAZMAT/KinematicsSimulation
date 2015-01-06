@@ -19,8 +19,16 @@ RM.DOF = 6;
 
 % Frame points in each frame
 RM.pts = struct();
+% Origin points placeholder
 RM.pts.o = [];
+% Joint points
 RM.pts.p = [zeros(3,RM.DOF);ones(1,RM.DOF)];
+% Defnining new kinematic points
+kP(:,1) = [0;-0.076;0;1];
+% Kinematic points, can add points other than joints
+RM.pts.kP = [RM.pts.p,kP];
+% Frames for each of the kinematic points first n = DOF are joints
+RM.pts.frames = [1;2;3;4;5;6;3];
 
 % Length of the links
 RM.d = struct();
@@ -34,7 +42,7 @@ RM.d.d34 = 0.279;
 RM.d.d45 = 0.0;
 % Forearm
 RM.d.d56 = 0.257;
-%Wrist morots and brackets
+%Wrist motors and brackets
 RM.d.d67 = 0.076;
 
 % Redefining origin points
@@ -44,12 +52,13 @@ RM.pts.o = [0,    0,    0;
     1,    1,    1];
 
 % Physical system constraints, upper and lower bounds
-RM.b = struct();
-RM.b.lb = [-pi,-pi/2,-5*pi/6,-5*pi/6,-pi,-pi/2];
-RM.b.ub = [pi,pi/2,pi/3,0,pi,pi/2];
+RM.opt = struct();
+RM.opt.bounds = struct();
+RM.opt.bounds.lb = [-pi,-pi/2,-5*pi/6,-5*pi/6,-pi,-pi/2];
+RM.opt.bounds.ub = [pi,pi/2,pi/3,0,pi,pi/2];
 
 % Weighting on importance of points
-RM.w = [0;0;0;0;0;1];
+RM.opt.weightings = zeros(size(RM.pts.kP,1),size(RM.pts.kP,2));
 
 % Theta Angles
 RM.th = struct();
@@ -60,32 +69,33 @@ RM.th.thDef = ['  Shoulder Pitch';'  Shoulder Yaw  ';'  Shoulder Roll ';...
 
 % Initial Thetas
 RM.th.thi = zeros(RM.DOF,1);
-RM.th.thi(1) = pi/2; RM.th.thi(2) = pi/2; RM.th.thi(3) = pi/2;
-RM.th.thi(4) = pi/2; RM.th.thi(5) = 0; RM.th.thi(6) = -pi/2;
-
-% Initial Thetas
-RM.th.thiSym = sym(zeros(RM.DOF,1));
-RM.th.thiSym(1) = pi/2; RM.th.thiSym(2) = pi/2; RM.th.thiSym(3) = pi/2;
-RM.th.thiSym(4) = pi/2; RM.th.thiSym(5) = 0; RM.th.thiSym(6) = -pi/2;
+RM.th.thi = [pi/2; pi/2; pi/2; pi/2; 0; -pi/2];
 
 %% ========================Mathematical Modeling===========================
 % DH Convention
-syms th1 th2 th3 th4 th5 th6
 RM.DH = struct();
-RM.DH.alphasSym = sym([pi/2; pi/2; pi/2; pi/2; -pi/2; -pi/2]);
-RM.DH.thetasSym = sym([th1;th2;th3;th4;th5;th6]);
 RM.DH.alphas = [pi/2; pi/2; pi/2; pi/2; -pi/2; -pi/2];
-RM.DH.thetas = [RM.th.thi(1); RM.th.thi(2); RM.th.thi(3);...
-    RM.th.thi(4); RM.th.thi(5); RM.th.thi(6)];
+RM.DH.thetas = RM.th.thi;
 RM.DH.disps = [RM.d.d12; -RM.d.d23; 0; 0; -RM.d.d56; 0];
 RM.DH.offsets = [0; 0; -RM.d.d34; 0; 0; -RM.d.d67];
 
 % Homogeneous transformations
-RM.H.H = double(DHTransforms(RM.DH));
-RM.H.HGo = [ 0, 1, 0,     0;
+RM.DH.H = double(DHTransforms(RM.DH));
+RM.DH.HGo = [ 0, 1, 0,     0;
     0, 0, 1, -RM.d.dc1;
     1, 0, 0, RM.d.d0c;
     0, 0, 0,     1];
 
-% Transform each point in the global frame
+%% =====================Create Symbolic Definitions========================
+RM.symbs = struct();
+syms th1 th2 th3 th4 th5 th6
+RM.symbs.thiSym = sym(zeros(RM.DOF,1));
+RM.symbs.alphasSym = sym(zeros(RM.DOF,1));
+RM.symbs.thetasSym = sym([th1; th2; th3; th4; th5; th6]);
+for i = 1:RM.DOF
+    RM.symbs.alphasSym(i) = RM.DH.alphas(i);
+    RM.symbs.thiSym(i) = RM.th.thi(i);
+end
+
+%% ===============Transform each point in the global frame=================
 RMK = RotateKinematicChain(KinematicSystem(RM), zeros(RM.DOF, 1));

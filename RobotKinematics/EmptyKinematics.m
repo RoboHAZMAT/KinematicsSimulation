@@ -17,45 +17,65 @@ E.Field = 'EK';
 % Number of Degrees of Freedom
 E.DOF = 0;
 
-% Frame points in each frame 
+% Frame points in each frame
 E.pts = struct();
+% Origin points placeholder
 E.pts.o = [];
-E.pts.p = [zeros(3,E.DOF);ones(1,E.DOF)];
+% Joint points
+E.pts.p = [];
+% Defnining new kinematic points
+kP = [];
+% Kinematic points, can add points other than joints
+E.pts.kP = [E.pts.p,kP];
+% Frames for each of the kinematic points first n = DOF are joints
+E.pts.frames = [];
 
 % Length of the links
 E.d = struct();
 
 % Physical system constraints, upper and lower bounds
-E.b = struct();
-E.b.lb = [];
-E.b.ub = [];
+E.opt = struct();
+E.opt.bounds = struct();
+E.opt.bounds.lb = []; % second may switch with ub
+E.opt.bounds.ub = [];
 
 % Weighting on importance of points
-E.w = [];
+E.opt.w = [];
 
 % Theta Angles
 E.th = struct();
-E.th.thi = [];
 
-% DH Convention 
+% Theta Angle Definitions 
+E.th.thDef = [];
+
+% Initial Thetas
+E.th.thi = 0;
+
+%% ========================Mathematical Modeling===========================
+% DH Convention
 E.DH = struct();
-E.DH.alphas = [0];
-E.DH.thetas = [0];
-E.DH.disps = [0];
-E.DH.offsets = [0];
+E.DH.alphas = 0;
+E.DH.thetas = E.th.thi;
+E.DH.disps = 0;
+E.DH.offsets = 0;
 
 % Homogeneous transformations
-E.H = double(DHTransforms(E.DH));
+E.DH.H = double(DHTransforms(E.DH));
+E.DH.HGo = [ 1, 0, 0, 0;
+    0, 1, 0, 0;
+    0, 0, 1, 0;
+    0, 0, 0, 1];
 
-%% =============================Simulation ================================
-% Transform each point in the global frame
+%% =====================Create Symbolic Definitions========================
+% Creates the symbolic 
+E.symbs = struct();
+E.symbs.thiSym = sym(zeros(E.DOF,1));
+E.symbs.alphasSym = sym(zeros(E.DOF,1));
+E.symbs.thetasSym = sym([]);
 for i = 1:E.DOF
-    % the points in Global Coordinates
-    HG = [];
-    for j = 1:i
-        HG = HG*E.H(:,:,j);
-    end
-    E.pts.pG(:,i) = HG*E.pts.p(:,i);
+    E.symbs.alphasSym(i) = E.DH.alphas(i);
+    E.symbs.thiSym(i) = E.th.thi(i);
 end
 
-EK = KinematicSystem(E);
+%% ===============Transform each point in the global frame=================
+EK = RotateKinematicChain(KinematicSystem(E), zeros(1, 1));
