@@ -28,8 +28,9 @@ X0 = KC.DHParams.thetas - KC.thetas.thi;
 %     'Display','off','TolFun',1e-2,'DiffMinChange',2/180*pi);
 options = optimset('Algorithm','interior-point','GradObj','on','Display',...
     'off','TolFun',1e-2,'DiffMaxChange',10,'DiffMinChange',2/180*pi);
+warning('off','all');
 
 % Call to the fmincon optimization function to minimize the Euclidean norm
 % of several key points in the kinematic chain and their desired setpoints
 X = fmincon(@(X)EuclideanNorm(X,KC,pts),X0,[],[],[],[],...
-    KC.bounds.lb,KC.bounds.ub,[],options);
+    KC.optimization.bounds.lb,KC.optimization.bounds.ub,[],options);
