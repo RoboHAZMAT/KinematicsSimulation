@@ -8,6 +8,7 @@ function serialObjIMU = SetupIMUSerial(IMUCOM)
 % Ability to connect to the IMU sensor and read in data over Serial.
 
 % Setup Serial Communication with IMU
+disp(' ');
 disp('Setup Serial Communication...');
 serialObjIMU = serial(IMUCOM,'BAUD',9600,'InputBufferSize',32);
 fopen(serialObjIMU);
@@ -35,6 +36,7 @@ while (serialObjIMU.BytesAvailable > 0)
 end
 
 disp('Calibrating IMU...');
+% CalibrateIMU();
 pause(5);
 
 disp('Ready to use!');

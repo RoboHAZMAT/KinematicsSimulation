@@ -18,30 +18,33 @@ qz = NaN;
 reset = NaN;
 readingIMU = NaN;
 
-% Reads the incoming buffer stream and clears it
-while (isnan(readingIMU))
-    while(serialObjIMU.BytesAvailable > 0)
-        readingIMU = fscanf(serialObjIMU);
-    end
-end
 
-% If a reading is found from the IMU
-if (~isnan(readingIMU))
+while (isnan(qw) || isnan(qx) || isnan(qy) || isnan(qz) || isnan(reset))
+    % Reads the incoming buffer stream and clears it
+    while (isnan(readingIMU))
+        while(serialObjIMU.BytesAvailable > 0)
+            readingIMU = fscanf(serialObjIMU);
+        end
+    end
     
-    % Finds the positions of the identifying markers
-    pos1 = strfind(readingIMU, '$');
-    pos2 = strfind(readingIMU, '#');
-    pos3 = strfind(readingIMU, '%');
-    pos4 = strfind(readingIMU, '&');
-    pos5 = strfind(readingIMU, '@');
-    pos6 = strfind(readingIMU, '!');
-    
-    % Pulls the four quaternion parameters out of the reading
-    qw = str2double(readingIMU(pos1 + 1:pos2 - 1));
-    qx = str2double(readingIMU(pos2 + 1:pos3 - 1));
-    qy = str2double(readingIMU(pos3 + 1:pos4 - 1));
-    qz = str2double(readingIMU(pos4 + 1:pos5 - 1));
-    reset = str2double(readingIMU(pos5 + 1:pos6 - 1));
+    % If a reading is found from the IMU
+    if (~isnan(readingIMU))
+        
+        % Finds the positions of the identifying markers
+        pos1 = strfind(readingIMU, '$');
+        pos2 = strfind(readingIMU, '#');
+        pos3 = strfind(readingIMU, '%');
+        pos4 = strfind(readingIMU, '&');
+        pos5 = strfind(readingIMU, '@');
+        pos6 = strfind(readingIMU, '!');
+        
+        % Pulls the four quaternion parameters out of the reading
+        qw = str2double(readingIMU(pos1 + 1:pos2 - 1));
+        qx = str2double(readingIMU(pos2 + 1:pos3 - 1));
+        qy = str2double(readingIMU(pos3 + 1:pos4 - 1));
+        qz = str2double(readingIMU(pos4 + 1:pos5 - 1));
+        reset = str2double(readingIMU(pos5 + 1:pos6 - 1));
+    end
 end
 
 q = [qw, qx, qy, qz];
