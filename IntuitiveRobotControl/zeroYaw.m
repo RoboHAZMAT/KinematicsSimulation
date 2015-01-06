@@ -5,7 +5,7 @@ if (reset)
     % Magnitude of the vector
     mag = sqrt(vector(1,1)^2 + vector(1,2)^2);
     
-    % The yaw offset of the vector from 0
+    % The yaw offset of the vector to Y = 0
     if (vector(1,2) >= 0)
         psi = acos(vector(1,1)/mag);
     elseif (vector(1,2) < 0)
