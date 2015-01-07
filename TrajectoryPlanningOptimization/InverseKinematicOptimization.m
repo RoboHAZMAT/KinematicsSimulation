@@ -1,20 +1,7 @@
-function X = InverseKinematicOptimization(robot, name, pts)
+function X = InverseKinematicOptimization(KC, pts)
 % Optimization function that takes in a robotic system, the name of the
 % kinematic chain to move around, and the points to move the frame points
 % to and uses fmincon to move the system around.
-
-% Initializes the kinematic chain
-KC = EmptyKinematics;
-
-% Gets the fields in the Robot object
-fields = fieldnames(robot.KinematicChains);
-
-% Pulls the correct kinematic chain handle out of the Robot object
-for i = 1:length(fields)
-    if strcmpi(fields(i),name)
-        KC = robot.KinematicChains.(fields{i});
-    end
-end
 
 % Sets the initial theta angles to their current values for faster
 % minimization.
