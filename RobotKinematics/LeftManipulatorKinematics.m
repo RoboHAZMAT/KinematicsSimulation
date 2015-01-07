@@ -56,7 +56,7 @@ LM.opt.bounds.lb = [-pi,-pi/2,-pi/3,-5*pi/6,-pi,-pi/2];
 LM.opt.bounds.ub = [pi,pi/2,5*pi/6,0,pi,pi/2];
 
 % Weighting on importance of points
-LM.opt.weightings = zeros(size(LM.pts.kP,1),size(LM.pts.kP,2));
+LM.opt.weightings = zeros(1,size(LM.pts.kP,2));
 
 % Theta Angles
 LM.th = struct();
