@@ -22,6 +22,9 @@ for i = 1:length(fields)
     end
 end
 
+controlPoint = 6;
+KC.optimization.weightings(controlPoint) = 10;
+
 % If the robot has the kinematic chain, continue
 if (valid)
     fprintf([KCstring,' was selected\n']);
@@ -33,9 +36,9 @@ if (valid)
     z = input(' z = ');
     
     % Inverse kinematics
-    pointsd = zeros(4, size(KC.points.p,2));
-    pointsd(:,size(KC.points.p,2)) = [x;y;z;1];
-    X = InverseKinematicOptimization(Robot,KCname,pointsd);
+    pointsd = [zeros(3, size(KC.points.kP,2));ones(1,size(KC.points.kP,2))];
+    pointsd(:,controlPoint) = [x;y;z;1];
+    X = InverseKinematicOptimization(KC, pointsd);
     
     % Rotates and plots the kinematic chain
     KC = RotateKinematicChain(KC,X);

@@ -58,7 +58,7 @@ RM.opt.bounds.lb = [-pi,-pi/2,-5*pi/6,-5*pi/6,-pi,-pi/2];
 RM.opt.bounds.ub = [pi,pi/2,pi/3,0,pi,pi/2];
 
 % Weighting on importance of points
-RM.opt.weightings = zeros(size(RM.pts.kP,1),size(RM.pts.kP,2));
+RM.opt.weightings = zeros(1,size(RM.pts.kP,2));
 
 % Theta Angles
 RM.th = struct();

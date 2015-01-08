@@ -89,7 +89,7 @@ if (strcmpi(interactiveSim,'yes') || strcmpi(interactiveSim,'y'))
         fprintf('     Interactive Simulation: %i\n\n', mode);
         fprintf('====================================\n\n');
         fprintf('       Running Simulation...\n');
-        fprintf('         {Ctrl+C to quit}\n');
+        fprintf('          {Space to quit}\n');
         %% RoboHAZMAT {1 - 10} and Mechatronic Arm {11 - 20} Simulations
         if (mode == 1)
             % Inverse kinematics With User Inputting Points
@@ -107,6 +107,10 @@ if (strcmpi(interactiveSim,'yes') || strcmpi(interactiveSim,'y'))
             % IMU Controlled Robot Arm Simulation
             Robot = Simulation4(Robot);
             
+        elseif (mode == 5)
+            % Keyboard Controlled Robot Arms Simulation
+            Robot = Simulation5(Robot);
+            
         elseif (mode == 11)
             % Mechatronic Arm Inverse Kinematics Trajectory Simulation
             Robot = SimulationM1(Robot);
@@ -120,8 +124,14 @@ if (strcmpi(interactiveSim,'yes') || strcmpi(interactiveSim,'y'))
             Robot = SimulationM3(Robot);
         
         elseif (mode == 14)
-            % IMU controlled Mechatronic Arm Through Arduino (IK)
+            % Keyboard Controlled Mechatronic Arm Simulation
             Robot = SimulationM4(Robot);
+            
+        elseif (mode == 15)
+            % IMU controlled Mechatronic Arm Through Arduino (IK)
+            % Robot = SimulationM5(Robot);
+            
+Robot = Simulation1(Robot);
             
         else
             %% Incorrect mode input loop.

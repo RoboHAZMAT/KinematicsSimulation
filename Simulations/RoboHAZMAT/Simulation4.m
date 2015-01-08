@@ -1,6 +1,9 @@
 function Robot = Simulation4(Robot)
 %% =================IMU Controlled Robot Arm Simulation====================
 
+% Sets up the Keyboard Control
+[RobotFigure, states] = SetupKeyboardControl;
+
 % Sets up the Serial communication with the IMUs
 IMUCOM = SetupCOM;
 serialObjIMU(1) = SetupIMUSerial(IMUCOM(1,:));
@@ -69,7 +72,7 @@ resetR = [1, 1];
 % 3. Reconstruct arm positioning
 % 4. Inverse Kinematic Optimization to estimate joint angles
 % 5. Rotate arm kinematic chain
-while (strcmpi(begin,'y'))
+while (strcmpi(begin,'y') && states.run)
     % 1. Gets the two IMU readings from the sensors
     [qR(1,:), resetR(1)] = ReadIMUQuaternion(serialObjIMU(1));
     [qR(2,:), resetR(2)] = ReadIMUQuaternion(serialObjIMU(2));
@@ -87,12 +90,17 @@ while (strcmpi(begin,'y'))
 %     pointsdL = ReconstructArm(shoulderL, linkLRot);
     
     % 4. Inverse Kinematic optimization for joint angles
-    XR = InverseKinematicOptimization(Robot, 'RMK', pointsdR);
-%     XL = InverseKinematicOptimization(Robot,'LMK',pointsdL);
+    XR = InverseKinematicOptimization(KCR, pointsdR);
+%     XL = InverseKinematicOptimization(KCL,pointsdL);
     
     % 5. Rotates and plots the right arm to optimized value
-    Robot.KinematicChains.RMK = RotateKinematicChain(KCR, XR);
-%     Robot.KinematicChains.LMK = RotateKinematicChain(KCL, XL);
+    KCR = RotateKinematicChain(KCR, XR);
+    Robot.KinematicChains.RMK = KCR;
+%     KCL = RotateKinematicChain(KCL, XL);
+%     Robot.KinematicChains.LMK = KCL;
     RobotPlot(Robot);
     drawnow;
+    
+    % Gets simulation state
+    states = guidata(RobotFigure);
 end

@@ -52,7 +52,7 @@ MA.opt.bounds.lb = [-pi/2,-pi/2,-pi/2,0,-pi];
 MA.opt.bounds.ub = [pi/2,pi/2,pi/2,pi/2,pi];
 
 % Weighting on importance of points
-MA.opt.weightings = zeros(size(MA.pts.kP,1),size(MA.pts.kP,2));
+MA.opt.weightings = zeros(1,size(MA.pts.kP,2));
 
 % Theta Angles
 MA.th = struct();

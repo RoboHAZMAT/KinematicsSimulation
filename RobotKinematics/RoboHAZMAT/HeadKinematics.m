@@ -49,7 +49,7 @@ H.opt.bounds.lb = [-pi/2,-pi/2.5]; % second may switch with ub
 H.opt.bounds.ub = [pi/2,pi/3];
 
 % Weighting on importance of points
-H.opt.weightings = [0;1];
+H.opt.weightings = zeros(1,size(H.pts.kP,2));
 
 % Theta Angles
 H.th = struct();
