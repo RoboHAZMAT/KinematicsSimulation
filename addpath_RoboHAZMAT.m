@@ -1,6 +1,16 @@
 addpath RobotKinematics\
+addpath RobotKinematics\RoboHAZMAT
+addpath RobotKinematics\MechatronicArm
 addpath TrajectoryPlanningOptimization\
-addpath utils\
+addpath TrajectoryPlanningOptimization\TrajectoryLibrary
+addpath Utils\
+addpath Utils\Rotation
+addpath Utils\Plotting
+addpath Utils\Misc
 addpath SerialCommunication\
 addpath IntuitiveRobotControl\
+addpath IntuitiveRobotControl\Control
+addpath IntuitiveRobotControl\StateEstimation
 addpath Simulations\
+addpath Simulations\RoboHAZMAT
+addpath Simulations\MechatronicArm
