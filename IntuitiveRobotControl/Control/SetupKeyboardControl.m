@@ -1,0 +1,57 @@
+function [RobotFigure, states] = SetupKeyboardControl(Robot)
+%% ============================Setup States================================
+% RoboHAZMAT: Senior Design Project
+% Motion Control Team
+% Gerardo Bledt
+% January 7, 2014
+%
+% Sets up the necessary states for the simulations to use the keyboard
+% control function and interact with the simulations in real-time.
+
+% Choose Advanced or Basic control
+if (nargin == 0)
+    states.advancedControl = 0;
+else
+    states.advancedControl = 1;    
+end
+
+% Define states
+if (states.advancedControl)
+    if (strcmpi(Robot.Name,'RoboHAZMAT'))
+        % States for the RoboHAZMAT Robot
+        states.run = 1;
+        states.step = 0.01;
+        states.max = 0.62;
+        states.min = -0.62;
+        states.base(:,1) = [0;-0.0179;0.371];
+        states.base(:,2) = [0;0.0179;0.371];
+        states.start(:,1) = [0;-0.179;-0.241];
+        states.start(:,2) = [0;0.179;-0.241];
+        states.location(:,1) = [0;-0.179;-0.241];
+        states.location(:,2) = [0;0.179;-0.241];
+        
+    elseif (strcmpi(Robot.Name,'Mechatronic Arm'))
+        % States for the Mechatronic Arm
+        states.run = 1;
+        states.step = 0.005;
+        states.max = 0.2422;
+        states.min = 0;
+        states.base(:,1) = [0;0;0.061];
+        states.start(:,1) = [0.15;0;0.1];
+        states.location(:,1) = [0.15;0;0.1];
+    end
+else
+    % States for Basic control
+    states.run = 1;
+    Robot = [];
+end
+
+% Gets the current figure
+RobotFigure = gcf;
+
+% Initializes the keyboard key interrupt
+set(RobotFigure,'keypressfcn',...
+    @(RobotFigure,event)KeyboardControl(RobotFigure,event,Robot));
+
+% Set GUI data
+guidata(RobotFigure, states);
