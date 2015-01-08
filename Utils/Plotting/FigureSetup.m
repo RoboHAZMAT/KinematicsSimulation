@@ -25,7 +25,7 @@ elseif (strcmp(Robot.Name, 'Mechatronic Arm'))
     pbaspect([1 1 3/5]);
     set(gca, 'color', [1 1 1]); set(gcf, 'color', [1 1 1]);
     FS = 18;xlabel('X [m]','FontSize',FS);
-    title('Mechtronic Arm Simulation','FontSize',FS);
+    title('Mechatronic Arm Simulation','FontSize',FS);
     ylabel('Y [m]','FontSize',FS);zlabel('Z [m]','FontSize',FS);
     axis([-0.25 0.25 -0.25 0.25 0.0 0.30]);
     hold on; grid on;
