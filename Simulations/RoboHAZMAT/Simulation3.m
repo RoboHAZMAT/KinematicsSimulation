@@ -1,6 +1,9 @@
 function Robot = Simulation3(Robot)
 %% ================IMU Controlled Manipulators Simulation==================
 
+% Sets up the Keyboard Control
+[RobotFigure, states] = SetupKeyboardControl;
+
 % Sets up the COM ports
 IMUCOM = SetupCOM;
 
@@ -28,7 +31,7 @@ while (~strcmpi(begin,'y') && ~strcmpi(begin,'n'))
 end
 
 %calibrateIMU();
-while (strcmpi(begin,'y'))
+while (strcmpi(begin,'y') && states.run)
     % Reads the IMUs
     [qR, resetR] = ReadIMUQuaternion(serialObjIMU(1));
     [qL, resetL] = ReadIMUQuaternion(serialObjIMU(2));
@@ -62,8 +65,13 @@ while (strcmpi(begin,'y'))
     XL(6,1) = pi/2;
     
     % Rotates and plots the kinematic chain
-    Robot.KinematicChains.RMK = RotateKinematicChain(KCR,XR);
-    Robot.KinematicChains.LMK = RotateKinematicChain(KCL,XL);
+    KCR = RotateKinematicChain(KCR,XR);
+    Robot.KinematicChains.RMK = KCR;
+    KCL = RotateKinematicChain(KCL,XL);
+    Robot.KinematicChains.LMK = KCL;
     RobotPlot(Robot);
     drawnow;
+    
+    % Gets simulation state
+    states = guidata(RobotFigure);
 end

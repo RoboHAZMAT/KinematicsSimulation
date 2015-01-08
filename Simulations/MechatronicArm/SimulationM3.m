@@ -1,4 +1,8 @@
 function Robot = SimulationM3(Robot)
+%% ===============Mechatronic Arm Controlled Through Arduino===============
+
+% Sets up the Keyboard Control
+[RobotFigure, states] = SetupKeyboardControl;
 
 % Initializes communication with Mechatronic Arm
 [IMUCOM, motorControlCOM] = SetupCOM;
@@ -25,7 +29,10 @@ runs = 3;     % Number of runs
 trajDur = 60; % Trajectory segment duration
 n = 6;        % 6 for a full 360 cycle
 
-while (1)
+while (states.run)
+    % Get current states
+    states = guidata(RobotFigure);
+    
     serialMotorControl.servoWrite(motor.gripper, 0);
     pause(0.5);
     % Runs the trajectory multiple times
@@ -59,7 +66,7 @@ while (1)
         % Adds noise to trajectory and carries out inverse
         % kinematics on the noisy trajectory
         pointsd(:,size(KC.points.p,2)) = [x; y; z; 1];
-        X = InverseKinematicOptimization(Robot,'MAK',pointsd);
+        X = InverseKinematicOptimization(KC,pointsd);
         
         % Rotates and plots the right arm to optimized value
         KC = RotateKinematicChain(KC,X);

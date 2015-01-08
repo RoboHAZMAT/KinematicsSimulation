@@ -1,4 +1,8 @@
 function Robot = SimulationM2(Robot)
+%% ==========IMU controlled Mechatronic Arm Through Arduino (ypr)==========
+
+% Sets up the Keyboard Control
+[RobotFigure, states] = SetupKeyboardControl;
 
 % Setup COM ports
 [IMUCOM, motorControlCOM] = SetupCOM;
@@ -17,9 +21,10 @@ serialMotorControl.servoWrite(motor.wristPitch, round(30));
 KC = Robot.KinematicChains.MAK;
 X = zeros(5,1);
 
-% Constant running while loop:
-% To quit: 'Ctrl+C' (May try to find a better way)
-while (1)
+% Constant running while loop
+while (states.run)
+    % Get current states
+    states = guidata(RobotFigure);
     
     % Read the IMU sensor
     [yaw, pitch, roll, readingIMU] = ReadIMU(serialObjIMU);
@@ -40,6 +45,8 @@ while (1)
         X(3,1) = (60)/180*pi;
         X(4,1) = (30)/180*pi;
         X(5,1) = (-(roll))/180*pi;
+        
+        % Rotates and plots the Robot Kinematics
         KC = RotateKinematicChain(KC,X);
         Robot.KinematicChains.MAK = KC;
         RobotPlot(Robot);
