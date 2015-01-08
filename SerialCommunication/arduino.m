@@ -84,7 +84,7 @@ classdef arduino < handle
                 end
                 
                 % it takes several seconds before any operation could be attempted
-                fprintf(1,'Attempting connection .');
+                fprintf(1,'\nAttempting connection .');
                 for i=1:12,
                     pause(1);
                     fprintf(1,'.');

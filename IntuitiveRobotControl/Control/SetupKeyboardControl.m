@@ -30,6 +30,8 @@ if (states.advancedControl)
         states.location(:,1) = [0;-0.179;-0.241];
         states.location(:,2) = [0;0.179;-0.241];
         
+        fprintf(     );
+        
     elseif (strcmpi(Robot.Name,'Mechatronic Arm'))
         % States for the Mechatronic Arm
         states.run = 1;
@@ -39,6 +41,14 @@ if (states.advancedControl)
         states.base(:,1) = [0;0;0.061];
         states.start(:,1) = [0.15;0;0.1];
         states.location(:,1) = [0.15;0;0.1];
+        states.gripper = 0;clc;
+        fprintf('     Mechatronic Arm: Advanced Keyboard Controls\n');
+        fprintf('=====================================================\n');
+        fprintf('       X                 Y                  Z        \n');
+        fprintf('-----------------------------------------------------\n');
+        fprintf('  A: Forward         F: Right             A: Up      \n');
+        fprintf('  D: Backward        S: Left            Shift: Down  \n');
+        fprintf('                  {Space: Quit}\n\n');
     end
 else
     % States for Basic control

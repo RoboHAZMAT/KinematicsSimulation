@@ -2,7 +2,7 @@ function MechatronicArmControl(serialMotorControl, motor, X)
 
 % Translate thetas into Mechatronic Arm controls
 X = X*180/pi;
-X(1) = (-X(1) + 97);
+X(1) = (-X(1) + 100);
 X(2) = (-X(2) + 88);
 X(3) = (X(3) + 80);
 X(4) = (X(4) - 8);

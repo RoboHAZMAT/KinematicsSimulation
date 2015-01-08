@@ -28,6 +28,7 @@ else
     % Gets the arm states
     state = states.location;
     
+    % Robot specific controls
     if (strcmpi(Robot.Name,'RoboHAZMAT'))
         
         % Right Arm commands
@@ -56,8 +57,9 @@ else
         elseif (strcmpi(command,'d')), state(1,1) = state(1,1) - step;
         elseif (strcmpi(command,'f')), state(2,1) = state(2,1) - step;
         elseif (strcmpi(command,'shift')), state(3,1) = state(3,1) - step;
+        elseif (strcmpi(command,'equal')), states.gripper = 0; % Open
+        elseif (strcmpi(command,'hyphen')), states.gripper = 1; % Close
         end
-        
     end
     
     % General commands
