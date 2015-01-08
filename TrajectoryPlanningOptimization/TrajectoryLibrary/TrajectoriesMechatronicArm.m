@@ -6,9 +6,9 @@ end
 
 if (traj == 1)
     % Creates the vertical figure 8 trajectory
-    x = 0.0*cosd(2*i + 180) + 0.1;
+    x = 0.0*cosd(2*i + 180) + 0.175;
     y = 0.05*sind(2*i) + 0;
-    z = 0.05*cosd(1*i) + 0.05;
+    z = 0.05*cosd(1*i) + 0.1;
     
 elseif (traj == 2)
     % Creates the horizontal figure 8 trajectory
