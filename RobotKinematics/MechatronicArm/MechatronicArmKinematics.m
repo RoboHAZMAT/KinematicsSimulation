@@ -24,11 +24,11 @@ MA.pts.o = [];
 % Joint points
 MA.pts.p = [zeros(3,MA.DOF);ones(1,MA.DOF)];
 % Defnining new kinematic points
-kP = [];
+kP = [0;0.0271;0.0775;1];
 % Kinematic points, can add points other than joints
 MA.pts.kP = [MA.pts.p,kP];
 % Frames for each of the kinematic points first n = DOF are joints
-MA.pts.frames = [1;2;3;4;5];
+MA.pts.frames = [1;2;3;4;5;4];
 
 % Length of the links
 MA.d = struct();

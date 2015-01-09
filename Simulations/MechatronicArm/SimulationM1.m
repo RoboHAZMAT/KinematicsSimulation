@@ -5,8 +5,9 @@ function Robot = SimulationM1(Robot)
 [RobotFigure, states] = SetupKeyboardControl;
 
 % Sets up the kinematics
+controlPoint = 6;
 KC = Robot.KinematicChains.MAK;
-KC.optimization.weightings(5) = 100;
+KC.optimization.weightings(controlPoint) = 100;
 pointsd = zeros(4, size(KC.points.p,2));
 
 % Trajectory parameters
@@ -38,8 +39,7 @@ while (states.run)
         
         % Adds noise to trajectory and carries out inverse
         % kinematics on the noisy trajectory
-        pointsd(:,size(KC.points.p,2)) = [x; ...
-            y; z;1];
+        pointsd(:,controlPoint) = [x; y; z;1];
         X = InverseKinematicOptimization(KC,pointsd);
         
         % Rotates and plots the right arm to optimized value

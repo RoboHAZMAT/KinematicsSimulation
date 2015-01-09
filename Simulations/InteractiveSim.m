@@ -128,10 +128,8 @@ if (strcmpi(interactiveSim,'yes') || strcmpi(interactiveSim,'y'))
             Robot = SimulationM4(Robot);
             
         elseif (mode == 15)
-            % IMU controlled Mechatronic Arm Through Arduino (IK)
-            % Robot = SimulationM5(Robot);
-            
-Robot = Simulation1(Robot);
+            % Keyboard Controlled Mechatronic Arm
+            Robot = SimulationM5(Robot);
             
         else
             %% Incorrect mode input loop.
