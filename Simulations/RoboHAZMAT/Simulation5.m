@@ -12,7 +12,7 @@ pointsdR = zeros(4, size(KCR.points.kP,2));
 
 % Sets up the kinematics for the Left arm
 KCL = Robot.KinematicChains.LMK;
-KCL.optimization.weightings(6) = 10;
+KCL.optimization.weightings(controlPoint) = 10;
 pointsdL = zeros(4, size(KCL.points.kP,2));
 
 % Runs the loop a given number of times
@@ -26,12 +26,14 @@ while(states.run)
     
     % Inverse kinematics
     XR = InverseKinematicOptimization(KCR,pointsdR);
+    
     % Rotates the KC
     KCR = RotateKinematicChain(KCR,XR);
     Robot.KinematicChains.RMK = KCR;
     
     % Inverse kinematics
     XL = InverseKinematicOptimization(KCL,pointsdL);
+    
     % Rotates the KC
     KCL = RotateKinematicChain(KCL,XL);
     Robot.KinematicChains.LMK = KCL;

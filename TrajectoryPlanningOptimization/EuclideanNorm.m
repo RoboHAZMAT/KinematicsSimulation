@@ -12,7 +12,7 @@ function [error,G] = EuclideanNorm(X, KC, pointsd)
 error = 0;
 
 % Pull out relevant parameters
-KC = RotateKinematicPoints(KC, X);
+KC = RotateKinematicChain(KC, X);
 pointsi = KC.points.kPG;
 weightings = KC.optimization.weightings;
 

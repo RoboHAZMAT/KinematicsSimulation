@@ -5,41 +5,38 @@ function Robot = SimulationM1(Robot)
 [RobotFigure, states] = SetupKeyboardControl;
 
 % Sets up the kinematics
-controlPoint = 6;
+controlPoint = 5;
 KC = Robot.KinematicChains.MAK;
 KC.optimization.weightings(controlPoint) = 100;
-pointsd = zeros(4, size(KC.points.p,2));
+pointsd = zeros(4, size(KC.points.kP,2));
 
 % Trajectory parameters
-traj = 1;      % {1, 2, 3}
-velocity = 5;  % Set velocity
-trajDur = 60;  % Trajectory segment duration
-n = 6;         % 6 for a full 360 cycle
-runs = (n*trajDur - 1); % Number of runs
+traj.traj = 2;      % {1, 2}
+traj = TrajectoriesMechatronicArm(0, traj);
 
-% History vectors for the trajectories
-xHist = zeros(1,runs);
-yHist = zeros(1,runs);
-zHist = zeros(1,runs);
-xHistT = zeros(1,runs);
-yHistT = zeros(1,runs);
-zHistT = zeros(1,runs);
+% History vectors for the desired trajectories
+histD = zeros(traj.runs,3);
+
+% History vectors for the actual trajectories
+histT = zeros(traj.runs,3);
 
 while (states.run)
     % Runs the loop a given number of times
-    for i = 1:velocity:runs
+    for i = 1:traj.velocity:traj.runs
+        
+        % Get current states
+        states = guidata(RobotFigure);
+        if (~states.run), break; end;
         
         % Create the trajectory
-        [x, y, z] = TrajectoriesMechatronicArm(i, traj);
+        traj = TrajectoriesMechatronicArm(i, traj);
         
         % Assigns the desired trajectory history
-        xHist(i) = x;
-        yHist(i) = y;
-        zHist(i) = z;
+        histD(i,:) = traj.point';
         
         % Adds noise to trajectory and carries out inverse
         % kinematics on the noisy trajectory
-        pointsd(:,controlPoint) = [x; y; z;1];
+        pointsd(:,controlPoint) = [traj.point; 1];
         X = InverseKinematicOptimization(KC,pointsd);
         
         % Rotates and plots the right arm to optimized value
@@ -48,16 +45,9 @@ while (states.run)
         RobotPlot(Robot);
         
         % Plots the ghost trajectories
-        xHistT(i) = KC.points.pG(1,5);
-        yHistT(i) = KC.points.pG(2,5);
-        zHistT(i) = KC.points.pG(3,5);
-        
-        plot3(xHist,yHist,zHist,'.','color','green');
-        plot3(xHistT,yHistT,zHistT,'.','color','red');
+        histT(i,:) = KC.points.kPG(1:3,controlPoint)';
+        plot3(histD(:,1),histD(:,2),histD(:,3),'.','color','green');
+        plot3(histT(:,1),histT(:,2),histT(:,3),'.','color','red');
         drawnow;
-        
-        % Get current states
-        states = guidata(RobotFigure);
-        if (~states.run), break; end;
     end
 end

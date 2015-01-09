@@ -78,12 +78,12 @@ else
     min = states.min;
     minmax = zeros(size(state,2));
     for i = 1:size(state,2)
-        if (state(2,i) < 0), state(2,:) = -state(2,i); minmax(i) = 1; end;
+        if (state(2,i) < min), state(2,:) = -state(2,i); minmax(i) = 1; end;
     end
     state(state > max) = max;
     state(state < min) = min;
     for i = 1:size(state,2)
-        if (minmax), state(2,:) = -state(2,i); end;
+        if (minmax), state(2,i) = -state(2,i); end;
     end
     
     % Final command location

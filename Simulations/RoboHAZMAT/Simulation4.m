@@ -14,22 +14,17 @@ serialObjIMU(2) = SetupIMUSerial(IMUCOM(2,:));
 % Specifies the arm and points to be controlled
 % *** This is what must be tuned ***
 % Right Arm Control Gains
+controlPoint = [4;5;6;7];
 KCR = Robot.KinematicChains.RMK;
-KCR.optimization.weightings(4) = 300;
-KCR.optimization.weightings(5) = 100;
-KCR.optimization.weightings(6) = 200;
-KCR.optimization.weightings(7) = 500;
+KCR.optimization.weightings = [0;0;0;300;100;200;500];
 
 % Left Arm Control Gains
 KCL = Robot.KinematicChains.LMK;
-KCL.optimization.weightings(4) = 300;
-KCL.optimization.weightings(5) = 100;
-KCL.optimization.weightings(6) = 200;
-KCL.optimization.weightings(7) = 500;
+KCL.optimization.weightings = [0;0;0;300;100;200;500];
 
 % Sets up the estimated actual arm position
 shoulderR = [0,-0.179,0.371];
-shoulderL = [0,0.179,0.371];
+% shoulderL = [0,0.179,0.371];
 link(1,:) = [.279,0,0];
 link(2,:) = [0,0,-0.076];
 link(3,:) = [0.257,0,0];
@@ -37,7 +32,7 @@ link(4,:) = [0,0,-0.076];
 
 % Yaw angle offset initialization at zero
 psiR = zeros(1,3);
-psiL = zeros(1,3);
+% psiL = zeros(1,3);
 
 % Wait for user to be ready
 begin = '';

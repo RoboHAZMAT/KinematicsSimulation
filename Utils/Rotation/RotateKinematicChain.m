@@ -15,7 +15,8 @@ KC.DHParams.thetas = (KC.thetas.thi + X);
 KC.DHParams.H = DHTransforms(KC.DHParams);
 
 % Transform each point in the global frame
-for i = 1:KC.DOF
-    KC.points.pG(:,i) = ...
-        KC.DHParams.HGo*KC.DHParams.H(:,:,i)*KC.points.p(:,i);
+for i = 1:size(KC.points.kP,2)
+    KC.points.kPG(:,i) = ...
+        KC.DHParams.HGo*KC.DHParams.H(:,:,KC.points.frames(i))*KC.points.kP(:,i);
 end
+KC.points.pG = KC.points.kPG(:,1:KC.DOF);

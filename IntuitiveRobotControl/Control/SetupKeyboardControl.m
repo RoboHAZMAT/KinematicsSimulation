@@ -29,8 +29,19 @@ if (states.advancedControl)
         states.start(:,2) = [0;0.179;-0.241];
         states.location(:,1) = [0;-0.179;-0.241];
         states.location(:,2) = [0;0.179;-0.241];
-        
-        fprintf(     );
+        clc;
+        fprintf('       RoboHAZMAT: Advanced Keyboard Controls        \n');
+        fprintf('=====================================================\n');
+        fprintf('      XR                YR                 ZR        \n');
+        fprintf('-----------------------------------------------------\n');
+        fprintf('  I: Forward         L: Right         Semicolon: Up  \n');
+        fprintf('  K: Backward        J: Left           Slash: Down   \n');
+        fprintf('-----------------------------------------------------\n\n');
+        fprintf('      XL                YL                 ZL        \n');
+        fprintf('-----------------------------------------------------\n');
+        fprintf('  A: Forward         F: Right             A: Up      \n');
+        fprintf('  D: Backward        S: Left           Shift: Down   \n');
+        fprintf('                  {Space: Quit}\n\n');
         
     elseif (strcmpi(Robot.Name,'Mechatronic Arm'))
         % States for the Mechatronic Arm
@@ -41,13 +52,14 @@ if (states.advancedControl)
         states.base(:,1) = [0;0;0.061];
         states.start(:,1) = [0.15;0;0.1];
         states.location(:,1) = [0.15;0;0.1];
-        states.gripper = 0;clc;
+        states.gripper = 0;
+        clc;
         fprintf('     Mechatronic Arm: Advanced Keyboard Controls\n');
         fprintf('=====================================================\n');
         fprintf('       X                 Y                  Z        \n');
         fprintf('-----------------------------------------------------\n');
         fprintf('  A: Forward         F: Right             A: Up      \n');
-        fprintf('  D: Backward        S: Left            Shift: Down  \n');
+        fprintf('  D: Backward        S: Left           Shift: Down   \n');
         fprintf('                  {Space: Quit}\n\n');
     end
 else
