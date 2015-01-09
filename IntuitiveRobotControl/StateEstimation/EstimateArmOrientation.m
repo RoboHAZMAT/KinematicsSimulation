@@ -25,7 +25,7 @@ reset(4) = 0;
 % Rotate each of the links
 for i = 1:size(linkRot, 1)
     % Rotate link by quaternion
-    linkRot(i,:) = uaternionRotate(q(i,:),link(i,:));
+    linkRot(i,:) = QuaternionRotate(q(i,:),link(i,:));
     
     % Zero the rotated link to the specified zero
     [linkRot(i,:), psi(i)] = ZeroYaw(linkRot(i,:), psi(i), reset(i));
