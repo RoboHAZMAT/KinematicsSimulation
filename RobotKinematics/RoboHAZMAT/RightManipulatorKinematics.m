@@ -1,5 +1,5 @@
 function RMK = RightManipulatorKinematics
-%% =====================Left Manipulator Kinematics========================
+%% =====================Right Manipulator Kinematics=======================
 % RoboHAZMAT: Senior Design Project
 % Motion Control Team
 % Gerardo Bledt
