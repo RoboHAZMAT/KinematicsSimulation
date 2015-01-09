@@ -24,7 +24,6 @@ while(states.run)
     X = InverseKinematicOptimization(KC,pointsd);
     % Rotates the KC
     KC = RotateKinematicChain(KC,X);
-    KC = RotateKinematicPoints(KC,X);
     Robot.KinematicChains.MAK = KC;
     
     % Plots the Robot
