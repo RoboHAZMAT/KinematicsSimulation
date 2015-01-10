@@ -49,7 +49,7 @@ if (states.advancedControl)
         states.step = 0.005;
         states.max = 0.2422;
         states.min = 0;
-        states.base(:,1) = [0;0;0.061];
+        states.base(:,1) = [0;0;0.0];%61];
         states.start(:,1) = [0.15;0;0.1];
         states.location(:,1) = [0.15;0;0.1];
         states.gripper = 0;

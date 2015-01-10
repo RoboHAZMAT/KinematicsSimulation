@@ -10,7 +10,9 @@ KC = Robot.KinematicChains.MAK;
 KC.optimization.weightings(controlPoint) = 100;
 pointsd = zeros(4, size(KC.points.kP,2));
 
-count = [0;0;0];
+% Status report options
+status.count = 0;
+status.point = [1;2;3;4;5;6];
 
 % Runs the loop a given number of times
 while(states.run)
@@ -30,12 +32,6 @@ while(states.run)
     RobotPlot(Robot);
     drawnow;
     
-    X = X*180/pi;
-    fprintf(1, repmat('\b',1,sum(count)));
-    count(1) = fprintf('  Base Yaw   Base Pitch   Elbow Pitch   Wrist Pitch\n');
-    count(2) = fprintf('%9.3f%12.3f%14.3f%14.3f\n\n',...
-        X(1),X(2),X(3),X(4));
-    count(3) = fprintf('  X: %.3f           Y: %.3f            Z: %.3f\n',...
-        KC.points.kPG(1,controlPoint),KC.points.kPG(2,controlPoint),...
-        KC.points.kPG(3,controlPoint));
+    % Prints the angle and point status report of the KC
+    status = PrintStatusReport(KC, X, status);
 end
