@@ -43,8 +43,12 @@ while (serialObjIMU.BytesAvailable > 0)
 end
 
 disp('Calibrating IMU...');
-% CalibrateIMU();
-pause(5);
+calibrated = CalibrateIMU(serialObjIMU);
 
-disp('Ready to use!');
-disp(' ');
+if (calibrated)
+    disp('Ready to use!');
+    disp(' ');
+else
+    delete(serialObjIMU); 
+    SetupIMUSerial(IMUCOM);
+end
