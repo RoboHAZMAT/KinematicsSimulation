@@ -1,6 +1,9 @@
 function calibrated = CalibrateIMU(serialObjIMU)
+
+
 qBuffer = 1:150;
 for j = 1:10
+    fprintf('..');
     for i = 1:150
         q = ReadIMUQuaternion(serialObjIMU);
         

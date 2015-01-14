@@ -8,8 +8,7 @@ function serialObjIMU = SetupIMUSerial(IMUCOM)
 % Ability to connect to the IMU sensor and read in data over Serial.
 
 % Setup Serial Communication with IMU
-disp(' ');
-disp('Setup Serial Communication...');
+fprintf('Setup Serial Communication With %s...\n', IMUCOM);
 
 % Check if COM port is available
 if (~ismember(GetAvailableCOM,IMUCOM))
@@ -19,36 +18,45 @@ end
 % Create and open Serial communication
 serialObjIMU = serial(IMUCOM,'BAUD',9600,'InputBufferSize',32);
 fopen(serialObjIMU);
-pause(2);
+initFailed = 0;
+pause(0.5);
 
-disp('Initializing IMU...');
+fprintf('Initializing IMU...\n');
 % Clear received message in buffer
-while (isempty(strfind(serialObjIMU.fscanf,'Initializing I2C devices...')))
+while (~initFailed && ...
+        isempty(strfind(serialObjIMU.fscanf,'Initializing I2C devices...')))
+    fprintf('Initialization Failed. Retry...\n\n'); initFailed = 1; break;
 end
 
 % Test Connections
-disp('IMU Connection Successful. Initializing DMP...');
-while (isempty(strfind(serialObjIMU.fscanf,'Initializing DMP...')))
+if (~initFailed)
+    fprintf('IMU Connection Successful. Initializing DMP...\n'); end;
+while (~initFailed && ...
+        isempty(strfind(serialObjIMU.fscanf,'Initializing DMP...')))
+    fprintf('Initialization Failed. Retry...\n\n'); initFailed = 1; break;
 end
 
 % Enable DMP
-disp('DMP Connection Successful. Enabling DMP...');
-while (isempty(strfind(serialObjIMU.fscanf,'Enabling DMP...')))
+if (~initFailed)
+    fprintf('DMP Connection Successful. Enabling DMP...\n'); end;
+while (~initFailed && ...
+        isempty(strfind(serialObjIMU.fscanf,'Enabling DMP...')))
+    fprintf('Initialization Failed. Retry...\n\n'); initFailed = 1; break;
 end
-disp('DMP Enabled. Ready for use.');
 
 % Clear current buffer
 while (serialObjIMU.BytesAvailable > 0)
     fscanf(serialObjIMU);
 end
-
-disp('Calibrating IMU...');
-calibrated = CalibrateIMU(serialObjIMU);
-
-if (calibrated)
-    disp('Ready to use!');
-    disp(' ');
+if (~initFailed)
+    fprintf('DMP Enabled. Calibrating IMU...');
+    calibrated = CalibrateIMU(serialObjIMU);
+    if (calibrated)
+        fprintf('.\nReady to use!\n\n');
+    else
+        fprintf('Calibration Failed. Retry...\n\n');
+        delete(serialObjIMU); serialObjIMU = SetupIMUSerial(IMUCOM);
+    end
 else
-    delete(serialObjIMU); 
-    SetupIMUSerial(IMUCOM);
+    delete(serialObjIMU); serialObjIMU = SetupIMUSerial(IMUCOM);
 end
