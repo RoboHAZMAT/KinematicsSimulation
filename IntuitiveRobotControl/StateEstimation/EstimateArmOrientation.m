@@ -11,6 +11,14 @@ function [linkRot, psi] = EstimateArmOrientation(link, q, reset, psi)
 % Initialize the link rotations
 linkRot = zeros(4,3);
 
+% Reverse Quaternions
+resetTemp = reset(1);
+reset(1) = reset(2);
+reset(2) = resetTemp;
+qTemp = q(1,:);
+q(1,:) = q(2,:);
+q(2,:) = qTemp;
+
 % Shift dependant links
 q(3,:) = q(2,:);
 q(4,:) = q(2,:);

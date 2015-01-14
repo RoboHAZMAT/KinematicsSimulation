@@ -15,8 +15,8 @@ end
 delete(instrfindall);
 
 % Specify COM port for the IMU
-% Right Upper Arm, Right Lower Arm
-IMUCOM = ['COM8';'COM9']; 
+% Right Lower Arm, Right Upper Arm
+IMUCOM = ['COM9';'COM8']; 
 
 % Specify COM port for the Motor Control
 motorControlCOM = 'COM11';
