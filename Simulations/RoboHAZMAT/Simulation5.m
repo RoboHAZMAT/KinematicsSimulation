@@ -2,7 +2,7 @@ function Robot = Simulation5(Robot)
 %% ======================Keyboard Controlled Robot=========================
 
 % Sets up the Keyboard Control with Advanced control
-[RobotFigure, states] = SetupKeyboardControl(Robot);
+[RobotFigure, states] = SetupKeyboardControl(Robot, 1);
 
 % Sets up the kinematics for the Right arm
 controlPoint = 6;

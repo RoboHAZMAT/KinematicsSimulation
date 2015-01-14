@@ -54,8 +54,8 @@ RM.pts.o = [0,    0,    0;
 % Physical system constraints, upper and lower bounds
 RM.opt = struct();
 RM.opt.bounds = struct();
-RM.opt.bounds.lb = [-pi,-pi/2,-5*pi/6,-5*pi/6,-pi,-pi/2];
-RM.opt.bounds.ub = [pi,pi/2,pi/3,0,pi,pi/2];
+RM.opt.bounds.lb = [-pi, -pi/2, -pi, -pi, -7*pi/6, -5*pi/12];
+RM.opt.bounds.ub = [pi, pi/2, pi/3, 0, 7*pi/12, pi/2];
 
 % Weighting on importance of points
 RM.opt.weightings = zeros(1,size(RM.pts.kP,2));

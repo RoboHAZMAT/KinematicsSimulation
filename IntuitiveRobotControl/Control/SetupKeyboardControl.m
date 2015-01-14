@@ -1,4 +1,4 @@
-function [RobotFigure, states] = SetupKeyboardControl(Robot)
+function [RobotFigure, states] = SetupKeyboardControl(Robot, option)
 %% ============================Setup States================================
 % RoboHAZMAT: Senior Design Project
 % Motion Control Team
@@ -11,8 +11,15 @@ function [RobotFigure, states] = SetupKeyboardControl(Robot)
 % Choose Advanced or Basic control
 if (nargin == 0)
     states.advancedControl = 0;
-else
-    states.advancedControl = 1;    
+    states.trajectoryControl = 0;
+
+elseif (option == 1)
+    states.advancedControl = 1;
+    states.trajectoryControl = 0;
+    
+elseif (option == 2)
+    states.advancedControl = 0;
+    states.trajectoryControl = 1;
 end
 
 % Define states
@@ -49,7 +56,7 @@ if (states.advancedControl)
         states.step = 0.005;
         states.max = 0.2422;
         states.min = 0;
-        states.base(:,1) = [0;0;0.061];
+        states.base(:,1) = [0;0;0.0];%61];
         states.start(:,1) = [0.15;0;0.1];
         states.location(:,1) = [0.15;0;0.1];
         states.gripper = 0;
@@ -62,6 +69,13 @@ if (states.advancedControl)
         fprintf('  D: Backward        S: Left           Shift: Down   \n');
         fprintf('                  {Space: Quit}\n\n');
     end
+    
+elseif (states.trajectoryControl)
+    % States for Trajectory control
+    states.run = 1;
+    states.recordTraj = 0;
+    states.clearTraj = 0;
+    
 else
     % States for Basic control
     states.run = 1;

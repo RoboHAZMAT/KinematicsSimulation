@@ -21,10 +21,8 @@ readingIMU = NaN;
 
 while (isnan(qw) || isnan(qx) || isnan(qy) || isnan(qz) || isnan(reset))
     % Reads the incoming buffer stream and clears it
-    while (isnan(readingIMU))
-        while(serialObjIMU.BytesAvailable > 0)
-            readingIMU = fscanf(serialObjIMU);
-        end
+    while(serialObjIMU.BytesAvailable > 0)
+        readingIMU = fscanf(serialObjIMU);
     end
     
     % If a reading is found from the IMU

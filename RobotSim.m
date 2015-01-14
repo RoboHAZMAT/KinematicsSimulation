@@ -7,21 +7,21 @@ function [RoboHAZMAT, MechatronicArm] = RobotSim(options)
 %
 % Main running program for the Robot simulations as part of the RoboHAZMAT
 %   senior design team. The project consists of an intuitive gesture
-%   controlled robotic unit for use in hazardous response situations. 
+%   controlled robotic unit for use in hazardous response situations.
 %
 % This Kinematics Simulation repo is designed to test the Motion Control
 %   algorithms on simulated robots. The eventual RoboHAZMAT robot is
 %   simulated by defining the necessary kinematics files and rotatint the 6
 %   degrees of freedoem for each arm and the 3 degrees of freedom for the
-%   head. It also allows for Serial communication testing with a prototype 
-%   Mechatronic arm 
+%   head. It also allows for Serial communication testing with a prototype
+%   Mechatronic arm
 %
 % Currently able to:
 %   - Successfully run real-time inverse kinematics
 %   - Trajectory tracking of points using optimization of joint angles for
-%       the kinematic chains 
+%       the kinematic chains
 %   - Communicate with Arduino over Serial
-%   - Control a 6 DOF Mechatronic Arm with intuitive gestures interpreted 
+%   - Control a 6 DOF Mechatronic Arm with intuitive gestures interpreted
 %       by an IMU running sensor fusion algorithms
 %   - Control the simulated humanoid robot kinematic chains with the use of
 %       the incoming IMU output
@@ -82,15 +82,6 @@ MAKStruct.name = 'Mechatronic Arm';
 MAKStruct.KC = MAKinematics;
 MechatronicArm = Robot(MAKStruct);
 
-%% =======================Plotting the Simulation==========================
-% Plots the RoboHAZMAT simulation as a default using the 'RobotPlot.m' and
-% the 'FigureSetup.m' utils with the Robot object.
-
-% Run a one time figure setup
-FigureSetup(RoboHAZMAT);
-% Plot the robot
-RobotPlot(RoboHAZMAT);
-
 %% ========================Interactive Simulation==========================
 % Interactive Simulation for the Robots. Mode options are 1 - 6 currently.
 % Consult the 'InteractiveSim.m' for instructions and guidance.
@@ -100,12 +91,8 @@ if (nargin == 1)
     if (mode - 10 <= 0)
         % Enter the Interactive Simulation with the RoboHAZMAT Robot
         RoboHAZMAT = InteractiveSim(RoboHAZMAT, mode);
-    else
-        % Run a one time figure setup
-        FigureSetup(MechatronicArm);
-        % Plot the arm
-        RobotPlot(MechatronicArm);
         
+    else
         % Enter the Interactive Simulation with the Mechatronic arm
         MechatronicArm = InteractiveSim(MechatronicArm, mode);
     end
