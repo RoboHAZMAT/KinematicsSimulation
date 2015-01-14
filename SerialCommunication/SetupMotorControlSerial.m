@@ -1,5 +1,10 @@
 function [serialMotorControl, motor] = SetupMotorControlSerial(motorControlCOM)
 
+% Check if COM port is available
+if (~ismember(GetAvailableCOM,motorControlCOM))
+    error('%s is not available',IMUCOM);
+end
+
 % Open communication with the Arduino
 serialMotorControl = arduino(motorControlCOM);
 

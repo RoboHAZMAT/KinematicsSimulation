@@ -2,7 +2,7 @@ function Robot = SimulationM4(Robot)
 %% ===========Keyboard Controlled Mechatronic Arm Simulation===============
 
 % Initializes the arm states and setp size
-[RobotFigure, states] = SetupKeyboardControl(Robot);
+[RobotFigure, states] = SetupKeyboardControl(Robot, 1);
 
 % Sets up the kinematics for the arm
 controlPoint = 6;

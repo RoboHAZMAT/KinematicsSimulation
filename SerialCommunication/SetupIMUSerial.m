@@ -10,6 +10,13 @@ function serialObjIMU = SetupIMUSerial(IMUCOM)
 % Setup Serial Communication with IMU
 disp(' ');
 disp('Setup Serial Communication...');
+
+% Check if COM port is available
+if (~ismember(GetAvailableCOM,IMUCOM))
+    error('%s is not available',IMUCOM);
+end
+
+% Create and open Serial communication
 serialObjIMU = serial(IMUCOM,'BAUD',9600,'InputBufferSize',32);
 fopen(serialObjIMU);
 pause(2);

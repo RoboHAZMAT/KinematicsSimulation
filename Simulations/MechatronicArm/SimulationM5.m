@@ -2,13 +2,13 @@ function Robot = SimulationM5(Robot)
 %% =================Keyboard Controlled Mechatronic Arm====================
 
 % Initializes communication with Mechatronic Arm
-[IMUCOM, motorControlCOM] = SetupCOM;
+[~, motorControlCOM] = SetupCOM;
 [serialMotorControl, motor] = ...
     SetupMotorControlSerial(motorControlCOM);
 clc;
 
 % Initializes the arm states and setp size
-[RobotFigure, states] = SetupKeyboardControl(Robot);
+[RobotFigure, states] = SetupKeyboardControl(Robot, 1);
 
 % Sets up the kinematics for the arm
 controlPoint = 6;
