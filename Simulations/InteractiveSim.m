@@ -89,7 +89,16 @@ if (strcmpi(interactiveSim,'yes') || strcmpi(interactiveSim,'y'))
         fprintf('     Interactive Simulation: %i\n\n', mode);
         fprintf('====================================\n\n');
         fprintf('       Running Simulation...\n');
-        fprintf('          {Space to quit}\n');
+        fprintf('          {Space to quit}\n\n');
+        
+            % Plots the Robot simulation
+        if (mode - 20 <= 0)
+            % Run a one time figure setup
+            FigureSetup(Robot);
+            % Plot the robot
+            RobotPlot(Robot);
+        end
+        
         %% RoboHAZMAT {1 - 10} and Mechatronic Arm {11 - 20} Simulations
         if (mode == 1)
             % Inverse kinematics With User Inputting Points
@@ -122,7 +131,7 @@ if (strcmpi(interactiveSim,'yes') || strcmpi(interactiveSim,'y'))
         elseif (mode == 13)
             % Mechatronic Arm Controlled Through Arduino
             Robot = SimulationM3(Robot);
-        
+            
         elseif (mode == 14)
             % Keyboard Controlled Mechatronic Arm Simulation
             Robot = SimulationM4(Robot);
