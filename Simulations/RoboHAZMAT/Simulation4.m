@@ -1,6 +1,13 @@
 function Robot = Simulation4(Robot)
 %% =================IMU Controlled Robot Arm Simulation====================
-% 
+% Simulation that allows the robot to be controlled by IMUs worn on the 
+% arm. One IMU is worn on the upper arm and one IMU on the forearm. This
+% allows for an accurate arm positioning estimation. With the estimate of
+% the desired user arm, the robot joint motor angles is calculated through 
+% inverse kinematics optimization. 
+%
+% - An extra feature allows the user to draw trajectories in 3D space using
+% gestures. Trajectory tracks the arm's wrist point.
 
 % Sets up the Keyboard Control
 [RobotFigure, states] = SetupKeyboardControl(Robot, 2);
@@ -34,7 +41,7 @@ histTR = zeros(trajBuffer,3);
 % histTL = zeros(trajectoryBuffer,3);
 
 % Waits for the user to be ready to use and initializes the arm
-ready = ReadyForUse;
+ready = ReadyForUse(RobotFigure);
 psiR = Reset(serialObjIMU(1:2), link, zeros(1,4));
 % psiL = Reset(serialObjIMU(3:4), link, zeros(1,4));
 
@@ -88,7 +95,7 @@ while (ready && states.run)
     end
     
     % If user requests to stop, check again to avoid cutting off Serial
-    if (~states.run && ReadyForUse)
+    if (~states.run && ReadyForUse(RobotFigure))
         states.run = 1; guidata(RobotFigure, states);
         psiR = Reset(serialObjIMU(1:2), link, psiR);
         KCR = RotateKinematicChain(KCR, [-pi/2;zeros(5,1)]);
@@ -101,25 +108,31 @@ end
 delete(instrfindall);
 end
 
+
 %%=============================Ready For Use===============================
 % Mages sure that the user is ready to begin controlling the robotic arm.
 
-function ready = ReadyForUse
-
+function ready = ReadyForUse(RobotFigure)
 % Wait for user to be ready or quit if not
-begin = '';
-while (~strcmpi(begin,'y') && ~strcmpi(begin,'n'))
-    begin = input('Begin control? [Y/N]: ','s');
-    if (strcmpi(begin,'y'))
-        disp(' '); disp(' ');
-        disp('   Robot ARM Control   ');
-        disp(' ');
+states = guidata(RobotFigure);
+states.begin = -1;
+guidata(RobotFigure, states);
+
+fprintf('Begin control? [Y/N]: ');
+while (states.begin ~= 0  && states.begin ~= 1)
+    states = guidata(RobotFigure);
+    if (states.begin == 1)
+        fprintf('Y\n\n   Robot ARM Control   \n\n');
         ready = true;
-    else
+    elseif (states.begin == 0)
+        fprintf('N\n');
         ready = false;
     end
+    guidata(RobotFigure, states);
+    pause(0.1);
 end
 end
+
 
 %%=================================Reset===================================
 % Resets the arm orientation and outputs the offset psi angle.
@@ -137,6 +150,7 @@ reset = ones(1,2);
 [~, psi] = ...
     EstimateArmOrientation(link, q, reset, psi);
 end
+
 
 %%===========================Manage Trajectory=============================
 % Manages the history trajectory recording, plotting, and clearing.
@@ -162,6 +176,7 @@ MS = 15;
 plot3(histT(:,1),histT(:,2),histT(:,3),...
     '.','MarkerEdgeColor',[1 0 0],'MarkerSize',MS);
 end
+
 
 %%============================Plot Human Arm===============================
 % Plots the Human arm reconstruction estimate. Allows comparison between

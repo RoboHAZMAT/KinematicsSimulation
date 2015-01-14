@@ -99,6 +99,8 @@ elseif (states.trajectoryControl)
     elseif (strcmpi(command,'r')), states.recordTraj = 1;
     elseif (strcmpi(command,'x')), states.recordTraj = 0;
     elseif (strcmpi(command,'c')), states.clearTraj = 1;
+    elseif (strcmpi(command,'y')), states.begin = 1;
+    elseif (strcmpi(command,'n')), states.begin = 0;
     end;
 end
 
