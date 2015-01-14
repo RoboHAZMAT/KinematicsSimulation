@@ -15,10 +15,10 @@ command = event.Key;
 states = guidata(RobotFigure);
 
 % Advanced and Basic Controls
-if (~states.advancedControl)
+if (~states.advancedControl && ~states.trajectoryControl)
     if (strcmpi(command,'space')), states.run = 0; end;
     
-else
+elseif (states.advancedControl)
     % Gets the step size
     step = states.step;
     
@@ -92,6 +92,13 @@ else
         state(:,i) = state(:,i) + base(:,i);
         % Sets the Robot states
         states.location(:,i) = state(:,i);
+    end;
+    
+elseif (states.trajectoryControl)
+    if (strcmpi(command,'space')), states.run = 0; 
+    elseif (strcmpi(command,'r')), states.recordTraj = 1;
+    elseif (strcmpi(command,'x')), states.recordTraj = 0;
+    elseif (strcmpi(command,'c')), states.clearTraj = 1;
     end;
 end
 
