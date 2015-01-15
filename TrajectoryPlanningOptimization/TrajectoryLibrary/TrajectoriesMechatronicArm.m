@@ -1,4 +1,11 @@
 function traj = TrajectoriesMechatronicArm(i, traj)
+%% ====================Trajectories Mechatronic Arm========================
+% RoboHAZMAT: Senior Design Project
+% Motion Control Team
+% Gerardo Bledt
+% January 4, 2015
+%
+% Creates various trajectories for the Mechatronic Arm robotic system. 
 
 if (traj.traj == 1)
     if (i ==0)

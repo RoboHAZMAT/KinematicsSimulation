@@ -1,4 +1,13 @@
-function [serialMotorControl, motor] = SetupMotorControlSerial(motorControlCOM)
+function [serialMotorControl, motor] = ...
+    SetupMotorControlSerial(motorControlCOM)
+%% ======================Setup Motor Control Serial========================
+% RoboHAZMAT: Senior Design Project
+% Motion Control Team
+% Gerardo Bledt
+% December 29, 2014
+%
+% Sets up the communication with the Arduino motor controller and joint
+% servos for the Mechatronic Arm over Serial.
 
 % Check if COM port is available
 if (~ismember(GetAvailableCOM,motorControlCOM))

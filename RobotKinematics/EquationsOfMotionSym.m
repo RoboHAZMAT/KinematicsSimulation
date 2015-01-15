@@ -1,9 +1,15 @@
 function [H, HT, pointsG, err, error, Gradient, Hessian] = ...
     EquationsOfMotionSym(KC, request)
-% This program symbolically solves for the Equations of Motion (EOM) of the
-% Kinematic chain passed in. Finds each of the points in the global frame,
-% calculates the error between the actual and desired points, and
-% calculates the symbolib Gradient vector and Hessian matrix.
+%% ====================Equations of Motion Symbolic========================
+% RoboHAZMAT: Senior Design Project
+% Motion Control Team
+% Gerardo Bledt
+% December 29, 2014
+%
+% Symbolically solves for the Equations of Motion (EOM) of the Kinematic 
+% chain passed in. Finds each of the points in the global frame, calculates
+% the error between the actual and desired points, and calculates the 
+% symbolic Gradient vector and Hessian matrix.
 
 DH = struct();
 DH.thetas = KC.symbolic.thetasSym + KC.symbolic.thiSym;

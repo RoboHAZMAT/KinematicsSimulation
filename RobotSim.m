@@ -3,7 +3,7 @@ function [RoboHAZMAT, MechatronicArm] = RobotSim(options)
 % RoboHAZMAT: Senior Design Project
 % Motion Control Team
 % Gerardo Bledt
-% December 15, 2014
+% October 15, 2014
 %
 % Main running program for the Robot simulations as part of the RoboHAZMAT
 %   senior design team. The project consists of an intuitive gesture

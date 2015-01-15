@@ -14,6 +14,7 @@ classdef Robot
     end
     
     methods
+        % Creates the Robot object from the Kinematic Chain struct.
         function Robot = Robot(KCStruct)
             Robot.KinematicChains = (KCStruct.KC);
             Robot.Name = (KCStruct.name); 

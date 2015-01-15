@@ -5,10 +5,10 @@ function RMK = RightManipulatorKinematics
 % Gerardo Bledt
 % October 15, 2014
 %
-%  - Setup of all physical parameters and the kinematic relationship
-% between them. Numerically solves for the Homogeneous transformation
-% based on the inputed Denavit-Hartenberg convention as determined for the
-% robot's Right side manipulator.
+% Setup of all physical parameters and the kinematic relationship between 
+% them. Numerically solves for the Homogeneous transformation based on the 
+% inputed Denavit-Hartenberg convention as determined for the robot's right 
+% side manipulator.
 
 %% ============================Numerical Setup=============================
 RM = struct();

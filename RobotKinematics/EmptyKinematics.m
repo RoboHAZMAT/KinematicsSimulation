@@ -5,10 +5,9 @@ function EK = EmptyKinematics
 % Gerardo Bledt
 % October 15, 2014
 %
-%  - Setup of all physical parameters and the kinematic relationship 
-% between them. Numerically solves for the Homogeneous transformation 
-% based on the inputed Denavit-Hartenberg convention as determined for the 
-% robot's left side manipulator. 
+% An empty kinematics file used as a placeholder to avoid errors when a
+% Kinematic Chain file is required in a function. Has no definitions for
+% any of the parameters.
 
 %% ============================Numerical Setup=============================
 E = struct();

@@ -22,8 +22,8 @@ classdef KinematicSystem
         optimization;   % Optimization parameters, weights and bounds
     end
     
-    
     methods
+        % Parse the Kinematic System struct into a Kinematic System object.
         function KS = KinematicSystem(KSStruct)            
             KS.Name = KSStruct.Name;
             KS.Field = KSStruct.Field;
