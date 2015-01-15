@@ -23,5 +23,6 @@ pointsd(:,4) = [elbow';1];
 pointsd(:,5) = [wrist';1];
 pointsd(:,6) = [hand';1];
 pointsd(:,7) = [upperArmOri';1];
+pointsd(:,8) = [hand';1];
 
 drawnow

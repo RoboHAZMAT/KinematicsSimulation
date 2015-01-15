@@ -27,15 +27,19 @@ for i = 1:size(KC.points.kP,2)
 end
 
 % Set up symbolic variables
-syms w1 w2 w3 w4 w5 w6 w7
-syms x1 x2 x3 x4 x5 x6 x7
-syms y1 y2 y3 y4 y5 y6 y7
-syms z1 z2 z3 z4 z5 z6 z7
+syms w1 w2 w3 w4 w5 w6 w7 w8
+syms x1 x2 x3 x4 x5 x6 x7 x8
+syms y1 y2 y3 y4 y5 y6 y7 y8
+syms z1 z2 z3 z4 z5 z6 z7 z8
+syms th1 th2 th3 th4 th5 th6
+syms thi1 thi2 thi3 thi4 thi5 thi6
 
-w = [w1;w2;w3;w4;w5;w6;w7];
-x = [x1;x2;x3;x4;x5;x6;x7];
-y = [y1;y2;y3;y4;y5;y6;y7];
-z = [z1;z2;z3;z4;z5;z6;z7];
+w = [w1;w2;w3;w4;w5;w6;w7;w8];
+x = [x1;x2;x3;x4;x5;x6;x7;x8];
+y = [y1;y2;y3;y4;y5;y6;y7;y8];
+z = [z1;z2;z3;z4;z5;z6;z7;z8];
+th = [th1;th2;th3;th4;th5;th6];
+% thi = [thi1;thi2;thi3;thi4;thi5;thi6];
 
 % Creates the vector of points that are going to be controlled
 % Defaults to all points, but a custom set can be requested as an argument
@@ -60,11 +64,13 @@ for i = 1:size(KC.points.kP,2)
         index = index + 1;
     end
 end
+
+% for i = 1:KC.DOF
+%     err(3*(index) + i) = (th(i) - thi(i))^2;
+% end
+
 % Sum of the individual errors
 error = sym(sum(err));
-
-syms th1 th2 th3 th4 th5 th6
-th = [th1;th2;th3;th4;th5;th6];
 
 % Gradient Vector
 Gradient = sym(zeros(KC.DOF,1));

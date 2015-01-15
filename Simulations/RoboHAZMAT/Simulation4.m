@@ -24,10 +24,10 @@ serialObjIMU(2) = SetupIMUSerial(IMUCOM(2,:));
 % Right Arm Control Gains
 KCR = RotateKinematicChain(Robot.KinematicChains.RMK,...
     [-pi/2;zeros(4,1);pi/2]);
-KCR.optimization.weightings = [0;0;0;300;100;200;500];
+KCR.optimization.weightings = [0;0;0;10;10;10;10;10];
 % Left Arm Control Gains
 % KCL = RotateKinematicChain(Robot.KinematicChains.RML, [zeros(5,1);pi/2]);
-% KCL.optimization.weightings = [0;0;0;300;100;200;500];
+% KCL.optimization.weightings = [0;0;0;10;10;10;10;10];
 
 % Sets up the estimated actual arm position
 shoulderR = [0,-0.179,0.371];
