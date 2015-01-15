@@ -11,8 +11,8 @@ function [RoboHAZMAT, MechatronicArm] = RobotSim(options)
 %
 % This Kinematics Simulation repo is designed to test the Motion Control
 %   algorithms on simulated robots. The eventual RoboHAZMAT robot is
-%   simulated by defining the necessary kinematics files and rotatint the 6
-%   degrees of freedoem for each arm and the 3 degrees of freedom for the
+%   simulated by defining the necessary kinematics files and rotating the 6
+%   degrees of freedom for each arm and the 3 degrees of freedom for the
 %   head. It also allows for Serial communication testing with a prototype
 %   Mechatronic arm
 %
@@ -31,7 +31,6 @@ function [RoboHAZMAT, MechatronicArm] = RobotSim(options)
 %   - Optimize speed of the code as much as possible
 %   - Add better commenting and documentation
 %   - Create instructions file for how to take advantage of all functions
-
 close all; clc;
 
 %% ========================RoboHAZMAT Simulation===========================
@@ -45,19 +44,13 @@ RobotKinematics = struct();
 % Define the kinematics that are going to be added to the robot
 
 % Head Kinematics
-HK = HeadKinematics;
-%HK = RotateKinematicChain(HK,[-pi/24;-pi/6]);
-RobotKinematics.HK = HK;
+RobotKinematics.HK = HeadKinematics;
 
 % Left Manupulator Kinematics
-LMK = LeftManipulatorKinematics;
-%LMK = RotateKinematicChain(LMK,[-pi/4;-pi/6;pi/12;-pi/3;0;-pi/3]);
-RobotKinematics.LMK = LMK;
+RobotKinematics.LMK = LeftManipulatorKinematics;
 
 % Right Manipulator Kinematics
-RMK = RightManipulatorKinematics;
-%RMK = RotateKinematicChain(RMK,[-pi/6;pi/4;-pi/12;-pi/3;pi;pi/6]);
-RobotKinematics.RMK = RMK;
+RobotKinematics.RMK = RightManipulatorKinematics;
 
 % Create the RoboHAZMAT Robot object
 RKStruct = struct();
@@ -72,9 +65,7 @@ RoboHAZMAT = Robot(RKStruct);
 
 % Mechatronic Arm Kinematics
 MAKinematics = struct();
-MAK = MechatronicArmKinematics;
-%MAK = RotateKinematicChain(MAK,[0;pi/3;pi/3;pi/3;0]);
-MAKinematics.MAK = MAK;
+MAKinematics.MAK = MechatronicArmKinematics;
 
 % Mechatronic Arm Robot
 MAKStruct = struct();
@@ -92,7 +83,7 @@ if (nargin == 1)
         % Enter the Interactive Simulation with the RoboHAZMAT Robot
         RoboHAZMAT = InteractiveSim(RoboHAZMAT, mode);
         
-    else
+    elseif (mode - 20 <= 0)
         % Enter the Interactive Simulation with the Mechatronic arm
         MechatronicArm = InteractiveSim(MechatronicArm, mode);
     end

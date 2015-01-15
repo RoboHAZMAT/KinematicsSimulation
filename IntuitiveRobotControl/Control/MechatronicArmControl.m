@@ -1,4 +1,13 @@
 function MechatronicArmControl(serialMotorControl, motor, X)
+%% =======================Mechatronic Arm Control==========================
+% RoboHAZMAT: Senior Design Project
+% Motion Control Team
+% Gerardo Bledt
+% January 3, 2014
+%
+% Controls the actual Mechatronic Arm using the DOF servos being controlled
+% by an Arduino. Translates the Simulation calculated angles into Servo
+% motor degree angles.
 
 % Translate thetas into Mechatronic Arm controls
 X = X*180/pi;
