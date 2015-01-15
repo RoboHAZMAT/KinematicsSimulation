@@ -22,6 +22,7 @@ for i = 1:length(weightings)
         weightings(i)*((pointsi(1,i) - pointsd(1,i))^2 + ...
         (pointsi(2,i) - pointsd(2,i))^2 + (pointsi(3,i) - pointsd(3,i))^2);
 end
+
 % error = sqrt(error);
 
 % Gradient is calculated if it is required

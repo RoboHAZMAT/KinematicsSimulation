@@ -24,11 +24,12 @@ RM.pts.o = [];
 % Joint points
 RM.pts.p = [zeros(3,RM.DOF);ones(1,RM.DOF)];
 % Defnining new kinematic points
-kP(:,1) = [0;-0.076;0;1];
+kP(:,1) = [-0.076;0;0;1];
+kP(:,2) = [-0.076;0;0;1];
 % Kinematic points, can add points other than joints
 RM.pts.kP = [RM.pts.p,kP];
 % Frames for each of the kinematic points first n = DOF are joints
-RM.pts.frames = [1;2;3;4;5;6;3];
+RM.pts.frames = [1;2;3;4;5;6;3;5];
 
 % Length of the links
 RM.d = struct();
@@ -54,8 +55,8 @@ RM.pts.o = [0,    0,    0;
 % Physical system constraints, upper and lower bounds
 RM.opt = struct();
 RM.opt.bounds = struct();
-RM.opt.bounds.lb = [-pi, -pi/2, -pi, -pi, -7*pi/6, -5*pi/12];
-RM.opt.bounds.ub = [pi, pi/2, pi/3, 0, 7*pi/12, pi/2];
+RM.opt.bounds.lb = [-pi, -pi/2, -5*pi/6, -pi, -pi/2, -pi/3];
+RM.opt.bounds.ub = [pi/2, pi, pi/2, 0, pi, pi/2];
 
 % Weighting on importance of points
 RM.opt.weightings = zeros(1,size(RM.pts.kP,2));
@@ -63,21 +64,21 @@ RM.opt.weightings = zeros(1,size(RM.pts.kP,2));
 % Theta Angles
 RM.th = struct();
 
-% Theta Angle Definitions 
+% Theta Angle Definitions
 RM.th.thDef = ['  Shoulder Pitch';'  Shoulder Yaw  ';'  Shoulder Roll ';...
     '  Elbow Pitch   ';'  Elbow Yaw     ';'  Wrist Pitch   '];
 
 % Initial Thetas
 RM.th.thi = zeros(RM.DOF,1);
-RM.th.thi = [pi/2; pi/2; pi/2; pi/2; 0; -pi/2];
+RM.th.thi = [-pi; -pi/2; pi/2; 0; 0; -pi/2];
 
 %% ========================Mathematical Modeling===========================
 % DH Convention
 RM.DH = struct();
-RM.DH.alphas = [pi/2; pi/2; pi/2; pi/2; -pi/2; -pi/2];
+RM.DH.alphas = [-pi/2; -pi/2; pi/2; -pi/2; pi/2; -pi/2];
 RM.DH.thetas = RM.th.thi;
-RM.DH.disps = [RM.d.d12; -RM.d.d23; 0; 0; -RM.d.d56; 0];
-RM.DH.offsets = [0; 0; -RM.d.d34; 0; 0; -RM.d.d67];
+RM.DH.disps = [0; 0; RM.d.d34; 0; RM.d.d56; 0];
+RM.DH.offsets = [0; 0; 0; 0; 0; -RM.d.d67];
 
 % Homogeneous transformations
 RM.DH.H = double(DHTransforms(RM.DH));

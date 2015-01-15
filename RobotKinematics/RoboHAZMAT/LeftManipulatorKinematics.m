@@ -22,11 +22,12 @@ LM.pts.o = [];
 % Joint points
 LM.pts.p = [zeros(3,LM.DOF);ones(1,LM.DOF)];
 % Defnining new kinematic points
-kP(:,1) = [0;-0.076;0;1];
+kP(:,1) = [-0.076;0;0;1];
+kP(:,2) = [-0.076;0;0;1];
 % Kinematic points, can add points other than joints
 LM.pts.kP = [LM.pts.p,kP];
 % Frames for each of the kinematic points first n = DOF are joints
-LM.pts.frames = [1;2;3;4;5;6;3];
+LM.pts.frames = [1;2;3;4;5;6;3;5];
 
 % Length of the links
 LM.d = struct();
@@ -52,8 +53,8 @@ LM.pts.o = [0,    0,    0;
 % Physical system constraints, upper and lower bounds
 LM.opt = struct();
 LM.opt.bounds = struct();
-LM.opt.bounds.lb = [-pi,-pi/2,-pi/3,-5*pi/6,-pi,-pi/2];
-LM.opt.bounds.ub = [pi,pi/2,5*pi/6,0,pi,pi/2];
+LM.opt.bounds.lb = [-pi, -pi/2, -pi/2, -pi, -pi, -pi/3];
+LM.opt.bounds.ub = [pi/2, pi, 5*pi/6, 0, pi/2, pi/2];
 
 % Weighting on importance of points
 LM.opt.weightings = zeros(1,size(LM.pts.kP,2));
@@ -67,15 +68,15 @@ LM.th.thDef = ['  Shoulder Pitch';'  Shoulder Yaw  ';'  Shoulder Roll ';...
 
 % Initial Thetas
 LM.th.thi = zeros(LM.DOF,1);
-LM.th.thi = [pi/2; pi/2; pi/2; pi/2; 0; -pi/2];
+LM.th.thi = [-pi; -pi/2; pi/2; 0; 0; -pi/2];
 
 %% ========================Mathematical Modeling===========================
 % DH Convention
 LM.DH = struct();
-LM.DH.alphas = [pi/2; pi/2; pi/2; pi/2; -pi/2; -pi/2];
+LM.DH.alphas = [-pi/2; -pi/2; pi/2; -pi/2; pi/2; -pi/2];
 LM.DH.thetas = LM.th.thi;
-LM.DH.disps = [LM.d.d12; -LM.d.d23; 0; 0; -LM.d.d56; 0];
-LM.DH.offsets = [0; 0; -LM.d.d34; 0; 0; -LM.d.d67];
+LM.DH.disps = [0; 0; LM.d.d34; 0; LM.d.d56; 0];
+LM.DH.offsets = [0; 0; 0; 0; 0; -LM.d.d67];
 
 % Homogeneous transformations
 LM.DH.H = double(DHTransforms(LM.DH));
