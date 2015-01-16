@@ -8,6 +8,10 @@ Gerardo Bledt
 
 October 21, 2014
 
+![TrajectoryTracking](https://cloud.githubusercontent.com/assets/7881351/5785804/5d4efbc6-9da9-11e4-8194-0d4c5896284d.png)
+####Simulation 1: Inverse Kinematic Optimization for Trajectory Tracking
+
+
 #####Click here for video: [Prototype Demo!](https://www.youtube.com/watch?v=7mTqpFiKheA&feature=youtu.be)
 
 ##**Project Goals:**
