@@ -8,6 +8,10 @@ Gerardo Bledt
 
 October 21, 2014
 
+![TrajectoryTracking](https://cloud.githubusercontent.com/assets/7881351/5785804/5d4efbc6-9da9-11e4-8194-0d4c5896284d.png)
+####Simulation 1: Inverse Kinematic Optimization for Trajectory Tracking
+
+
 #####Click here for video: [Prototype Demo!](https://www.youtube.com/watch?v=7mTqpFiKheA&feature=youtu.be)
 
 ##**Project Goals:**
@@ -19,37 +23,52 @@ The RobotHAZMAT project is a design team made up of 10 Virginia Tech Senior Mech
  - We hope to be able to develop the robot as well as the wearable user interface using readily available, inexpensive parts.
 
 
-##**Simulation code Instructions:**
+##**Basic Simulation Instructions:**
 
-1. In the 'RoboHAZMAT' directory, run 'addpath_RoboHAZMAT.m' to get access to all the Kinematics and utility files needed to run the simulation.
+ 1. In the 'RoboHAZMAT' directory, run 'addpath_RoboHAZMAT.m' to get access to all the directories needed to run the simulation.
 
-2. In 'RobotSim.m' uncomment lines 52, 57, 62 for arbitrary joint angles for the simulation to show ability to control the motor angles.
+ 3. Run 'RobotSim.m' as 'RobotSim;' to see the defalut simulation of the RoboHAZMAT robot using predefined joint angles for the robot's DOF. Red markers are movable joints and grey markers are unmovable intersection points. 
 
-3. Run 'RobotSim.m' as 'RobotSim;' to see the simulated RoboHAZMAT robot using predefined joint angles for the robot's DOF. Red markers are movable joints and grey markers are unmovable intersection points.
+ 4. To run different interactive simulations, run 'RobotSim(#);' where '#' is a number {1,2,3,4,5,11,12,13,14,15}. However {4,5,13,14,15} require the use of the IMU sensor and / or the Arduino. {1-5} deal with the RoboHAZMAT robot and {11-15} deal with the Mechatronic Arm.
 
-4. To run the interactive simulation run 'RobotSim(#);' where '#' is any number 1 through 6. However 2, 3, and 6 require the use of the IMU sensor and the Arduino. Try # = 1 first.
+ 5. When prompted, enter 'y' to begin the simulation.
 
-5. When prompted, enter y to begin the sim.
+ 6. Follow the instructions on the MATLAB command window to interact with the simulation. Make sure to enter the commands when the Figure window is active (click on it to activate) and that no pan, zoom, or rotate options are currently selected. The only exception is simulation 2, where commands are entered in the command window.
 
-6. Next, enter RMK to move the robot's right arm.
+ 7. To quit press space and then in the command window press 'y' to continue the simulation or 'n' to quit.
 
-7. Give it an x, y, and z location to move the gripper to (try x = 0.35, y = -0.1, z = 0.25)
+ 8. When you are done with the test simulation, try the other simulations by running 'RobotSim(#)' and check the 'InteractiveSim.m' script in the Simulations directory for a description of each simulation.
 
-8. Look at the figure and rotate it around to make sure the right manipulator's last red point is at the specified location.
 
-9. Enter n to quit or y to give another command.
+ ##**IMU Controlled Simulation Instructions:**
+ 
+ 1. In the 'RoboHAZMAT' directory, run 'addpath_RoboHAZMAT.m' to get access to all the directories needed to run the simulation.
 
-10. When you are done with the test simulation, try the other simulations by running 'RobotSim(#)' and check the 'InteractiveSim.m' file for a description of each simulation.
+ 2. Upload the 'IMUQuat.ino' Arduino sketch through USB onto the Arduino that is attached to an MPU9150 IMU unit.
 
-Code is pretty straight forward... 
+ 3. Check the COM port that corresponds to the Arduino by clicking on: Windows Start Menu -> Control Panel -> Device Manager -> Ports
+
+ 4. Open the 'SetupCOM.m' script and change the IMUCOM array to match the COM ports found in step 3.
+
+ 5. Run 'RobotSim(#);' where '#' is a number {1,2,3,4,5,11,12,13,14,15}. However {13,14,15} require the use of the Arduino. {1-5} deal with the RoboHAZMAT robot and {11-15} deal with the Mechatronic Arm.
+ 
+ 6. The IMUs will be calibrated so make sure that they are in a position where they will not move until ready. When prompted, enter 'y' to begin the simulation.
+
+ 6. Hold your arm straight out infront of you when beginning control. 
+
+ 7. Follow the instructions on the MATLAB command window to interact with the simulation. Make sure to enter the commands when the Figure window is active (click on it to activate) and that no pan, zoom, or rotate options are currently selected. The only exception is simulation 2, where commands are entered in the command window.
+
+ 8. To quit press space and then in the command window press 'y' to continue the simulation or 'n' to quit.
+
+ 9. When you are done with the test simulation, try the other simulations by running 'RobotSim(#)' and check the 'InteractiveSim.m' script in the Simulations directory for a description of each simulation.
+
 
 Each of the '{Left|Right}ManipulatorKinematics.m' files use the DH parameters and the rotation and translation in the ground frame to give an accurate simulation of the manipulators given thetas for each DOF. Also has the lengths of each link and the physical constraints. All parameters are packaged in a struct and outputed for later use.
-
 
  TO DO:
 
 - Current version needs to be cleaned up, documented, and organized.
 
-- Add more commands and interactive simulations for full usage of the  system.
+- Add more commands and interactive simulations for full usage of the system.
 
 - Add pictures and videos of the full capabilities.

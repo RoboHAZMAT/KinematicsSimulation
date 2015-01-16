@@ -1,4 +1,13 @@
 function [ypr] = QuaternionToYPR(q)
+%% ===================Quaternion to Yaw, Pitch, Roll=======================
+% RoboHAZMAT: Senior Design Project
+% Motion Control Team
+% Gerardo Bledt
+% January 8, 2015
+%
+% Converts the quaternion into yaw, pitch, and roll angles. Subject to the
+% Gimbal lock issue. Using quaternions to carry out rotations is more
+% advisable, but this allows for quick simple rough rotations.
 
 % Bound the quaternion
 if (q(1) >= 2), q(1) = -4 + q(1); end;

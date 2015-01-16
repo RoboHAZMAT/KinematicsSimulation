@@ -1,4 +1,12 @@
 function [vector, psi] = ZeroYaw(vector, psi, reset)
+%% ==============================Zero Yaw==================================
+% RoboHAZMAT: Senior Design Project
+% Motion Control Team
+% Gerardo Bledt
+% December 15, 2014
+%
+% Zeros the Yaw angle of a given vector. Allows the user to reset the yaw
+% angle since it is the most prone to drift from the IMU. 
 
 % Calculate the yaw offset if requested
 if (reset)

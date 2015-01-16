@@ -5,10 +5,10 @@ function MAK = MechatronicArmKinematics
 % Gerardo Bledt
 % December 15, 2014
 %
-%  - Setup of all physical parameters and the kinematic relationship
-% between them. Numerically solves for the Homogeneous transformation
-% based on the inputed Denavit-Hartenberg convention as determined for the
-% Mechatronic arm prototype.
+% Setup of all physical parameters and the kinematic relationship between 
+% them. Numerically solves for the Homogeneous transformation based on the 
+% inputed Denavit-Hartenberg convention as determined for the Mechatronic 
+% Arm prototype.
 
 %% ============================Numerical Setup=============================
 MA = struct();

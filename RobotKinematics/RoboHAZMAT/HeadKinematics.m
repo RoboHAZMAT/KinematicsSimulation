@@ -5,10 +5,9 @@ function HK = HeadKinematics
 % Gerardo Bledt
 % October 16, 2014
 %
-%  - Setup of all physical parameters and the kinematic relationship
-% between them. Numerically solves for the Homogeneous transformation
-% based on the inputed Denavit-Hartenberg convention as determined for the
-% robot's Head frame.
+% Setup of all physical parameters and the kinematic relationship between 
+% them. Numerically solves for the Homogeneous transformation based on the 
+% inputed Denavit-Hartenberg convention as determined for the robot's head.
 
 %% ============================Numerical Setup=============================
 H = struct();
