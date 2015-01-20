@@ -1,54 +1,61 @@
 function Robot = SimulationM5(Robot)
-%% =================Keyboard Controlled Mechatronic Arm====================
+%% ==========IMU controlled Mechatronic Arm Through Arduino (ypr)==========
 
-% Initializes communication with Mechatronic Arm
-[~, motorControlCOM] = SetupCOM;
+% Sets up the Keyboard Control
+[RobotFigure, states] = SetupKeyboardControl;
+
+% Setup COM ports
+[IMUCOM, motorControlCOM] = SetupCOM;
+
+% Setup communication with IMU and Arm
+serialObjIMU = SetupIMUSerial(IMUCOM(2,:));
 [serialMotorControl, motor] = ...
     SetupMotorControlSerial(motorControlCOM);
-clc;
 
-% Initializes the arm states and setp size
-[RobotFigure, states] = SetupKeyboardControl(Robot, 1);
+% Constrain unused motors to the given values
+serialMotorControl.servoWrite(motor.elbowPitch, round(150));
+serialMotorControl.servoWrite(motor.wristPitch, round(30));
+%serialMotorControl.servoWrite(motor.wristRoll, round(110));
 
-% Sets up the kinematics for the arm
-controlPoint = 6;
+% Get the kinematic chain
 KC = Robot.KinematicChains.MAK;
-KC.optimization.weightings(controlPoint) = 100;
-pointsd = zeros(4, size(KC.points.kP,2));
+X = zeros(5,1);
+psi = 0;
 
-% Open gripper to start
-serialMotorControl.servoWrite(motor.gripper, 0);
-
-% Status report options
-status.count = 0;
-status.point = [1;2;3;4;5;6];
-
-% Runs the loop a given number of times
-while(states.run)
-    
+% Constant running while loop
+while (states.run)
     % Get current states
     states = guidata(RobotFigure);
     
-    % Open or close the gripper
-    serialMotorControl.servoWrite(motor.gripper, 180*states.gripper);
+    % Read the IMU sensor
+    [q, reset, readingIMU] = ReadIMUQuaternion(serialObjIMU);
+    ypr = QuaternionToYPR(q);
     
-    % Pull out desired points
-    pointsd(:,controlPoint) = [states.location;1];
-    
-    % Inverse kinematics
-    X = InverseKinematicOptimization(KC,pointsd);
-    
-    % Rotates the KC
-    KC = RotateKinematicChain(KC,X);
-    Robot.KinematicChains.MAK = KC;
-    
-    % Plots the Robot
-    RobotPlot(Robot);
-    drawnow;
-    
-    % Move arm servos
-    MechatronicArmControl(serialMotorControl, motor, X);
-    
-    % Prints the angle and point status report of the KC
-    status = PrintStatusReport(KC, X, status);
+    % If a reading is obtained, rotate simulation and arm
+    if (~isnan(readingIMU))
+%         % Rotates the base yaw, base pitch, and wrist roll
+%         serialMotorControl.servoWrite(motor.baseYaw, ...
+%             round(ypr(1)));
+%         serialMotorControl.servoWrite(motor.basePitch, ...
+%             round(ypr(2)));
+%         serialMotorControl.servoWrite(motor.wristRoll, ...
+%             round(180-ypr(3)));
+        
+        if (reset), psi = ypr(1); end;
+        
+        % Rotate and plot the simulated Mechatronic Arm
+        X(1,1) = (-(ypr(1) - psi));
+        X(2,1) = (-ypr(2));
+        X(3,1) = (65)*pi/180;
+        X(4,1) = (65)*pi/180;
+        X(5,1) = (-(ypr(3)));
+        
+        MechatronicArmControl(serialMotorControl, motor, X)
+        
+        % Rotates and plots the Robot Kinematics
+        KC = RotateKinematicChain(KC,X);
+        Robot.KinematicChains.MAK = KC;
+        RobotPlot(Robot);
+        drawnow;
+    end
 end
