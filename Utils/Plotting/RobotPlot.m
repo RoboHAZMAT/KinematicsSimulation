@@ -19,8 +19,8 @@ fields = fieldnames(Robot.KinematicChains);
 
 % Sets up the base frame of the RoboHAZMAT Robot
 if (strcmp(Robot.Name, 'RoboHAZMAT'))
-    LW = 6; % line width
-    MS = 20; % marker size
+    LW = 8; % line width
+    MS = 25; % marker size
     % Plotting the Frame Body
     plot3([0,0,0],[-.179,0,.179],[.371,.371,.371],'LineWidth',LW,...
         'Color',[0 0 0]);

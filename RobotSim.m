@@ -33,10 +33,17 @@ function [RoboHAZMAT, MechatronicArm] = RobotSim(options)
 %   - Create instructions file for how to take advantage of all functions
 close all; clc;
 
+fprintf('=======================================\n\n');
+fprintf('   RoboHAZMAT: Senior Design Project   \n');
+fprintf('             Virginia Tech             \n\n');
+fprintf('=======================================\n\n');
+
 %% ========================RoboHAZMAT Simulation===========================
 % Creation of the various kinematic chain elements in the RoboHAZMAT robot.
 % The Robot object is comprised of a head, left manipulator, right
 % manipulator, and a body frame.
+
+fprintf('ROBOHAZMAT ROBOT\n\n');
 
 % Creates a struct to store all the robot kinematics
 RobotKinematics = struct();
@@ -58,10 +65,13 @@ RKStruct.name = 'RoboHAZMAT';
 RKStruct.KC = RobotKinematics;
 RoboHAZMAT = Robot(RKStruct);
 
+fprintf('---------------------------------------\n\n');
 
 %% ======================Mechatronic Arm Simulation========================
 % Creation of the various kinematic chain elements in the Mechatronic Arm.
 % The Robot object is comprised of the Mechtronic Arm kinematics and base.
+
+fprintf('MECHATRONIC ARM ROBOT\n\n');
 
 % Mechatronic Arm Kinematics
 MAKinematics = struct();
@@ -73,20 +83,21 @@ MAKStruct.name = 'Mechatronic Arm';
 MAKStruct.KC = MAKinematics;
 MechatronicArm = Robot(MAKStruct);
 
+fprintf('---------------------------------------\n\n');
+
 %% ========================Interactive Simulation==========================
 % Interactive Simulation for the Robots. Mode options are 1 - 6 currently.
 % Consult the 'InteractiveSim.m' for instructions and guidance.
 
-if (nargin == 1)
-    mode = options(1);
-    if (mode - 10 <= 0)
-        % Enter the Interactive Simulation with the RoboHAZMAT Robot
-        RoboHAZMAT = InteractiveSim(RoboHAZMAT, mode);
-        
-    elseif (mode - 20 <= 0)
-        % Enter the Interactive Simulation with the Mechatronic arm
-        MechatronicArm = InteractiveSim(MechatronicArm, mode);
-    end
+if (nargin == 0), mode = 1;
+else mode = options(1); end;
+if (mode - 10 <= 0)
+    % Enter the Interactive Simulation with the RoboHAZMAT Robot
+    RoboHAZMAT = InteractiveSim(RoboHAZMAT, mode);
+    
+elseif (mode - 20 <= 0)
+    % Enter the Interactive Simulation with the Mechatronic arm
+    MechatronicArm = InteractiveSim(MechatronicArm, mode);
 end
 
 % Ending the Simulation
