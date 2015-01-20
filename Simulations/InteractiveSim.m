@@ -101,23 +101,23 @@ if (strcmpi(interactiveSim,'yes') || strcmpi(interactiveSim,'y'))
         
         %% RoboHAZMAT {1 - 10} and Mechatronic Arm {11 - 20} Simulations
         if (mode == 1)
-            % Inverse kinematics With User Inputting Points
+            % Inverse Kinematic Tracing Trajectories
             Robot = Simulation1(Robot);
             
         elseif (mode == 2)
-            % Inverse Kinematic Tracing Trajectories
+            % Inverse kinematics With User Inputting Points
             Robot = Simulation2(Robot);
             
         elseif (mode == 3)
-            % IMU Controlled Manipulators Simulation
+            % Keyboard Controlled Robot Arms Simulation
             Robot = Simulation3(Robot);
             
         elseif (mode == 4)
-            % IMU Controlled Robot Arm Simulation
+            % IMU Controlled Manipulators Simulation
             Robot = Simulation4(Robot);
             
         elseif (mode == 5)
-            % Keyboard Controlled Robot Arms Simulation
+            % IMU Controlled Robot Arm Simulation
             Robot = Simulation5(Robot);
             
         elseif (mode == 11)
@@ -125,7 +125,7 @@ if (strcmpi(interactiveSim,'yes') || strcmpi(interactiveSim,'y'))
             Robot = SimulationM1(Robot);
             
         elseif (mode == 12)
-            % IMU controlled Mechatronic Arm Through Arduino (ypr)
+            % Keyboard Controlled Mechatronic Arm Simulation
             Robot = SimulationM2(Robot);
             
         elseif (mode == 13)
@@ -133,11 +133,11 @@ if (strcmpi(interactiveSim,'yes') || strcmpi(interactiveSim,'y'))
             Robot = SimulationM3(Robot);
             
         elseif (mode == 14)
-            % Keyboard Controlled Mechatronic Arm Simulation
+            % Keyboard Controlled Mechatronic Arm
             Robot = SimulationM4(Robot);
             
         elseif (mode == 15)
-            % Keyboard Controlled Mechatronic Arm
+            % IMU controlled Mechatronic Arm Through Arduino (ypr)
             Robot = SimulationM5(Robot);
             
         else
