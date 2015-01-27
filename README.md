@@ -8,8 +8,15 @@ Gerardo Bledt
 
 October 21, 2014
 
-![TrajectoryTracking](https://cloud.githubusercontent.com/assets/7881351/5785804/5d4efbc6-9da9-11e4-8194-0d4c5896284d.png)
+
+####Robot Simulation GUI
+
+![SimGUI](https://cloud.githubusercontent.com/assets/7881351/5914828/70edfb04-a5ca-11e4-8a2c-6d426f36937a.png)
+
+
 ####Simulation 1: Inverse Kinematic Optimization for Trajectory Tracking
+
+![TrajectoryTracking](https://cloud.githubusercontent.com/assets/7881351/5785804/5d4efbc6-9da9-11e4-8194-0d4c5896284d.png)
 
 
 #####Click here for video: [Prototype Demo!](https://www.youtube.com/watch?v=7mTqpFiKheA&feature=youtu.be)
