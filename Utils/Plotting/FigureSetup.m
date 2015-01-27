@@ -11,9 +11,9 @@ function FigureSetup(Robot)
 if (strcmp(Robot.Name, 'RoboHAZMAT'))
     % Figure setup for RobotHAZMAT robot
     set(gcf,'Name','RoboHAZMAT Simulation');
-    pbaspect([1 1 1]);
-    set(gca, 'color', [1 1 1]); set(gcf, 'color', [1 1 1]);
-    FS = 18;xlabel('X [m]','FontSize',FS);
+    pbaspect([1 1 1]); view(60,20);
+    set(gca, 'color', [1 1 1]); %set(gcf, 'color', [1 1 1]);
+    FS = 16;xlabel('X [m]','FontSize',FS);
     title('RoboHAZMAT Simulation','FontSize',FS);
     ylabel('Y [m]','FontSize',FS);zlabel('Z [m]','FontSize',FS);
     axis([-0.4 0.8 -0.6 0.6 -0.4 0.8]);
@@ -22,9 +22,9 @@ if (strcmp(Robot.Name, 'RoboHAZMAT'))
 elseif (strcmp(Robot.Name, 'Mechatronic Arm'))
     % Figure setup for Mechatronic Arm
     set(gcf,'Name','Mechatronic Arm Simulation');
-    pbaspect([1 1 3/5]);
-    set(gca, 'color', [1 1 1]); set(gcf, 'color', [1 1 1]);
-    FS = 18;xlabel('X [m]','FontSize',FS);
+    pbaspect([1 1 3/5]); view(60,30);
+    set(gca, 'color', [1 1 1]); %set(gcf, 'color', [1 1 1]);
+    FS = 16;xlabel('X [m]','FontSize',FS);
     title('Mechatronic Arm Simulation','FontSize',FS);
     ylabel('Y [m]','FontSize',FS);zlabel('Z [m]','FontSize',FS);
     axis([-0.25 0.25 -0.25 0.25 0.0 0.30]);
@@ -35,7 +35,7 @@ else
     set(gcf,'Name','Robot Simulation');
     pbaspect([1 1 1]);
     set(gca, 'color', [1 1 1]); set(gcf, 'color', [1 1 1]);
-    FS = 18;xlabel('X [m]','FontSize',FS);
+    FS = 16;xlabel('X [m]','FontSize',FS);
     title('Robot Simulation','FontSize',FS);
     ylabel('Y [m]','FontSize',FS);zlabel('Z [m]','FontSize',FS);
     axis([-1 1 -1 1 -1 1]);

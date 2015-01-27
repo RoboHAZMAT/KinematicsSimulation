@@ -31,7 +31,7 @@ function [RoboHAZMAT, MechatronicArm] = RobotSim(options)
 %   - Optimize speed of the code as much as possible
 %   - Add better commenting and documentation
 %   - Create instructions file for how to take advantage of all functions
-close all; clc;
+clc; %close all;
 
 fprintf('=======================================\n\n');
 fprintf('   RoboHAZMAT: Senior Design Project   \n');

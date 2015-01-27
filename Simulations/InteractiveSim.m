@@ -60,127 +60,62 @@ function Robot = InteractiveSim(Robot, mode)
 %    - Use that representation with inverse kinematics to find the optimal
 %        configuration necessary for the robot arm
 
-attempt = 0;
-interactiveSim = input('Begin Interactive Simulation? [Y/N]: ','s');
+clc;
+fprintf('====================================\n\n');
+fprintf('     Interactive Simulation: %i\n\n', mode);
+fprintf('====================================\n\n');
+fprintf('       Running Simulation...\n');
+fprintf('         {Delete to quit}\n\n');
 
-% Allow for 3 attempts to enter the interactive simulation mode by entering
-% in [Y/y/ ] or to voluntarily quit by entering [N/n]
-while (~strcmpi(interactiveSim,'yes') && ~strcmpi(interactiveSim,'no')...
-        && ~strcmpi(interactiveSim,'y') && ~strcmpi(interactiveSim,'n')...
-        && ~strcmpi(interactiveSim,''))
-    attempt = attempt + 1;
-    if (attempt == 3)
-        fprintf('\nFinal attempt...');
-    elseif (attempt == 4)
-        fprintf(['\nUnrecognized Command. Too many failed attempts.',...
-            '\nQuitting Simulation...']);
-        break;
-    end
-    fprintf('\nUnrecognized command, please enter [Y/N]\n');
-    interactiveSim = input('Begin Interactive Simulation? [Y/N]: ','s');
+% Plots the Robot simulation
+if (mode - 20 <= 0)
+    % Run a one time figure setup
+    FigureSetup(Robot);
+    % Plot the robot
+    RobotPlot(Robot);
 end
 
-% If the user chose to enter the interactive simulation mode, begin
-if (strcmpi(interactiveSim,'yes') || strcmpi(interactiveSim,'y'))
-    fprintf('\nBeginning Interactive Simulation...\n');
-    while (strcmpi(interactiveSim,'yes') || strcmpi(interactiveSim,'y'))
-        clc;
-        fprintf('====================================\n\n');
-        fprintf('     Interactive Simulation: %i\n\n', mode);
-        fprintf('====================================\n\n');
-        fprintf('       Running Simulation...\n');
-        fprintf('          {Space to quit}\n\n');
-        
-            % Plots the Robot simulation
-        if (mode - 20 <= 0)
-            % Run a one time figure setup
-            FigureSetup(Robot);
-            % Plot the robot
-            RobotPlot(Robot);
-        end
-        
-        %% RoboHAZMAT {1 - 10} and Mechatronic Arm {11 - 20} Simulations
-        if (mode == 1)
-            % Inverse Kinematic Tracing Trajectories
-            Robot = Simulation1(Robot);
-            
-        elseif (mode == 2)
-            % Inverse kinematics With User Inputting Points
-            Robot = Simulation2(Robot);
-            
-        elseif (mode == 3)
-            % Keyboard Controlled Robot Arms Simulation
-            Robot = Simulation3(Robot);
-            
-        elseif (mode == 4)
-            % IMU Controlled Manipulators Simulation
-            Robot = Simulation4(Robot);
-            
-        elseif (mode == 5)
-            % IMU Controlled Robot Arm Simulation
-            Robot = Simulation5(Robot);
-            
-        elseif (mode == 11)
-            % Mechatronic Arm Inverse Kinematics Trajectory Simulation
-            Robot = SimulationM1(Robot);
-            
-        elseif (mode == 12)
-            % Keyboard Controlled Mechatronic Arm Simulation
-            Robot = SimulationM2(Robot);
-            
-        elseif (mode == 13)
-            % Mechatronic Arm Controlled Through Arduino
-            Robot = SimulationM3(Robot);
-            
-        elseif (mode == 14)
-            % Keyboard Controlled Mechatronic Arm
-            Robot = SimulationM4(Robot);
-            
-        elseif (mode == 15)
-            % IMU controlled Mechatronic Arm Through Arduino (ypr)
-            Robot = SimulationM5(Robot);
-            
-        else
-            %% Incorrect mode input loop.
-            % Asks the user to enter a supported simulation mode or quit.
-            while (mode - 14 > 0 || mode < 0)
-                fprintf(['\nMode %i is not supported.\n Choose 1 - 6,',...
-                    ' q to quit:\n'],mode);
-                modeString = input(' > ','s');
-                if (strcmpi(modeString,'q'))
-                    fprintf('\nQuitting Simulation...\n');
-                    break;
-                end
-                mode = str2double(modeString);
-            end
-        end
-        
-        % Incorrect continue input loop. Asks the user to continue or not.
-        % After 3 incorrect tries, the program will quit.
-        attempt = 0;
-        interactiveSim = 'a';
-        while (~strcmpi(interactiveSim,'yes') && ...
-                ~strcmpi(interactiveSim,'no') && ...
-                ~strcmpi(interactiveSim,'y') && ...
-                ~strcmpi(interactiveSim,'n') && ...
-                ~strcmpi(interactiveSim,''))
-            attempt = attempt + 1;
-            if (attempt == 3)
-                fprintf('\nFinal attempt...');
-            elseif (attempt == 4)
-                fprintf(['\nUnrecognized Command. Too many failed ',...
-                    'attempts.\nQuitting Simulation...']);
-                interactiveSim = 'n';
-                break;
-            end
-            if (attempt > 1)
-                fprintf('\nUnrecognized command, please enter [Y/N]\n');
-            end
-            interactiveSim = input('\nContinue Interactive Simulation? [Y/N]: ','s');
-        end
-    end
-    % Otherwise, quit the simulation
-elseif (strcmpi(interactiveSim,'no') || strcmpi(interactiveSim,'n')...
-        || strcmpi(interactiveSim,''))
-    fprintf('\nQuitting Simulation...\n');
+%% RoboHAZMAT {1 - 10} and Mechatronic Arm {11 - 20} Simulations
+if (mode == 1)
+    % Inverse Kinematic Tracing Trajectories
+    Robot = Simulation1(Robot);
+    
+elseif (mode == 2)
+    % Inverse kinematics With User Inputting Points
+    Robot = Simulation2(Robot);
+    
+elseif (mode == 3)
+    % Keyboard Controlled Robot Arms Simulation
+    Robot = Simulation3(Robot);
+    
+elseif (mode == 4)
+    % IMU Controlled Manipulators Simulation
+    Robot = Simulation4(Robot);
+    
+elseif (mode == 5)
+    % IMU Controlled Robot Arm Simulation
+    Robot = Simulation5(Robot);
+    
+elseif (mode == 11)
+    % Mechatronic Arm Inverse Kinematics Trajectory Simulation
+    Robot = SimulationM1(Robot);
+    
+elseif (mode == 12)
+    % Keyboard Controlled Mechatronic Arm Simulation
+    Robot = SimulationM2(Robot);
+    
+elseif (mode == 13)
+    % Mechatronic Arm Controlled Through Arduino
+    Robot = SimulationM3(Robot);
+    
+elseif (mode == 14)
+    % Keyboard Controlled Mechatronic Arm
+    Robot = SimulationM4(Robot);
+    
+elseif (mode == 15)
+    % IMU controlled Mechatronic Arm Through Arduino (ypr)
+    Robot = SimulationM5(Robot);
+    
 end
+
+fprintf('\nQuitting Simulation...\n');
