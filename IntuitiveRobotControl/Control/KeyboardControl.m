@@ -16,7 +16,7 @@ states = guidata(RobotFigure);
 
 % Advanced and Basic Controls
 if (~states.advancedControl && ~states.trajectoryControl)
-    if (strcmpi(command,'space')), states.run = 0; end;
+    if (strcmpi(command,'delete')), states.run = 0; end;
     
 elseif (states.advancedControl)
     % Gets the step size
@@ -67,7 +67,7 @@ elseif (states.advancedControl)
     if (strcmpi(command,'return'))
         for i = 1:size(state,2), state(:,i) = states.start(:,i); end;
     % Exit Current Simulation
-    elseif (strcmpi(command,'space')), states.run = 0;
+    elseif (strcmpi(command,'delete')), states.run = 0;
     end;
     
     % Adjusts arm to zero
@@ -95,7 +95,7 @@ elseif (states.advancedControl)
     end;
     
 elseif (states.trajectoryControl)
-    if (strcmpi(command,'space')), states.run = 0; 
+    if (strcmpi(command,'delete')), states.run = 0; 
     elseif (strcmpi(command,'r')), states.recordTraj = 1;
     elseif (strcmpi(command,'x')), states.recordTraj = 0;
     elseif (strcmpi(command,'c')), states.clearTraj = 1;

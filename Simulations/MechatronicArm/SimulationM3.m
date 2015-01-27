@@ -25,7 +25,7 @@ traj = TrajectoriesMechatronicArm(0, traj);
 
 % Status report options
 status.count = 0;
-status.point = [1;2;3;4;5;6];
+status.point = 1:6;
 
 % Open gripper to start
 serialMotorControl.servoWrite(motor.gripper, 0);

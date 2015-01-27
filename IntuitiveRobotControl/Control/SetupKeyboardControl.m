@@ -7,6 +7,7 @@ function [RobotFigure, states] = SetupKeyboardControl(Robot, option)
 %
 % Sets up the necessary states for the simulations to use the keyboard
 % control function and interact with the simulations in real-time.
+states = guidata(gcf);
 
 % Choose Advanced or Basic control
 if (nargin == 0)
@@ -86,7 +87,7 @@ end
 RobotFigure = gcf;
 
 % Initializes the keyboard key interrupt
-set(RobotFigure,'keypressfcn',...
+set(RobotFigure,'windowkeypressfcn',...
     @(RobotFigure,event)KeyboardControl(RobotFigure,event,Robot));
 
 % Set GUI data
