@@ -110,7 +110,7 @@ end
 
 
 %%=============================Ready For Use===============================
-% Mages sure that the user is ready to begin controlling the robotic arm.
+% Makes sure that the user is ready to begin controlling the robotic arm.
 
 function ready = ReadyForUse(RobotFigure)
 % Wait for user to be ready or quit if not
