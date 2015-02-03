@@ -43,46 +43,14 @@ fprintf('=======================================\n\n');
 % The Robot object is comprised of a head, left manipulator, right
 % manipulator, and a body frame.
 
-fprintf('ROBOHAZMAT ROBOT\n\n');
-
-% Creates a struct to store all the robot kinematics
-RobotKinematics = struct();
-
-% Define the kinematics that are going to be added to the robot
-
-% Head Kinematics
-RobotKinematics.HK = HeadKinematics;
-
-% Left Manupulator Kinematics
-RobotKinematics.LMK = LeftManipulatorKinematics;
-
-% Right Manipulator Kinematics
-RobotKinematics.RMK = RightManipulatorKinematics;
-
-% Create the RoboHAZMAT Robot object
-RKStruct = struct();
-RKStruct.name = 'RoboHAZMAT';
-RKStruct.KC = RobotKinematics;
-RoboHAZMAT = Robot(RKStruct);
-
+RoboHAZMAT = CreateRobotRoboHAZMAT;
 fprintf('---------------------------------------\n\n');
 
 %% ======================Mechatronic Arm Simulation========================
 % Creation of the various kinematic chain elements in the Mechatronic Arm.
 % The Robot object is comprised of the Mechtronic Arm kinematics and base.
 
-fprintf('MECHATRONIC ARM ROBOT\n\n');
-
-% Mechatronic Arm Kinematics
-MAKinematics = struct();
-MAKinematics.MAK = MechatronicArmKinematics;
-
-% Mechatronic Arm Robot
-MAKStruct = struct();
-MAKStruct.name = 'Mechatronic Arm';
-MAKStruct.KC = MAKinematics;
-MechatronicArm = Robot(MAKStruct);
-
+MechatronicArm = CreateRobotMechatronicArm;
 fprintf('---------------------------------------\n\n');
 
 %% ========================Interactive Simulation==========================
