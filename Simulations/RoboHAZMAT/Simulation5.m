@@ -82,6 +82,7 @@ while (ready && states.run)
         
         % 6. Rotate and plot the robot, human arm, and trajectory
         KCR = RotateKinematicChain(KCR, XR);
+        
         Robot.KinematicChains.RMK = KCR;
         % KCL = RotateKinematicChain(KCL, XL);
         % Robot.KinematicChains.LMK = KCL;

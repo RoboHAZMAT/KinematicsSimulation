@@ -33,18 +33,27 @@ end
 % --- Executes just before RobotSimulation is made visible.
 function RobotSimulation_OpeningFcn(hObject, eventdata, handles, varargin)
 % Choose default command line output for RobotSimulation
+handles = StartUpGUI(hObject, handles);
+
+% Update handles structure
+guidata(hObject, handles);
+
+function handles = StartUpGUI(hObject, handles)
 handles.output = hObject;
 handles.running = 0;
+
+% Add the title screen Robot CAD model
 axes(handles.robotCADAxes);
 cla;
 iptsetpref('ImshowBorder','tight')
 imshow(imread('RoboHAZMAT_CAD.png'));
+
+% Add color status block
 set(handles.statusAxes, 'XTick', []);
 set(handles.statusAxes, 'YTick', []);
 set(handles.statusAxes,'Color',[1 1 0]);
 
-% Update handles structure
-guidata(hObject, handles);
+
 
 
 % --- Outputs from this function are returned to the command line.
@@ -57,7 +66,8 @@ varargout{1} = handles.output;
 % --- Executes on button press in stopButton.
 function stopButton_Callback(hObject, eventdata, handles)
 if(strcmpi(StopProgramDialog,'Yes'))
-    
+    set(handles.statusText,'String','Simulation Running...');
+    set(handles.statusText,'String','Simulation Stopped.');
     set(handles.statusAxes,'Color',[1 0 0]);
     handles.run = 0; guidata(hObject, handles);
 end;
@@ -84,7 +94,8 @@ guidata(hObject,handles);
 if (handles.robotSystem == 1)
     optionStrings = {'Trajectory Tracking Simulation',...
         'Point Inverse Kinematics','Keyboard Control Simulation',...
-        'IMU Controlled Arms (YPR)','Full  IMU Controlled Robot Arm'};
+        'IMU Controlled Arms (YPR)','Full  IMU Controlled Robot Arm',...
+        'IMU Controlled Robot Head'};
 elseif (handles.robotSystem == 2)
     optionStrings = {'Trajectory Tracking Simulation',...
         'Keyboard Control Simulation','Trajectory Tracking Arduino',...
@@ -111,6 +122,7 @@ cla(handles.robotCADAxes);
 set(handles.statusAxes,'Color',[0 1 0]);
 axes(handles.robotAxes);
 set(handles.robotAxes,'Visible','on')
+set(handles.statusText,'String','Simulation Running...');
 
 if (~handles.running)
     handles.running = 1; guidata(hObject,handles);

@@ -96,6 +96,10 @@ elseif (mode == 5)
     % IMU Controlled Robot Arm Simulation
     Robot = Simulation5(Robot);
     
+elseif (mode == 6)
+    % IMU Controlled Robot Head
+    Robot = Simulation6(Robot);
+    
 elseif (mode == 11)
     % Mechatronic Arm Inverse Kinematics Trajectory Simulation
     Robot = SimulationM1(Robot);
