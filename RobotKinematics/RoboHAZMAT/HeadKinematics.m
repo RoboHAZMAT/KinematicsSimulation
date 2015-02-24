@@ -14,7 +14,7 @@ H = struct();
 H.Name = 'Head';
 H.Field = 'HK';
 % Number of Degrees of Freedom
-H.DOF = 2;
+H.DOF = 3;
 
 % Frame points in each frame
 H.pts = struct();
@@ -23,11 +23,11 @@ H.pts.o = [];
 % Joint points
 H.pts.p = [zeros(3,H.DOF);ones(1,H.DOF)];
 % Defnining new kinematic points
-kP = [];
+kP = [-0.076;0;0;1];
 % Kinematic points, can add points other than joints
 H.pts.kP = [H.pts.p,kP];
 % Frames for each of the kinematic points first n = DOF are joints
-H.pts.frames = [1;2];
+H.pts.frames = [1;2;3;3];
 
 % Length of the links
 H.d = struct();
@@ -44,8 +44,8 @@ H.pts.o = [0;
 % Physical system constraints, upper and lower bounds
 H.opt = struct();
 H.opt.bounds = struct();
-H.opt.bounds.lb = [-pi/2,-pi/2.5]; % second may switch with ub
-H.opt.bounds.ub = [pi/2,pi/3];
+H.opt.bounds.lb = [-pi/2,-pi/2.5,-pi/3]; % second may switch with ub
+H.opt.bounds.ub = [pi/2,pi/3,pi/3];
 
 % Weighting on importance of points
 H.opt.weightings = zeros(1,size(H.pts.kP,2));
@@ -58,16 +58,16 @@ H.th.thDef = ['  Neck Yaw  ';'  Neck Pitch'];
 
 % Initial Thetas
 H.th.thi = zeros(H.DOF,1);
-H.th.thi = [0;0];
+H.th.thi = [0;pi/2;0];
 
 %% ========================Mathematical Modeling===========================
 % DH Convention
-syms th1 th2
+syms th1 th2 th3
 H.DH = struct();
-H.DH.alphas = [-pi/2;0];
+H.DH.alphas = [pi/2;pi/2;0];
 H.DH.thetas = H.th.thi;
-H.DH.disps = [0; 0];
-H.DH.offsets = [0; H.d.d23];
+H.DH.disps = [0; 0; H.d.d23];
+H.DH.offsets = [0; 0; 0];
 
 % Homogeneous transformations
 H.DH.H = double(DHTransforms(H.DH));
@@ -82,7 +82,7 @@ H.symbs = struct();
 syms th1 th2
 H.symbs.thiSym = sym(zeros(H.DOF,1));
 H.symbs.alphasSym = sym(zeros(H.DOF,1));
-H.symbs.thetasSym = sym([th1; th2]);
+H.symbs.thetasSym = sym([th1; th2; th3]);
 for i = 1:H.DOF
     H.symbs.alphasSym(i) = H.DH.alphas(i);
     H.symbs.thiSym(i) = H.th.thi(i);

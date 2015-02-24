@@ -8,7 +8,7 @@ function Robot = SimulationM5(Robot)
 [IMUCOM, motorControlCOM] = SetupCOM;
 
 % Setup communication with IMU and Arm
-serialObjIMU = SetupIMUSerial(IMUCOM(2,:));
+serialObjIMU = SetupIMUSerial(IMUCOM(1,:));
 [serialMotorControl, motor] = ...
     SetupMotorControlSerial(motorControlCOM);
 
