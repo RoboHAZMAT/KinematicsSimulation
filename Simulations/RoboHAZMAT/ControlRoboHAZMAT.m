@@ -1,10 +1,10 @@
-function Robot = Simulation5(Robot)
+function Robot = ControlRoboHAZMAT(Robot)
 %% =================IMU Controlled Robot Arm Simulation====================
-% Simulation that allows the robot to be controlled by IMUs worn on the 
+% Simulation that allows the robot to be controlled by IMUs worn on the
 % arm. One IMU is worn on the upper arm and one IMU on the forearm. This
 % allows for an accurate arm positioning estimation. With the estimate of
-% the desired user arm, the robot joint motor angles is calculated through 
-% inverse kinematics optimization. 
+% the desired user arm, the robot joint motor angles is calculated through
+% inverse kinematics optimization.
 %
 % - An extra feature allows the user to draw trajectories in 3D space using
 % gestures. Trajectory tracks the arm's wrist point.
@@ -13,17 +13,19 @@ function Robot = Simulation5(Robot)
 [RobotFigure, states] = SetupKeyboardControl(Robot, 2);
 
 % Sets up the Serial communication with the IMUs
-IMUCOM = SetupCOM;
-for i = 1:2, serialObjIMU(i) = SetupIMUSerial(IMUCOM(i,:)); end
+IMUCOM = SetupCOM; 
+for i = 1:2, serialObjIMU(i) = SetupIMUSerial(IMUCOM{i}); end
+
+% Sets up the communication with the Dynamixels
+[dynamixelR] = DynamixelControlSetup;
 
 % Specifies the arm and points to be controlled
-% *** This is what must be tuned ***
 % Right Arm Control Gains
 KCR = RotateKinematicChain(Robot.KinematicChains.RMK,...
     [-pi/2;zeros(4,1);pi/2]);
 KCR.optimization.weightings = [0;0;0;10;10;10;10;10];
 % Left Arm Control Gains
-%KCL = RotateKinematicChain(Robot.KinematicChains.RML,...
+%KCL = RotateKinematicChain(Robot.KinematicChains.LMK,...
 %    [-pi/2;zeros(4,1);pi/2]);
 %KCL.optimization.weightings = [0;0;0;10;10;10;10;10];
 
@@ -35,12 +37,12 @@ link(3,:) = [0.257,0,0]; link(4,:) = [0,0,-0.076];
 % History vectors for the actual trajectory histories
 trajBuffer = 100;
 histTR = zeros(trajBuffer,3);
-% histTL = zeros(trajBuffer,3);
+%histTL = zeros(trajBuffer,3);
 
 % Waits for the user to be ready to use and initializes the arm
 ready = ReadyForUse(RobotFigure);
 psiR = Reset(serialObjIMU(1:2), link, zeros(1,4));
-% psiL = Reset(serialObjIMU(3:4), link, zeros(1,4));
+%psiL = Reset(serialObjIMU(3:4), link, zeros(1,4));
 
 % Constant running while loop
 % 1. Gets the simulation state
@@ -55,9 +57,9 @@ while (ready && states.run)
     for i = 1:trajBuffer
         
         % 1. Gets simulation state
-        states = guidata(RobotFigure); if (~states.run), break; end;
+        states = guidata(RobotFigure); if (~states.run), break; end
         
-        % 2. Reads the IMU data from the sensors       
+        % 2. Reads the IMU data from the sensors
         for j = 1:2
             [qR(j,:), resetR(j)] = ReadIMUQuaternion(serialObjIMU(j));
         %    [qL(j,:), resetL(j)] = ReadIMUQuaternion(serialObjIMU(j+2));
@@ -66,29 +68,32 @@ while (ready && states.run)
         % 3. Estimates the orientation of the arm links
         [linkRRot, psiR] = ...
             EstimateArmOrientation(link, qR, resetR, psiR);
-        % [linkLRot, psiL] = ...
-        %     EstimateArmOrientation(link, qL, resetL, psiL);
+        %[linkLRot, psiL] = ...
+        %    EstimateArmOrientation(link, qL, resetL, psiL);
         
         % 4. Reconstructs the user's arm and desired points
         pointsdR = ReconstructArm(shoulderR, linkRRot);
-        % pointsdL = ReconstructArm(shoulderL, linkLRot);
+        %pointsdL = ReconstructArm(shoulderL, linkLRot);
         
         % 5. Inverse Kinematic optimization to estimate joint angles
         XR = InverseKinematicOptimization(KCR, pointsdR);
-        % XL = InverseKinematicOptimization(KCL, pointsdL);
+        %XL = InverseKinematicOptimization(KCL, pointsdL);
         
         % 6. Rotate and plot the robot, human arm, and trajectory
         KCR = RotateKinematicChain(KCR, XR);
-        
         Robot.KinematicChains.RMK = KCR;
-        % KCL = RotateKinematicChain(KCL, XL);
-        % Robot.KinematicChains.LMK = KCL;
+        %KCL = RotateKinematicChain(KCL, XL);
+        %Robot.KinematicChains.LMK = KCL;
         RobotPlot(Robot);
         
         PlotHumanArm(shoulderR, pointsdR);
-        % PlotHumanArm(shoulderL, pointsdL);
+        %PlotHumanArm(shoulderL, pointsdL);
         histTR = ManageTrajectory(i, histTR, KCR, RobotFigure, states);
-        % histTL = ManageTrajectory(i, histTL, KCL, RobotFigure, states);
+        %histTL = ManageTrajectory(i, histTL, KCL, RobotFigure, states);
+        
+        % Moves the Robot Dynamixels
+        DynamixelControl(dynamixelR, XR, 'r');
+        %DynamixelControl(dynamixelL, XL);
         drawnow;
     end
     
@@ -97,8 +102,8 @@ while (ready && states.run)
         states.run = 1; guidata(RobotFigure, states);
         psiR = Reset(serialObjIMU(1:2), link, psiR);
         KCR = RotateKinematicChain(KCR, [-pi/2;zeros(5,1)]);
-        % psiL = Reset(serialObjIMU(3:4), link, psiL);
-        % KCL = RotateKinematicChain(KCL, [-pi/2;zeros(5,1)]);
+        psiL = Reset(serialObjIMU(3:4), link, psiL);
+        KCL = RotateKinematicChain(KCL, [-pi/2;zeros(5,1)]);
     end;
 end
 
@@ -115,14 +120,13 @@ function ready = ReadyForUse(RobotFigure)
 states = guidata(RobotFigure);
 states.begin = -1;
 guidata(RobotFigure, states);
-
 fprintf('Begin control? [Y/N]: ');
 SetSimulationControlText(states,'Interactive Simulation','Simulation Paused'...
     ,'','Begin control? [Y/N]:');
 while (states.begin ~= 0  && states.begin ~= 1)
     states = guidata(RobotFigure);
     if (states.begin == 1)
-        fprintf('Y\n\n   Robot ARM Control   \n\n');
+        fprintf('Y\n\n   Robot ARM Control   \n\n');       
         SetSimulationControlText(states,'Interactive Simulation',...
             'Running Simulation...','Robot Arm Control','{Delete to quit}');
         ready = true;

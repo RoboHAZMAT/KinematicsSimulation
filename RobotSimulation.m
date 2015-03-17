@@ -12,7 +12,7 @@ function varargout = RobotSimulation(varargin)
 % the robot more intuitive to use.
 
 gui_Singleton = 1;
-gui_State = struct('gui_Name',       mfilename, ...
+gui_State = struct('gui_Name', mfilename, ...
     'gui_Singleton',  gui_Singleton, ...
     'gui_OpeningFcn', @RobotSimulation_OpeningFcn, ...
     'gui_OutputFcn',  @RobotSimulation_OutputFcn, ...
@@ -31,7 +31,7 @@ end
 
 
 % --- Executes just before RobotSimulation is made visible.
-function RobotSimulation_OpeningFcn(hObject, eventdata, handles, varargin)
+function RobotSimulation_OpeningFcn(hObject, ~, handles, varargin)
 % Choose default command line output for RobotSimulation
 handles = StartUpGUI(hObject, handles);
 
@@ -53,18 +53,14 @@ set(handles.statusAxes, 'XTick', []);
 set(handles.statusAxes, 'YTick', []);
 set(handles.statusAxes,'Color',[1 1 0]);
 
-
-
-
 % --- Outputs from this function are returned to the command line.
-function varargout = RobotSimulation_OutputFcn(hObject, eventdata, handles)
+function varargout = RobotSimulation_OutputFcn(~, ~, handles)
 set(handles.robotAxes,'Visible','off')
 % Get default command line output from handles structure
 varargout{1} = handles.output;
 
-
 % --- Executes on button press in stopButton.
-function stopButton_Callback(hObject, eventdata, handles)
+function stopButton_Callback(hObject, ~, handles) %#ok<*DEFNU>
 if(strcmpi(StopProgramDialog,'Yes'))
     set(handles.statusText,'String','Simulation Running...');
     set(handles.statusText,'String','Simulation Stopped.');
@@ -73,21 +69,20 @@ if(strcmpi(StopProgramDialog,'Yes'))
 end;
 
 % --- Executes on selection change in simulationSelectionMenu.
-function simulationSelectionMenu_Callback(hObject, eventdata, handles)
+function simulationSelectionMenu_Callback(hObject, ~, handles)
 handles.simulation = get(hObject,'Value');
 guidata(hObject,handles);
 
 % --- Executes during object creation, after setting all properties.
-function simulationSelectionMenu_CreateFcn(hObject, eventdata, handles)
+function simulationSelectionMenu_CreateFcn(hObject, ~, handles)
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor','white');
 end
-
 handles.simulation = get(hObject,'Value');
 guidata(hObject,handles);
 
 % --- Executes on selection change in robotSelectionMenu.
-function robotSelectionMenu_Callback(hObject, eventdata, handles)
+function robotSelectionMenu_Callback(hObject, ~, handles)
 handles.robotSystem = get(hObject,'Value');
 guidata(hObject,handles);
 
@@ -95,18 +90,16 @@ if (handles.robotSystem == 1)
     optionStrings = {'Trajectory Tracking Simulation',...
         'Point Inverse Kinematics','Keyboard Control Simulation',...
         'IMU Controlled Arms (YPR)','Full  IMU Controlled Robot Arm',...
-        'IMU Controlled Robot Head'};
+        'IMU Controlled Robot Head','RoboHAZMAT Control'};
 elseif (handles.robotSystem == 2)
     optionStrings = {'Trajectory Tracking Simulation',...
         'Keyboard Control Simulation','Trajectory Tracking Arduino',...
         'Keyboard Control Arduino','IMU Controlled Mechatronic Arm'};
 end
-
 set(handles.simulationSelectionMenu,'String',optionStrings);
 
-
 % --- Executes during object creation, after setting all properties.
-function robotSelectionMenu_CreateFcn(hObject, eventdata, handles)
+function robotSelectionMenu_CreateFcn(hObject, ~, handles)
 
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor','white');
@@ -117,7 +110,7 @@ guidata(hObject,handles);
 
 
 % --- Executes on button press in startButton.
-function startButton_Callback(hObject, eventdata, handles)
+function startButton_Callback(hObject, ~, handles)
 cla(handles.robotCADAxes);
 set(handles.statusAxes,'Color',[0 1 0]);
 axes(handles.robotAxes);
@@ -138,7 +131,7 @@ end
 
 
 % --- Executes on button press in zoomToggleButton.
-function zoomToggleButton_Callback(hObject, eventdata, handles)
+function zoomToggleButton_Callback(hObject, ~, handles)
 zoomAxes = get(hObject,'Value');
 if (zoomAxes)
     zoom on;
@@ -149,7 +142,7 @@ end
 
 
 % --- Executes on button press in panToggleButton.
-function panToggleButton_Callback(hObject, eventdata, handles)
+function panToggleButton_Callback(hObject, ~, handles)
 panAxes = get(hObject,'Value');
 if (panAxes)
     pan on;
@@ -160,7 +153,7 @@ end
 
 
 % --- Executes on button press in rotateToggleButton.
-function rotateToggleButton_Callback(hObject, eventdata, handles)
+function rotateToggleButton_Callback(hObject, ~, handles)
 rotateAxes = get(hObject,'Value');
 if (rotateAxes)
     rotate3d on;
@@ -171,7 +164,7 @@ end
 
 
 % --- Executes on button press in resetButton.
-function resetButton_Callback(hObject, eventdata, handles)
+function resetButton_Callback(~, ~, ~)
 % hObject    handle to resetButton (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
