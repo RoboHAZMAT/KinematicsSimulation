@@ -21,6 +21,7 @@ histD = zeros(traj.runs,3);
 
 % History vectors for the actual trajectories
 histT = zeros(traj.runs,3);
+dRA = DynamixelControlSetup
 
 while (states.run)
     % Runs the loop a given number of times
@@ -52,6 +53,9 @@ while (states.run)
             'MarkerSize',MS,'LineStyle','none');
         plot3(histT(:,1),histT(:,2),histT(:,3),'Marker','.','color','red',...
             'MarkerSize',MS,'LineStyle','none');
+        for m = 4:5
+            DynamixelControl(dRA,X,'r');
+        end
         drawnow;
     end
 end

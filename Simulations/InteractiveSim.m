@@ -61,11 +61,16 @@ function Robot = InteractiveSim(Robot, mode)
 %        configuration necessary for the robot arm
 
 clc;
+RobotFigure = gcf;
+states = guidata(RobotFigure);
 fprintf('====================================\n\n');
 fprintf('     Interactive Simulation: %i\n\n', mode);
 fprintf('====================================\n\n');
 fprintf('       Running Simulation...\n');
 fprintf('         {Delete to quit}\n\n');
+
+SetSimulationControlText(states,'Interactive Simulation','Running Simulation...'...
+    ,'','{Delete to quit}');
 
 % Plots the Robot simulation
 if (mode - 20 <= 0)
@@ -99,6 +104,11 @@ elseif (mode == 5)
 elseif (mode == 6)
     % IMU Controlled Robot Head
     Robot = Simulation6(Robot);
+
+elseif (mode == 7)
+    % IMU Controlled Robot Head
+    Robot = ControlRoboHAZMAT(Robot);
+    calllib('dynamixel','dxl_terminate');
     
 elseif (mode == 11)
     % Mechatronic Arm Inverse Kinematics Trajectory Simulation

@@ -1,4 +1,4 @@
-function Robot = Simulation5(Robot)
+function Robot = ControlRoboHAZMAT(Robot)
 %% =================IMU Controlled Robot Arm Simulation====================
 % Simulation that allows the robot to be controlled by IMUs worn on the
 % arm. One IMU is worn on the upper arm and one IMU on the forearm. This
@@ -14,7 +14,10 @@ function Robot = Simulation5(Robot)
 
 % Sets up the Serial communication with the IMUs
 IMUCOM = SetupCOM; 
-for i = 1:2, serialObjIMU(i) = SetupIMUSerial(IMUCOM(i,:)); end
+for i = 1:2, serialObjIMU(i) = SetupIMUSerial(IMUCOM{i}); end
+
+% Sets up the communication with the Dynamixels
+[dynamixelR] = DynamixelControlSetup;
 
 % Specifies the arm and points to be controlled
 % Right Arm Control Gains
@@ -22,7 +25,7 @@ KCR = RotateKinematicChain(Robot.KinematicChains.RMK,...
     [-pi/2;zeros(4,1);pi/2]);
 KCR.optimization.weightings = [0;0;0;10;10;10;10;10];
 % Left Arm Control Gains
-%KCL = RotateKinematicChain(Robot.KinematicChains.RML,...
+%KCL = RotateKinematicChain(Robot.KinematicChains.LMK,...
 %    [-pi/2;zeros(4,1);pi/2]);
 %KCL.optimization.weightings = [0;0;0;10;10;10;10;10];
 
@@ -87,6 +90,10 @@ while (ready && states.run)
         %PlotHumanArm(shoulderL, pointsdL);
         histTR = ManageTrajectory(i, histTR, KCR, RobotFigure, states);
         %histTL = ManageTrajectory(i, histTL, KCL, RobotFigure, states);
+        
+        % Moves the Robot Dynamixels
+        DynamixelControl(dynamixelR, XR, 'r');
+        %DynamixelControl(dynamixelL, XL);
         drawnow;
     end
     
@@ -95,8 +102,8 @@ while (ready && states.run)
         states.run = 1; guidata(RobotFigure, states);
         psiR = Reset(serialObjIMU(1:2), link, psiR);
         KCR = RotateKinematicChain(KCR, [-pi/2;zeros(5,1)]);
-        % psiL = Reset(serialObjIMU(3:4), link, psiL);
-        % KCL = RotateKinematicChain(KCL, [-pi/2;zeros(5,1)]);
+        psiL = Reset(serialObjIMU(3:4), link, psiL);
+        KCL = RotateKinematicChain(KCL, [-pi/2;zeros(5,1)]);
     end;
 end
 
