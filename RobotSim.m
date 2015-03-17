@@ -68,10 +68,5 @@ elseif (mode - 20 <= 0)
     MechatronicArm = InteractiveSim(MechatronicArm, mode);
 end
 
-states = guidata(gcf);
 % Ending the Simulation
 fprintf('\nFinished Simulation.\nDone.\n\n');
-SetSimulationControlText(states,'Quitting Simulation...', '',...
-    'Finished Simulation.', 'Done.');
-set(states.statusAxes,'Color',[1 0 0]);
-set(states.statusText,'String','Simulation Stopped.');

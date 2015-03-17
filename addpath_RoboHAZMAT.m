@@ -30,14 +30,9 @@ addpath SerialCommunication\MotorControl
 %% Adds the Intuitive Control scripts
 addpath IntuitiveRobotControl\
 addpath IntuitiveRobotControl\Control
-addpath IntuitiveRobotControl\Control\DynamixelControl
-addpath IntuitiveRobotControl\Control\KeyboardControl
-addpath IntuitiveRobotControl\Control\ServoControl
 addpath IntuitiveRobotControl\StateEstimation
 
 %% Adds the scripts containing the Simulations
 addpath Simulations\
 addpath Simulations\RoboHAZMAT
 addpath Simulations\MechatronicArm
-
-addpath ..\..\..\MATLAB
