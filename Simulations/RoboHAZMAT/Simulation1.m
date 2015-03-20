@@ -16,6 +16,9 @@ Robot.KinematicChains.LMK = RotateKinematicChain(Robot.KinematicChains.LMK,...
 traj.traj = 1;      % {1, 2}
 traj = TrajectoriesRoboHAZMAT(0, traj);
 
+% Sets up the communication with the Dynamixels
+[dynamixelR] = DynamixelControlSetup;
+
 % History vectors for the desired trajectories
 histD = zeros(traj.runs,3);
 
@@ -40,11 +43,14 @@ while (states.run)
         pointsd(:,controlPoint) = [traj.point; 1] ...
             + traj.noise*[NoiseCalc;NoiseCalc;NoiseCalc;1];
         X = InverseKinematicOptimization(KC,pointsd);
-        
+           
         % Rotates and plots the Robot object
         KC = RotateKinematicChain(KC,X);
         Robot.KinematicChains.RMK = KC;
-        RobotPlot(Robot);
+        RobotPlot(Robot);   
+        
+        % Moves the Robot Dynamixels
+        DynamixelControl(dynamixelR, X, 'r');
         
         % Plots the ghost trajectories
         histT(i,:) = KC.points.kPG(1:3,controlPoint)'; MS = 10;
@@ -55,3 +61,4 @@ while (states.run)
         drawnow;
     end
 end
+calllib('dynamixel','dxl_terminate');

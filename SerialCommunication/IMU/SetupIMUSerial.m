@@ -10,11 +10,11 @@ states = guidata(gcf);
 
 % Setup Serial Communication with IMU
 fprintf('Setup Serial Communication With %s...\n', IMUCOM);
-SetSimulationControlText(states,'','Setup Serial Communication...','','');
+%SetSimulationControlText(states,'','Setup Serial Communication...','','');
 
 % Check if COM port is available
 if (~ismember(GetAvailableCOM,IMUCOM))
-    SetSimulationControlText(states,'','COM Port not available.','','');
+    %SetSimulationControlText(states,'','COM Port not available.','','');
     error('%s is not available',IMUCOM);
 end
 
@@ -25,21 +25,21 @@ initFailed = 0;
 pause(0.5);
 
 fprintf('Initializing IMU...\n');
-SetSimulationControlText(states,'','Setup Serial Communication...',...
-    'Initializing IMU...','');
+%SetSimulationControlText(states,'','Setup Serial Communication...',...
+%    'Initializing IMU...','');
 % Clear received message in buffer
 while (~initFailed && ...
         isempty(strfind(serialObjIMU.fscanf,'Initializing I2C devices...')))
     fprintf('Initialization Failed. Retry...\n\n'); initFailed = 1;
-    SetSimulationControlText(states,'Setup Serial Communication...','',...
-        'Initialization Failed.','Retry...'); break;
+    %SetSimulationControlText(states,'Setup Serial Communication...','',...
+%        'Initialization Failed.','Retry...'); break;
 end
 
 % Test Connections
 if (~initFailed)
     fprintf('IMU Connection Successful. Initializing DMP...\n'); end;
-SetSimulationControlText(states,'Setup Serial Communication...','',...
-    'IMU Connection Successful.','Initializing DMP...');
+%SetSimulationControlText(states,'Setup Serial Communication...','',...
+%    'IMU Connection Successful.','Initializing DMP...');
 while (~initFailed && ...
         isempty(strfind(serialObjIMU.fscanf,'Initializing DMP...')))
     fprintf('Initialization Failed. Retry...\n\n'); initFailed = 1; break;
