@@ -8,25 +8,27 @@ args = struct();
 % ---------------Shoulder---------------
 args.name = 'Right Shoulder Pitch';
 args.id = 1;
-args.maxPosition = 3047;
-args.minPosition = 1047;
+args.portNum = 19;
+args.maxPosition = 4095;
+args.minPosition = 1500;
 dynamixelRightArm{1} = Dynamixel(args);
 
 args.name = 'Right Shoulder Roll';
 args.id = 2;
-args.maxPosition = 3047;
-args.minPosition = 1047;
+args.maxPosition = 3675;
+args.minPosition = 900;
 dynamixelRightArm{2} = Dynamixel(args);
 
 args.name = 'Right Shoulder Yaw';
 args.id = 3;
-args.maxPosition = 3047;
-args.minPosition = 1047;
+args.maxPosition = 4095;
+args.minPosition = 0;
 dynamixelRightArm{3} = Dynamixel(args);
-
+%{
 % ---------------Elbow---------------
 args.name = 'Right Elbow Pitch';
 args.id = 4;
+args.portNum = 18;
 args.maxPosition = 3325;
 args.minPosition = 2047;
 dynamixelRightArm{4} = Dynamixel(args);
@@ -45,7 +47,7 @@ args.minPosition = 1047;
 dynamixelRightArm{6} = Dynamixel(args);
 
 %% ==============================Left Arm==================================
-%{
+
 % ---------------Shoulder---------------
 args.name = 'Left Shoulder Pitch';
 args.id = 11;

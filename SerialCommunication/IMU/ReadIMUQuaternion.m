@@ -1,4 +1,4 @@
-function [q, reset, readingIMU] = ReadIMUQuaternion(serialObjIMU)
+function [q, reset, readingIMU] = ReadIMUQuaternion(serialObjIMU, q)
 %% =========================Read IMU Quaternion============================
 % RoboHAZMAT: Senior Design Project
 % Motion Control Team
@@ -15,11 +15,12 @@ qw = NaN;
 qx = NaN;
 qy = NaN;
 qz = NaN;
-reset = NaN;
+reset = 0;
 readingIMU = NaN;
 
 
-while (isnan(qw) || isnan(qx) || isnan(qy) || isnan(qz) || isnan(reset))
+flushinput(serialObjIMU);
+while (isnan(qw) || isnan(qx) || isnan(qy) || isnan(qz))
     % Reads the incoming buffer stream and clears it
     while(serialObjIMU.BytesAvailable > 0)
         readingIMU = fscanf(serialObjIMU);
@@ -42,7 +43,7 @@ while (isnan(qw) || isnan(qx) || isnan(qy) || isnan(qz) || isnan(reset))
         qy = str2double(readingIMU(pos3 + 1:pos4 - 1));
         qz = str2double(readingIMU(pos4 + 1:pos5 - 1));
         reset = str2double(readingIMU(pos5 + 1:pos6 - 1));
+        q = [qw, qx, qy, qz];
+        if (isnan(reset)), reset = 0; end;
     end
 end
-
-q = [qw, qx, qy, qz];

@@ -23,4 +23,8 @@ IMUCOM{2} = 'COM20';
 motorControlCOM = 'COM11';
 
 % Specify COM port for the Head Control
+<<<<<<< HEAD
 headControlCOM = 'COM19';
+=======
+headControlCOM = 'COM12';
+>>>>>>> origin/master

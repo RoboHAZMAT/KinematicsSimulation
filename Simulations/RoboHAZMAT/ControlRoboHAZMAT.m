@@ -12,18 +12,19 @@ function Robot = ControlRoboHAZMAT(Robot)
 % Sets up the Keyboard Control
 [RobotFigure, states] = SetupKeyboardControl(Robot, 2);
 
+% Sets up the communication with the Dynamixels
+[dynamixelR] = DynamixelControlSetup;
+
 % Sets up the Serial communication with the IMUs
 IMUCOM = SetupCOM; 
 for i = 1:2, serialObjIMU(i) = SetupIMUSerial(IMUCOM{i}); end
-
-% Sets up the communication with the Dynamixels
-[dynamixelR] = DynamixelControlSetup;
 
 % Specifies the arm and points to be controlled
 % Right Arm Control Gains
 KCR = RotateKinematicChain(Robot.KinematicChains.RMK,...
     [-pi/2;zeros(4,1);pi/2]);
 KCR.optimization.weightings = [0;0;0;10;10;10;10;10];
+qR = [0,0,0,0;0,0,0,0];
 % Left Arm Control Gains
 %KCL = RotateKinematicChain(Robot.KinematicChains.LMK,...
 %    [-pi/2;zeros(4,1);pi/2]);
@@ -61,7 +62,7 @@ while (ready && states.run)
         
         % 2. Reads the IMU data from the sensors
         for j = 1:2
-            [qR(j,:), resetR(j)] = ReadIMUQuaternion(serialObjIMU(j));
+            [qR(j,:), resetR(j)] = ReadIMUQuaternion(serialObjIMU(j), qR(j,:));
         %    [qL(j,:), resetL(j)] = ReadIMUQuaternion(serialObjIMU(j+2));
         end
         
