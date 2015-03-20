@@ -30,7 +30,10 @@ classdef Dynamixel
             
             % Communication Parameters
             c.CONNECTED = false;
-            c.PORTNUM = 19;       % Com Port
+            if (isfield(args,'portNum')),
+                c.PORTNUM = args.portNum;     % Com Port
+            else c.PORTNUM = 19;
+            end;
             c.BAUDNUM = 1;       % Baudrate (1=1Mbps)
             D.connection = c;
             
@@ -63,7 +66,7 @@ classdef Dynamixel
                 pause(1)
                 this.setCommand(this.address.TORQUE_ENABLE,1);
                 this.setCommand(this.address.TORQUE_LIMIT,1023);
-                this.setCommand(this.address.MOVING_SPEED,0);
+                this.setCommand(this.address.MOVING_SPEED,150);
             else
                 this.connection.CONNECTED = false;
                 fprintf('ERROR: Connection Failed!\n');
@@ -94,7 +97,7 @@ classdef Dynamixel
         end
         
         % Sets the position to the given input. Includes limit checking.
-        function setPosition(this,pos,type)
+        function setPositionMX(this,pos,type)
             % Allows a specified type of angle
             if (nargin > 2)
                 if (strcmpi(type,'deg'))
@@ -106,11 +109,33 @@ classdef Dynamixel
             % Checks that position is within the limits
             if (pos < this.property.MIN_POSITION)
                 pos = this.property.MIN_POSITION;
-                fprintf('\nWARNING: Position requested lower than limit\n');
+                %                fprintf('\nWARNING: Position requested lower than limit\n');
             end
             if (pos > this.property.MAX_POSITION)
                 pos = this.property.MAX_POSITION;
-                fprintf('\nWARNING: Position requested greater than limit\n');
+                %                fprintf('\nWARNING: Position requested greater than limit\n');
+            end
+            % Calls the library to set the position
+            this.setCommand(this.address.GOAL_POSITION,pos);
+        end
+        
+        function setPositionEX(this,pos,type)
+            % Allows a specified type of angle
+            if (nargin > 2)
+                if (strcmpi(type,'deg'))
+                    pos = round(mod(pos,250)*4096/250);
+                elseif (strcmpi(type,'rad'))
+                    pos = round(mod(pos,(250/180*pi))*4096/(250/180*pi));
+                end
+            end
+            % Checks that position is within the limits
+            if (pos < this.property.MIN_POSITION)
+                pos = this.property.MIN_POSITION;
+                %                fprintf('\nWARNING: Position requested lower than limit\n');
+            end
+            if (pos > this.property.MAX_POSITION)
+                pos = this.property.MAX_POSITION;
+                %                fprintf('\nWARNING: Position requested greater than limit\n');
             end
             % Calls the library to set the position
             this.setCommand(this.address.GOAL_POSITION,pos);
