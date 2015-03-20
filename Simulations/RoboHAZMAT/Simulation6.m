@@ -10,9 +10,9 @@ function Robot = Simulation6(Robot)
 [IMUCOM, ~, headControlCOM] = SetupCOM;
 
 % Setup communication with IMU and Head
+serialObjIMU = SetupIMUSerial(IMUCOM(1,:));
 [serialMotorControl, motor] = ...
     SetupHeadControlSerial(headControlCOM);
-serialObjIMU = SetupIMUSerial(IMUCOM{2});
 
 % *** This is what must be tuned ***
 % Head Control Gains
