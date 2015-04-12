@@ -17,7 +17,7 @@ function Robot = ControlRoboHAZMAT(Robot)
 
 % Sets up the Serial communication with the IMUs
 IMUCOM = SetupCOM; 
-for i = 1:2, serialObjIMU(i) = SetupIMUSerial(IMUCOM{i}); end
+for i = 1:2, serialObjIMU(i) = SetupIMUSerial(IMUCOM{i}); end %%JRG - needs to change
 
 % Specifies the arm and points to be controlled
 % Right Arm Control Gains
@@ -61,6 +61,7 @@ while (ready && states.run)
         states = guidata(RobotFigure); if (~states.run), break; end
         
         % 2. Reads the IMU data from the sensors
+        %Need to figure out how many times we will run this. 
         for j = 1:2
             [qR(j,:), resetR(j)] = ReadIMUQuaternion(serialObjIMU(j), qR(j,:));
         %    [qL(j,:), resetL(j)] = ReadIMUQuaternion(serialObjIMU(j+2));

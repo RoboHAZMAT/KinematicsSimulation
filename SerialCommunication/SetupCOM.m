@@ -17,14 +17,10 @@ delete(instrfindall);
 % Specify COM port for the IMU
 % Right Lower Arm, Right Upper Arm
 IMUCOM{1} = 'COM16';
-IMUCOM{2} = 'COM20';
+IMUCOM{2} = 'COM16';
 
 % Specify COM port for the Motor Control
-motorControlCOM = 'COM11';
+motorControlCOM = 'COM24';
 
 % Specify COM port for the Head Control
-<<<<<<< HEAD
-headControlCOM = 'COM19';
-=======
-headControlCOM = 'COM12';
->>>>>>> origin/master
+headControlCOM = 'COM7';
