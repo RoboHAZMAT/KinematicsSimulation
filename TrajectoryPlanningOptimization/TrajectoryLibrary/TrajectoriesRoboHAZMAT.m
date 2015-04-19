@@ -16,7 +16,7 @@ if (traj.traj == 1)
     else
         traj.point(1,1) = 0.05*cosd(2*i + 180) + 0.35;
         traj.point(2,1) = 0.2*sind(2*i) - 0.15;
-        traj.point(3,1) = 0.3*cosd(1*i) + 0.3;
+        traj.point(3,1) = 0.3*cosd(1*i) + 0.25;
     end
     
 elseif (traj.traj == 2)

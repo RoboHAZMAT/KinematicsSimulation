@@ -9,43 +9,94 @@ function Robot = ControlRoboHAZMAT(Robot)
 % - An extra feature allows the user to draw trajectories in 3D space using
 % gestures. Trajectory tracks the arm's wrist point.
 
+% Choose Controls
+rightArm = false;
+leftArm = false;
+head = true;
+
 % Sets up the Keyboard Control
 [RobotFigure, states] = SetupKeyboardControl(Robot, 2);
 
+%% Setup for the Communication lines on the COM ports
 % Sets up the communication with the Dynamixels
-[dynamixelR] = DynamixelControlSetup;
+if (rightArm && leftArm)
+    [dynamixelR, dynamixelL] = DynamixelControlSetup;
+    DynamixelControl(dynamixelR,[0;0;0;-pi/4;0;0],'r')
+    DynamixelControl(dynamixelL,[0;0;0;-pi/4;0;0],'l')
+elseif (rightArm && ~leftArm)
+    dynamixelR = DynamixelControlSetup;
+    DynamixelControl(dynamixelR,[0;0;0;-pi/4;0;0],'r')
+elseif (~rightArm && leftArm)
+    [~,dynamixelL] = DynamixelControlSetup;
+    DynamixelControl(dynamixelL,[0;0;0;-pi/4;0;0],'l')
+end
 
 % Sets up the Serial communication with the IMUs
-IMUCOM = SetupCOM; 
-for i = 1:2, serialObjIMU(i) = SetupIMUSerial(IMUCOM{i}); end %%JRG - needs to change
+[nIMUR, nIMUL, nIMUH] = SetWirelessIMU(rightArm, leftArm, head);
+[~, ~, headControlCOM, wirelessIMUCOM] = SetupCOM;
+if (rightArm || leftArm || head)
+    nIMU = [nIMUR, nIMUL, nIMUH];
+    serialObjWirelessIMU = SetupWirelessIMUSerial(wirelessIMUCOM, nIMU);
+end
 
+% Setup the arbotixCOM port
+if (rightArm || leftArm)
+    serialObjArbotix = SetupArbotixControlSerial(arbotixCOM);
+end
+
+if (head)
+    % Setup the Head Control
+    [serialHeadControl, motor] = SetupHeadControlSerial(headControlCOM);
+end
+
+%%
 % Specifies the arm and points to be controlled
-% Right Arm Control Gains
-KCR = RotateKinematicChain(Robot.KinematicChains.RMK,...
-    [-pi/2;zeros(4,1);pi/2]);
-KCR.optimization.weightings = [0;0;0;10;10;10;10;10];
-qR = [0,0,0,0;0,0,0,0];
-% Left Arm Control Gains
-%KCL = RotateKinematicChain(Robot.KinematicChains.LMK,...
-%    [-pi/2;zeros(4,1);pi/2]);
-%KCL.optimization.weightings = [0;0;0;10;10;10;10;10];
+if (rightArm)
+    % Right Arm Control Gains
+    KCR = RotateKinematicChain(Robot.KinematicChains.RMK,...
+        [-pi/2;zeros(4,1);pi/2]);
+    KCR.optimization.weightings = [0;0;0;10;10;10;10;10];
+end
+if (leftArm)
+    % Left Arm Control Gains
+    %KCL = RotateKinematicChain(Robot.KinematicChains.LMK,...
+    %    [-pi/2;zeros(4,1);pi/2]);
+    %KCL.optimization.weightings = [0;0;0;10;10;10;10;10];
+end
 
 % Sets up the estimated actual arm position
 shoulderR = [0,-0.179,0.371]; shoulderL = [0,0.179,0.371];
 link(1,:) = [0.279,0,0]; link(2,:) = [0,0,-0.076];
 link(3,:) = [0.257,0,0]; link(4,:) = [0,0,-0.076];
 
+% Head Control Gains
+if (head)
+    KCH = RotateKinematicChain(Robot.KinematicChains.HK,zeros(3,1));
+    KCH.optimization.weightings = [10;10;10;10];
+    % Sets up the estimated actual head position
+    neck = [0,0,0.589];
+    linkH(1,:) = [.084,0,0]; linkH(2,:) = [0,0,-0.076];
+end
+
+%%
 % History vectors for the actual trajectory histories
 trajBuffer = 100;
-histTR = zeros(trajBuffer,3);
+%histTR = zeros(trajBuffer,3);
 %histTL = zeros(trajBuffer,3);
 
 % Waits for the user to be ready to use and initializes the arm
 ready = ReadyForUse(RobotFigure);
-psiR = Reset(serialObjIMU(1:2), link, zeros(1,4));
-%psiL = Reset(serialObjIMU(3:4), link, zeros(1,4));
+if (rightArm)
+    psiR = Reset(serialObjWirelessIMU, link, zeros(1,4), nIMUR);
+end
+if (leftArm)
+    psiL = Reset(serialObjWirelessIMU, link, zeros(1,4), nIMUL);
+end
+%psiH = Reset(serialObjWirelessIMU, linkH, zeros(1,4), nIMU);
+psiH = [0,0];
+pause(1);
 
-% Constant running while loop
+%% Constant running while loop
 % 1. Gets the simulation state
 % 2. Reads the IMU data from the sensors
 % 3. Estimates the orientation of the arm links
@@ -56,56 +107,98 @@ while (ready && states.run)
     
     % Runs the loop through the size of the trajectory history buffer
     for i = 1:trajBuffer
-        
         % 1. Gets simulation state
         states = guidata(RobotFigure); if (~states.run), break; end
         
         % 2. Reads the IMU data from the sensors
-        %Need to figure out how many times we will run this. 
-        for j = 1:2
-            [qR(j,:), resetR(j)] = ReadIMUQuaternion(serialObjIMU(j), qR(j,:));
-        %    [qL(j,:), resetL(j)] = ReadIMUQuaternion(serialObjIMU(j+2));
+        if (rightArm)
+            qR = zeros(2,4); resetR = zeros(1, length(nIMUR));
+            for j = 1:length(nIMUR)
+                [qR(j,:), resetR(j)] = ...
+                    ReadWirelessIMU(serialObjWirelessIMU, nIMUR(j));
+            end
+        end
+        if (leftArm)
+            qL = zeros(2,4); resetL = zeros(1, length(nIMUL));
+            for j = 1:2
+                [qL(j,:), resetL(j)] = ...
+                    ReadWirelessIMU(serialObjWirelessIMU, nIMUL(j));
+            end
+        end
+        if (head)
+            [qH, resetH] = ...
+                ReadWirelessIMU(serialObjWirelessIMU, nIMUH);
         end
         
         % 3. Estimates the orientation of the arm links
-        [linkRRot, psiR] = ...
-            EstimateArmOrientation(link, qR, resetR, psiR);
-        %[linkLRot, psiL] = ...
-        %    EstimateArmOrientation(link, qL, resetL, psiL);
+        if (rightArm)
+            [linkRRot, psiR] = ...
+                EstimateArmOrientation(link, qR, resetR, psiR);
+        end
+        if (leftArm)
+            [linkLRot, psiL] = ...
+                EstimateArmOrientation(link, qL, resetL, psiL);
+        end
+        if (head)
+            [linkHRot, psiH] = ...
+                EstimateHeadOrientation(linkH, qH, resetH, psiH);
+        end
         
         % 4. Reconstructs the user's arm and desired points
-        pointsdR = ReconstructArm(shoulderR, linkRRot);
-        %pointsdL = ReconstructArm(shoulderL, linkLRot);
+        if (rightArm); pointsdR = ReconstructArm(shoulderR, linkRRot); end;
+        if (leftArm); pointsdL = ReconstructArm(shoulderL, linkLRot); end;
+        if (head); pointsdH = ReconstructHead(neck, linkHRot); end;
         
         % 5. Inverse Kinematic optimization to estimate joint angles
-        XR = InverseKinematicOptimization(KCR, pointsdR);
-        %XL = InverseKinematicOptimization(KCL, pointsdL);
+        if (rightArm); XR = InverseKinematicOptimization(KCR, pointsdR); end;
+        if (leftArm); XL = InverseKinematicOptimization(KCL, pointsdL); end;
+        if (head); XH = InverseKinematicOptimization(KCH, pointsdH); end;
         
         % 6. Rotate and plot the robot, human arm, and trajectory
-        KCR = RotateKinematicChain(KCR, XR);
-        Robot.KinematicChains.RMK = KCR;
-        %KCL = RotateKinematicChain(KCL, XL);
-        %Robot.KinematicChains.LMK = KCL;
+        if (rightArm)
+            KCR = RotateKinematicChain(KCR, XR);
+            Robot.KinematicChains.RMK = KCR;
+        end
+        if (leftArm)
+            KCL = RotateKinematicChain(KCL, XL);
+            Robot.KinematicChains.LMK = KCL;
+        end
+        if (head)
+            KCH = RotateKinematicChain(KCH, XH);
+            Robot.KinematicChains.HK = KCH;
+        end
         RobotPlot(Robot);
         
-        PlotHumanArm(shoulderR, pointsdR);
-        %PlotHumanArm(shoulderL, pointsdL);
-        histTR = ManageTrajectory(i, histTR, KCR, RobotFigure, states);
+        if (rightArm); PlotHumanArm(shoulderR, pointsdR); end;
+        if (leftArm); PlotHumanArm(shoulderL, pointsdL); end;
+        if (head); PlotHumanHead(neck, pointsdH); end;
+        %histTR = ManageTrajectory(i, histTR, KCR, RobotFigure, states);
         %histTL = ManageTrajectory(i, histTL, KCL, RobotFigure, states);
         
         % Moves the Robot Dynamixels
-        DynamixelControl(dynamixelR, XR, 'r');
-        %DynamixelControl(dynamixelL, XL);
+        if (rightArm)
+            DynamixelControl(dynamixelR, serialObjArbotix, XR, 'r');
+        end
+        if (leftArm)
+            DynamixelControl(dynamixelL, serialObjArbotix, XL, 'l');
+        end
+        if (head)
+            RobotHeadControl(serialHeadControl, motor, XH)
+        end
         drawnow;
     end
     
     % If user requests to stop, check again to avoid cutting off Serial
     if (~states.run && ReadyForUse(RobotFigure))
         states.run = 1; guidata(RobotFigure, states);
-        psiR = Reset(serialObjIMU(1:2), link, psiR);
-        KCR = RotateKinematicChain(KCR, [-pi/2;zeros(5,1)]);
-        psiL = Reset(serialObjIMU(3:4), link, psiL);
-        KCL = RotateKinematicChain(KCL, [-pi/2;zeros(5,1)]);
+        if (rightArm)
+            psiR = Reset(serialObjWirelessIMU, link, psiR, nIMUR);
+            KCR = RotateKinematicChain(KCR, [-pi/2;zeros(5,1)]);
+        end
+        if (leftArm)
+            psiL = Reset(serialObjWirelessIMU, link, psiL, nIMUL);
+            KCL = RotateKinematicChain(KCL, [-pi/2;zeros(5,1)]);
+        end
     end;
 end
 
@@ -128,7 +221,7 @@ SetSimulationControlText(states,'Interactive Simulation','Simulation Paused'...
 while (states.begin ~= 0  && states.begin ~= 1)
     states = guidata(RobotFigure);
     if (states.begin == 1)
-        fprintf('Y\n\n   Robot ARM Control   \n\n');       
+        fprintf('Y\n\n   Robot ARM Control   \n\n');
         SetSimulationControlText(states,'Interactive Simulation',...
             'Running Simulation...','Robot Arm Control','{Delete to quit}');
         ready = true;
@@ -145,11 +238,13 @@ end
 %%=================================Reset===================================
 % Resets the arm orientation and outputs the offset psi angle.
 
-function psi = Reset(serialObjIMU, link, psi)
+function psi = Reset(serialObjWirelessIMU, link, psi, nIMU)
 
 % Gets the two IMU readings from the sensors
-q(1,:) = ReadIMUQuaternion(serialObjIMU(1));
-q(2,:) = ReadIMUQuaternion(serialObjIMU(2));
+q = zeros(length(nIMU),4);
+for j  = 1:length(nIMU)
+    q(j,:) = ReadWirelessIMUQuaternion(serialObjWirelessIMU, nIMU(j));
+end
 
 % Forces a reset
 reset = ones(1,2);
@@ -210,6 +305,28 @@ plot3([shoulder(1),elbow(1),upperArmOri(1)],...
 plot3([elbow(1),wrist(1),hand(1)],...
     [elbow(2),wrist(2),hand(2)],...
     [elbow(3),wrist(3),hand(3)],...
+    '--','LineWidth',LW,'Color',[1 0 0],'Marker','.',...
+    'MarkerEdgeColor',[1 0 0],'MarkerSize',MS);
+end
+
+
+%%============================Plot Human Arm===============================
+% Plots the Human head reconstruction estimate. Allows comparison between
+% desired head positioning and the actual controlled robot head.
+
+function PlotHumanHead(neck, pointsd)
+
+% Arm points
+face = pointsd(:,3);
+faceOri = pointsd(:,4);
+
+% Plotting parameters
+LW = 3; MS = 15;
+
+% Plots the estimated user arm for comparison
+plot3([neck(1),face(1),faceOri(1)],...
+    [neck(2),face(2),faceOri(2)],...
+    [neck(3),face(3),faceOri(3)],...
     '--','LineWidth',LW,'Color',[1 0 0],'Marker','.',...
     'MarkerEdgeColor',[1 0 0],'MarkerSize',MS);
 end

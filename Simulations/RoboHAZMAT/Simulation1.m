@@ -1,6 +1,6 @@
 function Robot = Simulation1(Robot)
 %% ================Inverse Kinematic Tracing Trajectories==================
-
+%Robot = CreateRobotRoboHAZMAT;
 % Sets up the Keyboard Control
 [RobotFigure, states] = SetupKeyboardControl;
 

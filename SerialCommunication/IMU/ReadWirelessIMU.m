@@ -1,4 +1,4 @@
-function [q, reset, readingIMU] = ReadWirelessIMU(serialObjWirelessIMU, nIMU)
+function [q, reset, readingIMU] = ReadWirelessIMU(serialObjIMU, nIMU)
 %% =========================Read IMU Quaternion============================
 % RoboHAZMAT: Senior Design Project
 % Motion Control Team
@@ -18,13 +18,13 @@ qz = NaN;
 reset = 0;
 readingIMU = NaN;
 
-flushinput(serialObjWirelessIMU);
+flushinput(serialObjIMU);
 while (isnan(qw) || isnan(qx) || isnan(qy) || isnan(qz))
-    fwrite(serialObjWirelessIMU, nIMU); % possible change for fprintf, but fprintf is slower I think
+    fwrite(serialObjIMU, nIMU); % possible change for fprintf, but fprintf is slower I think
     
     % Reads the incoming buffer stream and clears it
-    if (serialObjWirelessIMU.BytesAvailable > 0)
-        readingIMU = fscanf(serialObjWirelessIMU);
+    if (serialObjIMU.BytesAvailable > 0)
+        readingIMU = fscanf(serialObjIMU);
     end
     
     % If a reading is found from the IMU
