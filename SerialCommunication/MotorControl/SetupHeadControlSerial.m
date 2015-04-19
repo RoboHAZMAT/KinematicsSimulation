@@ -1,4 +1,4 @@
-function [serialMotorControl, motor] = ...
+function [serialHeadControl, motor] = ...
     SetupHeadControlSerial(headControlCOM)
 %% ======================Setup Motor Control Serial========================
 % RoboHAZMAT: Senior Design Project
@@ -15,17 +15,17 @@ if (~ismember(GetAvailableCOM,headControlCOM))
 end
 
 % Open communication with the Arduino
-serialMotorControl = arduino(headControlCOM);
+serialHeadControl = arduino(headControlCOM);
 
 % Define motor PWM pins
 motor = struct();
-motor.neckYaw = 3;
+motor.neckYaw = 6;
 motor.neckPitch = 5;
-motor.neckRoll = 6;
+motor.neckRoll = 3;
 
 % Attach servo motors to their pins
-serialMotorControl.servoAttach(motor.neckYaw);
-serialMotorControl.servoAttach(motor.neckPitch);
-serialMotorControl.servoAttach(motor.neckRoll);
+serialHeadControl.servoAttach(motor.neckYaw);
+serialHeadControl.servoAttach(motor.neckPitch);
+serialHeadControl.servoAttach(motor.neckRoll);
 
-RobotHeadControl(serialMotorControl, motor, zeros(3,1));
+RobotHeadControl(serialHeadControl, motor, zeros(3,1));

@@ -1,4 +1,4 @@
-function [IMUCOM, motorControlCOM, headControlCOM] = SetupCOM
+function [IMUCOM, motorControlCOM, headControlCOM, wirelessIMUCOM, arbotixCOM] = SetupCOM
 %% ============================Setup COM Ports=============================
 % RoboHAZMAT: Senior Design Project
 % Motion Control Team
@@ -16,11 +16,17 @@ delete(instrfindall);
 
 % Specify COM port for the IMU
 % Right Lower Arm, Right Upper Arm
-IMUCOM{1} = 'COM16';
+IMUCOM{1} = 'COM9';
 IMUCOM{2} = 'COM8';
 
 % Specify COM port for the Motor Control
 motorControlCOM = 'COM11';
 
 % Specify COM port for the Head Control
-headControlCOM = 'COM12';
+headControlCOM = 'COM20';
+
+% Wireless IMU COM port
+wirelessIMUCOM = 'COM8';
+
+% Arbotix COM port
+arbotixCOM = 'COM#';

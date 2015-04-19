@@ -15,6 +15,9 @@ KCL = Robot.KinematicChains.LMK;
 KCL.optimization.weightings(controlPoint) = 10;
 pointsdL = zeros(4, size(KCL.points.kP,2));
 
+% Sets up the communication with the Dynamixels
+[dynamixelR] = DynamixelControlSetup;
+
 % Runs the loop a given number of times
 while(states.run)
     % Get current states
@@ -37,6 +40,10 @@ while(states.run)
     % Rotates the KC
     KCL = RotateKinematicChain(KCL,XL);
     Robot.KinematicChains.LMK = KCL;
+    
+    
+    % Moves the Robot Dynamixels
+    DynamixelControl(dynamixelR, XR, 'r');
     
     % Plots the Robot
     RobotPlot(Robot);

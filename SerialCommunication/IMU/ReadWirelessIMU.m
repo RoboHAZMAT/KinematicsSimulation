@@ -1,4 +1,4 @@
-function [q, reset, readingIMU] = ReadIMUQuaternion(serialObjIMU, q)
+function [q, reset, readingIMU] = ReadWirelessIMU(serialObjIMU, nIMU)
 %% =========================Read IMU Quaternion============================
 % RoboHAZMAT: Senior Design Project
 % Motion Control Team
@@ -18,9 +18,10 @@ qz = NaN;
 reset = 0;
 readingIMU = NaN;
 
-
-%flushinput(serialObjIMU);
+flushinput(serialObjIMU);
 while (isnan(qw) || isnan(qx) || isnan(qy) || isnan(qz))
+    fwrite(serialObjIMU, nIMU); % possible change for fprintf, but fprintf is slower I think
+    
     % Reads the incoming buffer stream and clears it
     if (serialObjIMU.BytesAvailable > 0)
         readingIMU = fscanf(serialObjIMU);
@@ -30,19 +31,21 @@ while (isnan(qw) || isnan(qx) || isnan(qy) || isnan(qz))
     if (~isnan(readingIMU))
         
         % Finds the positions of the identifying markers
-        pos1 = strfind(readingIMU, '$');
-        pos2 = strfind(readingIMU, '#');
-        pos3 = strfind(readingIMU, '%');
-        pos4 = strfind(readingIMU, '&');
-        pos5 = strfind(readingIMU, '@');
-        pos6 = strfind(readingIMU, '!');
+        %pos1 = strfind(readingIMU, '*');
+        %pos2 = strfind(readingIMU, '^');
+        pos3 = strfind(readingIMU, '$');
+        pos4 = strfind(readingIMU, '#');
+        pos5 = strfind(readingIMU, '%');
+        pos6 = strfind(readingIMU, '&');
+        pos7 = strfind(readingIMU, '@');
+        pos8 = strfind(readingIMU, '!');
         
         % Pulls the four quaternion parameters out of the reading
-        qw = str2double(readingIMU(pos1 + 1:pos2 - 1));
-        qx = str2double(readingIMU(pos2 + 1:pos3 - 1));
-        qy = str2double(readingIMU(pos3 + 1:pos4 - 1));
-        qz = str2double(readingIMU(pos4 + 1:pos5 - 1));
-        reset = str2double(readingIMU(pos5 + 1:pos6 - 1));
+        qw = str2double(readingIMU(pos3 + 1:pos4 - 1));
+        qx = str2double(readingIMU(pos4 + 1:pos5 - 1));
+        qy = str2double(readingIMU(pos5 + 1:pos6 - 1));
+        qz = str2double(readingIMU(pos6 + 1:pos7 - 1));
+        reset = str2double(readingIMU(pos7 + 1:pos8 - 1));
         q = [qw, qx, qy, qz];
         if (isnan(reset)), reset = 0; end;
     end

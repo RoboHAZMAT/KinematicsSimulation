@@ -50,10 +50,12 @@ classdef Dynamixel
             a.PRESENT_LOAD = 40;
             a.PRESENT_TEMP = 43;
             a.LOCK = 47;
+            a.COMPLIANCE_SLOPE = 28;
+            a.COMPLIANCE_SLOPE2 = 29;
             D.address = a;
             
             D = D.start();
-            D.lock(true);
+            %D.lock(true);
         end
         
         % Starts the connection to the motor and configures it.
@@ -64,9 +66,10 @@ classdef Dynamixel
                 this.connection.CONNECTED = true;
                 fprintf('Success: Connection Established!\n');
                 pause(1)
-                this.setCommand(this.address.TORQUE_ENABLE,1);
-                this.setCommand(this.address.TORQUE_LIMIT,1023);
-                this.setCommand(this.address.MOVING_SPEED,150);
+                %this.setCommand(this.address.TORQUE_ENABLE,1);
+                %this.setCommand(this.address.TORQUE_LIMIT,1023);
+                %this.setCommand(this.address.MOVING_SPEED,250);
+                %this.setComplianceSlopes;
             else
                 this.connection.CONNECTED = false;
                 fprintf('ERROR: Connection Failed!\n');
@@ -93,6 +96,18 @@ classdef Dynamixel
         % Generic getter command method
         function value = getCommand(this,address)
             value = calllib('dynamixel','dxl_read_word',...
+                this.property.ID,address);
+        end
+        
+                % Generic setter command method
+        function setByteCommand(this,address,value)
+            calllib('dynamixel','dxl_write_byte',this.property.ID,...
+                address,value);
+        end
+        
+        % Generic getter command method
+        function value = getByteCommand(this,address)
+            value = calllib('dynamixel','dxl_read_byte',...
                 this.property.ID,address);
         end
         
@@ -123,9 +138,9 @@ classdef Dynamixel
             % Allows a specified type of angle
             if (nargin > 2)
                 if (strcmpi(type,'deg'))
-                    pos = round(mod(pos,250)*4096/250);
+                    pos = mod(pos,251)*4095/250;
                 elseif (strcmpi(type,'rad'))
-                    pos = round(mod(pos,(250/180*pi))*4096/(250/180*pi));
+                    pos = mod(pos,(250/180*pi))*4095/(250/180*pi);
                 end
             end
             % Checks that position is within the limits
@@ -171,6 +186,12 @@ classdef Dynamixel
             this.setCommand(this.address.P_GAIN,p);
             this.setCommand(this.address.I_GAIN,i);
             this.setCommand(this.address.D_GAIN,d);
+        end
+        
+        % Sets a new PID controller. -1 value to keep the same.
+        function setComplianceSlopes(this)
+            this.setByteCommand(this.address.COMPLIANCE_SLOPE,128);
+            this.setByteCommand(this.address.COMPLIANCE_SLOPE2,128);
         end
         
         % Sets the motor to lock EEPROM. 1 to lock, 0 to unlock.

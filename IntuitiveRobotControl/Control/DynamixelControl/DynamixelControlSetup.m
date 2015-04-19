@@ -8,7 +8,7 @@ args = struct();
 % ---------------Shoulder---------------
 args.name = 'Right Shoulder Pitch';
 args.id = 1;
-args.portNum = 19;
+args.portNum = 18;
 args.maxPosition = 4095;
 args.minPosition = 1500;
 dynamixelRightArm{1} = Dynamixel(args);
@@ -24,21 +24,24 @@ args.id = 3;
 args.maxPosition = 4095;
 args.minPosition = 0;
 dynamixelRightArm{3} = Dynamixel(args);
+
+% % ---------------Elbow---------------
+% args.name = 'Right Elbow Pitch';
+% args.id = 4;
+% args.maxPosition = 4095;
+% args.minPosition = 0;
+% dynamixelRightArm{4} = Dynamixel(args);
+% 
+% args.name = 'Right Elbow Yaw';
+% args.id = 5;
+% args.maxPosition = 4095;
+% args.minPosition = 0;
+% dynamixelRightArm{5} = Dynamixel(args);
+
+for i = 1:length(dynamixelRightArm)
+    dynamixelRightArm{i}.setComplianceSlopes();
+end
 %{
-% ---------------Elbow---------------
-args.name = 'Right Elbow Pitch';
-args.id = 4;
-args.portNum = 18;
-args.maxPosition = 3325;
-args.minPosition = 2047;
-dynamixelRightArm{4} = Dynamixel(args);
-
-args.name = 'Right Elbow Yaw';
-args.id = 5;
-args.maxPosition = 2047;
-args.minPosition = 0;
-dynamixelRightArm{5} = Dynamixel(args);
-
 % ---------------Wrist---------------
 args.name = 'Right Wrist Pitch';
 args.id = 6;
@@ -87,3 +90,4 @@ args.maxPosition = 3047;
 args.minPosition = 1047;
 dynamixelLeftArm{6} = Dynamixel(args);
 %}
+fprintf('\nDynamixel Setup Complete.\n\n');
