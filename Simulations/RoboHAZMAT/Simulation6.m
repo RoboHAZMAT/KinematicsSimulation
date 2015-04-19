@@ -11,8 +11,8 @@ function Robot = Simulation6(Robot)
 
 % Setup communication with IMU and Head
 serialObjIMU = SetupIMUSerial(IMUCOM{2});
-% [serialMotorControl, motor] = ...
-%     SetupHeadControlSerial(headControlCOM);
+ [serialMotorControl, motor] = ...
+     SetupHeadControlSerial(headControlCOM);
 
 % *** This is what must be tuned ***
 % Head Control Gains
@@ -44,6 +44,7 @@ while (ready && states.run)
     
     % Runs the loop through the size of the trajectory history buffer
     for i = 1:trajBuffer
+        tic
         
         % 1. Gets simulation state
         states = guidata(RobotFigure); if (~states.run), break; end;
@@ -63,7 +64,7 @@ while (ready && states.run)
         X = InverseKinematicOptimization(KC, pointsd);
         
         % 6. Controls the Robot Head motors
-%         RobotHeadControl(serialMotorControl, motor, X)
+         RobotHeadControl(serialMotorControl, motor, X)
         
         % 7. Rotate and plot the robot, human arm, and trajectory
         KC = RotateKinematicChain(KC, X);
@@ -73,6 +74,7 @@ while (ready && states.run)
         PlotHumanHead(neck, pointsd);
         histT = ManageTrajectory(i, histT, KC, RobotFigure, states);
         drawnow;
+        toc
     end
     
     % If user requests to stop, check again to avoid cutting off Serial
