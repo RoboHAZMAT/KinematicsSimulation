@@ -1,4 +1,4 @@
-function calibrated = CalibrateIMU(serialObjIMU)
+function calibrated = CalibrateIMU(serialObjIMU,nIMU)
 %% ============================Calibrate IMU===============================
 % RoboHAZMAT: Senior Design Project
 % Motion Control Team
@@ -16,7 +16,7 @@ for j = 1:10
     % Fills the buffer with 150 readings
     fprintf('..');
     for i = 1:150
-        q = ReadIMUQuaternion(serialObjIMU);
+        q = ReadWirelessIMU(serialObjIMU,nIMU);
         qBuffer(i) = 100*q(4);
     end
     
