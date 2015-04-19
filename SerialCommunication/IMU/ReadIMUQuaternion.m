@@ -11,8 +11,6 @@ function [q, reset, readingIMU] = ReadIMUQuaternion(serialObjIMU, q)
 % quaternion in a reading is available.
 
 % Initializes the readings
-
-%Will need to be updated to include flex sensor data and wsp id
 qw = NaN;
 qx = NaN;
 qy = NaN;

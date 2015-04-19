@@ -11,9 +11,9 @@ function RobotHeadControl(serialMotorControl, motor, X)
 
 % Translate thetas into Mechatronic Arm controls
 X = X*180/pi;
-X(1) = (-X(1) + 90);
-X(2) = (-X(2) + 90);
-X(3) = (X(3) + 90);
+X(1) = (-X(1) + 98);
+X(2) = (-X(2) + 98);
+X(3) = (X(3) + 98);
 
 % Cut off the angles at 0 and 180 degrees
 X(X > 180) = 180;

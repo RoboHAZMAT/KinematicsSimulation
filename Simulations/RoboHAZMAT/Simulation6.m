@@ -10,9 +10,9 @@ function Robot = Simulation6(Robot)
 [IMUCOM, ~, headControlCOM] = SetupCOM;
 
 % Setup communication with IMU and Head
+[serialMotorControl, motor] = ...
+    SetupHeadControlSerial(headControlCOM);
 serialObjIMU = SetupIMUSerial(IMUCOM{2});
-% [serialMotorControl, motor] = ...
-%     SetupHeadControlSerial(headControlCOM);
 
 % *** This is what must be tuned ***
 % Head Control Gains
@@ -30,7 +30,7 @@ histT = zeros(trajBuffer,3);
 
 % Waits for the user to be ready to use and initializes the arm
 ready = ReadyForUse(RobotFigure);
-psi = Reset(serialObjIMU, link, zeros(1,4));
+psi = Reset(serialObjIMU(1), link, zeros(1,4));
 
 % Constant running while loop
 % 1. Gets the simulation state
@@ -49,8 +49,7 @@ while (ready && states.run)
         states = guidata(RobotFigure); if (~states.run), break; end;
         
         % 2. Reads the IMU data from the sensors
-        %[q(1,:), reset(1)] = ReadIMUQuaternion(serialObjIMU(1));
-        [q(1,:), reset(1)] = ReadWirelessIMU(serialObjIMU, '2');
+        [q(1,:), reset(1)] = ReadIMUQuaternion(serialObjIMU(1));
         
         % 3. Estimates the orientation of the arm links
         [linkRRot, psi] = ...
@@ -63,7 +62,7 @@ while (ready && states.run)
         X = InverseKinematicOptimization(KC, pointsd);
         
         % 6. Controls the Robot Head motors
-%         RobotHeadControl(serialMotorControl, motor, X)
+        RobotHeadControl(serialMotorControl, motor, X)
         
         % 7. Rotate and plot the robot, human arm, and trajectory
         KC = RotateKinematicChain(KC, X);
@@ -119,9 +118,7 @@ end
 function psi = Reset(serialObjIMU, link, psi)
 
 % Gets the two IMU readings from the sensors
-%q(1,:) = ReadIMUQuaternion(serialObjIMU(1));
-
-        [q(1,:), reset(1)] = ReadWirelessIMU(serialObjIMU, '2');
+q(1,:) = ReadIMUQuaternion(serialObjIMU(1));
 
 % Forces a reset
 reset = ones(1);
