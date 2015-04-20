@@ -19,7 +19,7 @@ elseif (strcmpi(arm,'l'))
     X(3) = X(3) + 125.5*pi/180;
     X(4) = round(mod((X(4) + pi),2*pi)*4096/2*pi);
     X(5) = round(mod((X(5) + pi),2*pi)*4096/2*pi);
-    X(6) = round(mod((X(6) + pi),2*pi)*4096/2*pi);    
+    X(6) = round(mod((X(6) + pi),2*pi)*4096/2*pi);
     for i = 1:3
         dynamixel{i}.setPositionEX(X(i),'rad');
     end
