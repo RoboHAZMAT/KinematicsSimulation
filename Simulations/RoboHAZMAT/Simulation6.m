@@ -7,12 +7,12 @@ function Robot = Simulation6(Robot)
 [RobotFigure, states] = SetupKeyboardControl(Robot, 2);
 
 % Sets up the Serial communication with the IMUs
-[IMUCOM, ~, headControlCOM] = SetupCOM;
+[~, ~, headControlCOM, wirelessIMUCOM] = SetupCOM;
 
 % Setup communication with IMU and Head
-[serialMotorControl, motor] = ...
-    SetupHeadControlSerial(headControlCOM);
-serialObjIMU = SetupIMUSerial(IMUCOM{2});
+[~, ~, nIMUH] = SetWirelessIMU(false, false, true);
+[serialHeadControl, motor] = SetupHeadControlSerial(headControlCOM);
+serialObjWirelessIMU = SetupWirelessIMUSerial(wirelessIMUCOM, nIMUH);
 
 % *** This is what must be tuned ***
 % Head Control Gains
@@ -30,7 +30,7 @@ histT = zeros(trajBuffer,3);
 
 % Waits for the user to be ready to use and initializes the arm
 ready = ReadyForUse(RobotFigure);
-psi = Reset(serialObjIMU(1), link, zeros(1,4));
+psiH = Reset(serialObjWirelessIMU, linkH, zeros(1,2), nIMUH);
 
 % Constant running while loop
 % 1. Gets the simulation state
@@ -49,20 +49,20 @@ while (ready && states.run)
         states = guidata(RobotFigure); if (~states.run), break; end;
         
         % 2. Reads the IMU data from the sensors
-        [q(1,:), reset(1)] = ReadIMUQuaternion(serialObjIMU(1));
+        [q, reset] = ReadWirelessIMU(serialObjWirelessIMU, nIMUH);
         
         % 3. Estimates the orientation of the arm links
-        [linkRRot, psi] = ...
+        [linkHRot, psi] = ...
             EstimateHeadOrientation(link, q, reset, psi);
         
         % 4. Reconstructs the user's arm and desired points
-        pointsd = ReconstructHead(neck, linkRRot);
+        pointsd = ReconstructHead(neck, linkHRot);
         
         % 5. Inverse Kinematic optimization to estimate joint angles
         X = InverseKinematicOptimization(KC, pointsd);
         
         % 6. Controls the Robot Head motors
-        RobotHeadControl(serialMotorControl, motor, X)
+        RobotHeadControl(serialHeadControl, motor, X);
         
         % 7. Rotate and plot the robot, human arm, and trajectory
         KC = RotateKinematicChain(KC, X);
@@ -77,7 +77,7 @@ while (ready && states.run)
     % If user requests to stop, check again to avoid cutting off Serial
     if (~states.run && ReadyForUse(RobotFigure))
         states.run = 1; guidata(RobotFigure, states);
-        psi = Reset(serialObjIMU(1), link, psi);
+        psiH = Reset(serialObjWirelessIMU, linkH, zeros(1,2), nIMUH);
         KC = RotateKinematicChain(KC, zeros(3,1));
     end;
 end
@@ -114,18 +114,19 @@ end
 
 %%=================================Reset===================================
 % Resets the arm orientation and outputs the offset psi angle.
-
-function psi = Reset(serialObjIMU, link, psi)
+function psi = Reset(serialObjWirelessIMU, link, psi, nIMU)
 
 % Gets the two IMU readings from the sensors
-q(1,:) = ReadIMUQuaternion(serialObjIMU(1));
+q = zeros(length(nIMU),4);
+for j  = 1:length(nIMU)
+    q(j,:) = ReadWirelessIMUQuaternion(serialObjWirelessIMU, nIMU(j));
+end
 
 % Forces a reset
-reset = ones(1);
+reset = ones(1,2);
 
 % 2. Estimates the orientation of the arm links
-[~, psi] = ...
-    EstimateHeadOrientation(link, q, reset, psi);
+[~, psi] = EstimateHeadOrientation(link, q, reset, psi);
 end
 
 

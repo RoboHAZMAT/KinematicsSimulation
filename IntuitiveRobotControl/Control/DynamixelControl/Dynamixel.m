@@ -60,19 +60,22 @@ classdef Dynamixel
         
         % Starts the connection to the motor and configures it.
         function this = start(this)
-            result = calllib('dynamixel', 'dxl_initialize', ...
-                this.connection.PORTNUM, this.connection.BAUDNUM);
-            if result == 1;
-                this.connection.CONNECTED = true;
-                fprintf('Success: Connection Established!\n');
-                pause(1)
-                %this.setCommand(this.address.TORQUE_ENABLE,1);
-                %this.setCommand(this.address.TORQUE_LIMIT,1023);
-                %this.setCommand(this.address.MOVING_SPEED,250);
-                %this.setComplianceSlopes;
-            else
-                this.connection.CONNECTED = false;
-                fprintf('ERROR: Connection Failed!\n');
+            result = 0;
+            while (result ~= 1)
+                result = calllib('dynamixel', 'dxl_initialize', ...
+                    this.connection.PORTNUM, this.connection.BAUDNUM);
+                if result == 1;
+                    this.connection.CONNECTED = true;
+                    fprintf('Success: Connection Established!\n');
+                    pause(1)
+                    this.setCommand(this.address.TORQUE_ENABLE,1);
+                    this.setCommand(this.address.TORQUE_LIMIT,1023);
+                    this.setCommand(this.address.MOVING_SPEED,250);
+                    this.setComplianceSlopes;
+                else
+                    this.connection.CONNECTED = false;
+                    fprintf('ERROR: Connection Failed!\n');
+                end
             end
         end
         
@@ -99,7 +102,7 @@ classdef Dynamixel
                 this.property.ID,address);
         end
         
-                % Generic setter command method
+        % Generic setter command method
         function setByteCommand(this,address,value)
             calllib('dynamixel','dxl_write_byte',this.property.ID,...
                 address,value);
@@ -138,9 +141,9 @@ classdef Dynamixel
             % Allows a specified type of angle
             if (nargin > 2)
                 if (strcmpi(type,'deg'))
-                    pos = mod(pos,251)*4095/250;
+                    pos = pos*4095/250;%mod(pos,250)*4095/250;
                 elseif (strcmpi(type,'rad'))
-                    pos = mod(pos,(250/180*pi))*4095/(250/180*pi);
+                    pos = pos*4095/(250/180*pi);%mod(pos,(250/180*pi))*4095/(250/180*pi);
                 end
             end
             % Checks that position is within the limits

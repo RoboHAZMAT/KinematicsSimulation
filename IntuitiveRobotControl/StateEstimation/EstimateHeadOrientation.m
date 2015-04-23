@@ -11,6 +11,7 @@ function [linkRot, psi] = EstimateHeadOrientation(link, q, reset, psi)
 % Initialize the link rotations
 linkRot = zeros(2,3);
 q(2,:) = q(1,:);
+psi(2) = psi(1);
 reset(2) = 0;
 
 % Rotate each of the links

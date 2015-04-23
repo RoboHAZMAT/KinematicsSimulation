@@ -6,7 +6,7 @@ function [vector, psi] = ZeroYaw(vector, psi, reset)
 % December 15, 2014
 %
 % Zeros the Yaw angle of a given vector. Allows the user to reset the yaw
-% angle since it is the most prone to drift from the IMU. 
+% angle since it is the most prone to drift from the IMU.
 
 % Calculate the yaw offset if requested
 if (reset)
@@ -24,7 +24,7 @@ end
 % Calculates the rotation matrix to zero the yaw
 R = [cos(psi), sin(psi), 0;
     -sin(psi), cos(psi), 0;
-    0,        0, 1];
+    0,         0,        1];
 
 % Readjusts the vector
 vector = (R*vector')';

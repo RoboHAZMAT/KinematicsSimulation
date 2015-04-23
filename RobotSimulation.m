@@ -53,6 +53,8 @@ set(handles.statusAxes, 'XTick', []);
 set(handles.statusAxes, 'YTick', []);
 set(handles.statusAxes,'Color',[1 1 0]);
 
+SetSimulationControlText(handles, '', 'Select Simulation', '', '');
+
 % --- Outputs from this function are returned to the command line.
 function varargout = RobotSimulation_OutputFcn(~, ~, handles)
 set(handles.robotAxes,'Visible','off')
