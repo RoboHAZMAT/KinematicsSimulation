@@ -29,4 +29,4 @@ headControlCOM = 'COM20';
 wirelessIMUCOM = 'COM8';
 
 % Arbotix COM port
-arbotixCOM = 'COM#';
+arbotixCOM = 'COM10';

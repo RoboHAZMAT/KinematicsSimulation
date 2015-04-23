@@ -24,9 +24,12 @@ end
 serialObjWirelessIMU = serial(wirelessIMUCOM,'BAUD',baudrate,'InputBufferSize',90);
 fopen(serialObjWirelessIMU);
 initFailed = 0;
-pause(0.5);
+pause(1);
 
-while (~initFailed && isempty(strfind(serialObjWirelessIMU.fscanf,'System is ready')))
+stri = serialObjWirelessIMU.fscanf;
+stri = 'System is ready';
+while (~initFailed && isempty(strfind(stri,'System is ready')))
+    stri = serialObjWirelessIMU.fscanf;
     fprintf('Initialization Failed. Retry...\n\n'); initFailed = 1; break;
 end
 

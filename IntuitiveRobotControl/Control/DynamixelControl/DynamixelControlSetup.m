@@ -8,7 +8,7 @@ args = struct();
 % ---------------Shoulder---------------
 args.name = 'Right Shoulder Pitch';
 args.id = 1;
-args.portNum = 18;
+args.portNum = 26;
 args.maxPosition = 4095;
 args.minPosition = 1500;
 dynamixelRightArm{1} = Dynamixel(args);
@@ -34,20 +34,20 @@ end
 % ---------------Shoulder---------------
 args.name = 'Left Shoulder Pitch';
 args.id = 11;
-args.maxPosition = 3047;
-args.minPosition = 1047;
+args.maxPosition = 4095;
+args.minPosition = 0;
 dynamixelLeftArm{1} = Dynamixel(args);
 
 args.name = 'Left Shoulder Roll';
 args.id = 12;
-args.maxPosition = 3047;
-args.minPosition = 1047;
+args.maxPosition = 4095;
+args.minPosition = 0;
 dynamixelLeftArm{2} = Dynamixel(args);
 
 args.name = 'Left Shoulder Yaw';
 args.id = 13;
-args.maxPosition = 3047;
-args.minPosition = 1047;
+args.maxPosition = 4095;
+args.minPosition = 0;
 dynamixelLeftArm{3} = Dynamixel(args);
 
 for i = 1:length(dynamixelLeftArm)

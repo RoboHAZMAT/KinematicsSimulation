@@ -11,7 +11,7 @@ function Robot = ControlRoboHAZMAT(Robot)
 
 % Controls for the robot
 control = true;     % Allows for control of the motors
-rightArm = false;   % Allows control of the right arm
+rightArm = true;    % Allows control of the right arm
 leftArm = false;    % Allows control of the left arm
 head = true;        % Allows control of the head
 
@@ -20,11 +20,9 @@ head = true;        % Allows control of the head
 
 %% Setup for the Communication lines on the COM ports
 % Sets up the communication with the Dynamixels
-if (rightArm || leftArm)
+if (control && (rightArm || leftArm))
     [dynamixelR, dynamixelL] = DynamixelControlSetup; %#ok<*ASGLU>
 end
-if (rightArm); DynamixelControl(dynamixelR,[0;0;0;-pi/4;0;0],'r'); end;
-if (leftArm); DynamixelControl(dynamixelL,[0;0;0;-pi/4;0;0],'l'); end
 
 % Sets up the Serial communication with the IMUs
 [nIMUR, nIMUL, nIMUH] = SetWirelessIMU(rightArm, leftArm, head);
@@ -33,14 +31,18 @@ if (rightArm || leftArm || head)
     nIMU = [nIMUR, nIMUL, nIMUH];
     serialObjWirelessIMU = SetupWirelessIMUSerial(wirelessIMUCOM, nIMU);
 end
+% leftArm = false;
 
 % Setup the arbotixCOM port
 if (control && (rightArm || leftArm))
-    serialObjArbotix = SetupArbotixControlSerial(arbotixCOM);
+    %serialObjArbotix = SetupArbotixControlSerial(arbotixCOM);
+    serialObjArbotix = 0;
+    if (rightArm); DynamixelControl(dynamixelR,serialObjArbotix,[0;0;0;-pi/4;0;0],'r'); end;
+    if (leftArm); DynamixelControl(dynamixelL,serialObjArbotix,[0;0;0;-pi/4;0;0],'l'); end
 end
 
+% Setup the Head Control
 if (control && head)
-    % Setup the Head Control
     [serialHeadControl, motor] = SetupHeadControlSerial(headControlCOM);
 end
 
@@ -76,19 +78,19 @@ end
 %%
 % History vectors for the actual trajectory histories
 trajBuffer = 100;
-%histTR = zeros(trajBuffer,3);
-%histTL = zeros(trajBuffer,3);
+histTR = zeros(trajBuffer,3);
+histTL = zeros(trajBuffer,3);
 
 % Waits for the user to be ready to use and initializes the arm
 ready = ReadyForUse(RobotFigure);
 if (rightArm)
-    psiR = Reset(serialObjWirelessIMU, link, zeros(1,4), nIMUR);
+    psiR = ResetArm(serialObjWirelessIMU, link, zeros(1,4), nIMUR);
 end
 if (leftArm)
-    psiL = Reset(serialObjWirelessIMU, link, zeros(1,4), nIMUL);
+    psiL = ResetArm(serialObjWirelessIMU, link, zeros(1,4), nIMUL);
 end
 if (head)
-    psiH = Reset(serialObjWirelessIMU, linkH, zeros(1,2), nIMUH);
+    psiH = ResetHead(serialObjWirelessIMU, linkH, zeros(1,2), nIMUH);
 end
 % psiH = [0,0];
 pause(1);
@@ -167,11 +169,15 @@ while (ready && states.run)
         end
         RobotPlot(Robot);
         
-        if (rightArm); PlotHumanArm(shoulderR, pointsdR); end;
-        if (leftArm); PlotHumanArm(shoulderL, pointsdL); end;
+        if (rightArm);
+            PlotHumanArm(shoulderR, pointsdR);
+            histTR = ManageTrajectory(i, histTR, KCR, RobotFigure, states);
+        end
+        if (leftArm);
+            PlotHumanArm(shoulderL, pointsdL);
+            histTL = ManageTrajectory(i, histTL, KCL, RobotFigure, states);
+        end
         if (head); PlotHumanHead(neck, pointsdH); end;
-        %histTR = ManageTrajectory(i, histTR, KCR, RobotFigure, states);
-        %histTL = ManageTrajectory(i, histTL, KCL, RobotFigure, states);
         
         %% 7. Moves the Robot motors
         if (control)
@@ -192,11 +198,11 @@ while (ready && states.run)
     if (~states.run && ReadyForUse(RobotFigure))
         states.run = 1; guidata(RobotFigure, states);
         if (rightArm)
-            psiR = Reset(serialObjWirelessIMU, link, psiR, nIMUR);
+            psiR = ResetArm(serialObjWirelessIMU, link, psiR, nIMUR);
             KCR = RotateKinematicChain(KCR, [-pi/2;zeros(5,1)]);
         end
         if (leftArm)
-            psiL = Reset(serialObjWirelessIMU, link, psiL, nIMUL);
+            psiL = ResetArm(serialObjWirelessIMU, link, psiL, nIMUL);
             KCL = RotateKinematicChain(KCL, [-pi/2;zeros(5,1)]);
         end
     end;
@@ -237,21 +243,34 @@ end
 
 %% ================================Reset===================================
 % Resets the arm orientation and outputs the offset psi angle.
-
-function psi = Reset(serialObjWirelessIMU, link, psi, nIMU)
+function psi = ResetArm(serialObjWirelessIMU, link, psi, nIMU)
 
 % Gets the two IMU readings from the sensors
 q = zeros(length(nIMU),4);
 for j  = 1:length(nIMU)
-    q(j,:) = ReadWirelessIMUQuaternion(serialObjWirelessIMU, nIMU(j));
+    q(j,:) = ReadWirelessIMU(serialObjWirelessIMU, nIMU(j));
 end
 
 % Forces a reset
 reset = ones(1,2);
 
 % 2. Estimates the orientation of the arm links
-[~, psi] = ...
-    EstimateArmOrientation(link, q, reset, psi);
+[~, psi] = EstimateArmOrientation(link, q, reset, psi);
+end
+
+function psi = ResetHead(serialObjWirelessIMU, link, psi, nIMU)
+
+% Gets the two IMU readings from the sensors
+q = zeros(length(nIMU),4);
+for j  = 1:length(nIMU)
+    q(j,:) = ReadWirelessIMU(serialObjWirelessIMU, nIMU(j));
+end
+
+% Forces a reset
+reset = ones(1,2);
+
+% 2. Estimates the orientation of the arm links
+[~, psi] = EstimateHeadOrientation(link, q, reset, psi);
 end
 
 

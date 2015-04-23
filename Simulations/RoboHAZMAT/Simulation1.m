@@ -21,9 +21,10 @@ traj = TrajectoriesRoboHAZMAT(0, traj);
 [~, ~, ~, ~, arbotixCOM] = SetupCOM;
 
 % Setup the arbotixCOM port
-if (rightArm || leftArm)
-    serialObjArbotix = SetupArbotixControlSerial(arbotixCOM);
-end
+%if (rightArm || leftArm)
+    %serialObjArbotix = SetupArbotixControlSerial(arbotixCOM);
+    serialObjArbotix = 0;
+%end
 
 % History vectors for the desired trajectories
 histD = zeros(traj.runs,3);
