@@ -1,5 +1,5 @@
 function [serialMotorControl, motor] = ...
-    SetupMotorControlSerial(motorControlCOM)
+    SetupMAMotorControlSerial(motorControlCOM)
 %% ======================Setup Motor Control Serial========================
 % RoboHAZMAT: Senior Design Project
 % Motion Control Team
@@ -19,18 +19,19 @@ serialMotorControl = arduino(motorControlCOM);
 
 % Define motor PWM pins
 motor = struct();
-motor.neckYaw = 6;
-motor.neckPitch = 5;
-motor.neckRoll = 3;
-motor.gripperRight = 9;
-motor.gripperLeft = 10;
+motor.wristRoll = 3;
+motor.wristPitch = 5;
+motor.elbowPitch = 6;
+motor.basePitch = 9;
+motor.baseYaw = 10;
+motor.gripper = 11;
 
 % Attach servo motors to their pins
-serialMotorControl.servoAttach(motor.neckYaw);
-serialMotorControl.servoAttach(motor.neckPitch);
-serialMotorControl.servoAttach(motor.neckRoll);
-serialMotorControl.servoAttach(motor.gripperRight);
-serialMotorControl.servoAttach(motor.gripperLeft);
+serialMotorControl.servoAttach(motor.baseYaw);
+serialMotorControl.servoAttach(motor.basePitch);
+serialMotorControl.servoAttach(motor.elbowPitch);
+serialMotorControl.servoAttach(motor.wristPitch);
+serialMotorControl.servoAttach(motor.wristRoll);
+serialMotorControl.servoAttach(motor.gripper);
 
-RobotHeadControl(serialMotorControl, motor, zeros(3,1));
-RobotGripperControl(serialMotorControl, motor, zeros(2,1));
+MechatronicArmControl(serialMotorControl, motor, zeros(5,1));

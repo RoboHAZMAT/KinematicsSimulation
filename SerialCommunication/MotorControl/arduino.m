@@ -108,15 +108,15 @@ classdef arduino < handle
             
             % check returned value
             if a.sktc==0,
-                disp('Basic Analog and Digital I/O (adio.pde) sketch detected !');
+                %disp('Basic Analog and Digital I/O (adio.pde) sketch detected !');
             elseif a.sktc==1,
-                disp('Analog & Digital I/O + Encoders (adioe.pde) sketch detected !');
+                %disp('Analog & Digital I/O + Encoders (adioe.pde) sketch detected !');
             elseif a.sktc==2,
-                disp('Analog & Digital I/O + Encoders + Servos (adioes.pde) sketch detected !');
+                %disp('Analog & Digital I/O + Encoders + Servos (adioes.pde) sketch detected !');
             elseif a.sktc==3,
-                disp('Motor Shield V1 (plus adioes.pde functions) sketch detected !');
+                %disp('Motor Shield V1 (plus adioes.pde functions) sketch detected !');
             elseif a.sktc==4,
-                disp('Motor Shield V2 (plus adioes.pde functions) sketch detected !');
+                %disp('Motor Shield V2 (plus adioes.pde functions) sketch detected !');
             else
                 delete(a);
                 error('Unknown sketch. Please make sure that a sketch provided with the package is running on the board');

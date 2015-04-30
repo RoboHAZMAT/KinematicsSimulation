@@ -11,8 +11,8 @@ function Robot = ControlRoboHAZMAT(Robot)
 
 % Controls for the robot
 control = true;     % Allows for control of the motors
-rightArm = true;    % Allows control of the right arm
-leftArm = false;    % Allows control of the left arm
+rightArm = false;    % Allows control of the right arm
+leftArm = true;    % Allows control of the left arm
 head = false;        % Allows control of the head
 gripper = true;
 
@@ -191,7 +191,7 @@ while (ready && states.run)
             end
             if (gripper)
                 RobotGripperControl(serialMotorControl, motor,...
-                    [motorPositionR(1),motorPositionL(1)]);
+                    [motorPositionL(1),motorPositionL(1)]);
                 %RobotGripperControl(serialMotorControl, motor,[180-i,180-i]);
             end
         end

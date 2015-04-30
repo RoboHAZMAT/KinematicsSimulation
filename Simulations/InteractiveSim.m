@@ -108,7 +108,6 @@ elseif (mode == 6)
 elseif (mode == 7)
     % IMU Controlled Robot Head
     Robot = ControlRoboHAZMAT(Robot);
-    calllib('dynamixel','dxl_terminate');
     
 elseif (mode == 11)
     % Mechatronic Arm Inverse Kinematics Trajectory Simulation

@@ -3,12 +3,13 @@ function [dynamixelRightArm, dynamixelLeftArm] = DynamixelControlSetup
 % separate right and left are cells.
 loadlibrary('dynamixel','dynamixel.h');
 args = struct();
+fprintf('\nDynamixel Connection Setup...\n');
 
 %% ==============================Right Arm=================================
 % ---------------Shoulder---------------
 args.name = 'Right Shoulder Pitch';
 args.id = 1;
-args.portNum = 26;
+args.portNum = 28;
 args.maxPosition = 4095;
 args.minPosition = 1500;
 dynamixelRightArm{1} = Dynamixel(args);

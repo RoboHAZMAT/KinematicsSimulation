@@ -2,7 +2,7 @@ function [serialObjArbotix] = ...
     SetupArbotixControlSerial(arbotixCOM)
 %% ======================Setup Motor Control Serial========================
 % RoboHAZMAT: Senior Design Project
-% Motion Control Team         ____ 
+% Motion Control Team         ____
 %---------    |   |  |\   |  /    \
 %    |   /-\  |___|  | \  |  |  __
 %    |  |   | |   |  |  \ |  |    \
@@ -24,4 +24,8 @@ end
 % Create and open Serial communication
 serialObjArbotix = serial(arbotixCOM,'BAUD',baudrate,'InputBufferSize',32);
 fopen(serialObjArbotix);
-pause(0.5);
+fprintf('Attempting Connection..');
+for s = 1:5
+    pause(1);fprintf('.');
+end
+fprintf('\n');
