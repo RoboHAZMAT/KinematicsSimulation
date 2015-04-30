@@ -22,8 +22,10 @@ traj = TrajectoriesRoboHAZMAT(0, traj);
 
 % Setup the arbotixCOM port
 %if (rightArm || leftArm)
-    %serialObjArbotix = SetupArbotixControlSerial(arbotixCOM);
-    serialObjArbotix = 0;
+    serialObjArbotix = SetupArbotixControlSerial(arbotixCOM);
+    %serialObjArbotix = 0;
+    pause(2);
+    DynamixelControl(dynamixelR,serialObjArbotix,[-pi/4;0;0;-pi/2;0;0],'r');
 %end
 
 % History vectors for the desired trajectories
@@ -68,4 +70,5 @@ while (states.run)
         drawnow;
     end
 end
+DynamixelControl(dynamixelR,serialObjArbotix,[0;0;0;-pi/4;0;0],'r');
 calllib('dynamixel','dxl_terminate');

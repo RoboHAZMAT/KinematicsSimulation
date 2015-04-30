@@ -1,4 +1,4 @@
-function serialObjWirelessIMU = SetupWirelessIMUSerial(wirelessIMUCOM, nIMU)
+function serialObjWirelessIMU = SetupWirelessIMUSerial(wirelessIMUCOM, nIMU, receiveIMU)
 %% =======================Serial IMU Communication=========================
 % RoboHAZMAT: Senior Design Project
 % Motion Control Team
@@ -11,7 +11,7 @@ baudrate = 115200; %Added for easy change
 states = guidata(gcf);
 
 % Setup Serial Communication with IMU
-fprintf('Setup Serial Communication With %s...\n', wirelessIMUCOM);
+fprintf('Setup Serial Communication With %s...', wirelessIMUCOM);
 %SetSimulationControlText(states,'','Setup Serial Communication...','','');
 
 % Check if COM port is available
@@ -24,10 +24,13 @@ end
 serialObjWirelessIMU = serial(wirelessIMUCOM,'BAUD',baudrate,'InputBufferSize',90);
 fopen(serialObjWirelessIMU);
 initFailed = 0;
-pause(1);
+pause(1);fprintf('...');pause(1);fprintf('...');pause(1);fprintf('...');
+fwrite(serialObjWirelessIMU, receiveIMU);
+pause(1);fprintf('...\n');
 
+fprintf('Turn on the IMU!\n');
 stri = serialObjWirelessIMU.fscanf;
-stri = 'System is ready';
+%stri = 'System is ready';
 while (~initFailed && isempty(strfind(stri,'System is ready')))
     stri = serialObjWirelessIMU.fscanf;
     fprintf('Initialization Failed. Retry...\n\n'); initFailed = 1; break;
@@ -49,8 +52,10 @@ if (~initFailed)
         end
     end
     if (~calibrated)
-        delete(serialObjWirelessIMU); serialObjWirelessIMU = SetupWirelessIMUSerial(wirelessIMUCOM, nIMU);
+        delete(serialObjWirelessIMU); 
+        serialObjWirelessIMU = SetupWirelessIMUSerial(wirelessIMUCOM, nIMU, receiveIMU);
     end
 else
-    delete(serialObjWirelessIMU); serialObjWirelessIMU = SetupWirelessIMUSerial(wirelessIMUCOM, nIMU);
+    delete(serialObjWirelessIMU); 
+    serialObjWirelessIMU = SetupWirelessIMUSerial(wirelessIMUCOM, nIMU, receiveIMU);
 end

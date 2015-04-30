@@ -1,4 +1,4 @@
-function [q, reset, readingIMU] = ReadWirelessIMU(serialObjIMU, nIMU)
+function [q, reset, motorPosition, readingIMU] = ReadWirelessIMU(serialObjIMU, nIMU)
 %% =========================Read IMU Quaternion============================
 % RoboHAZMAT: Senior Design Project
 % Motion Control Team
@@ -16,6 +16,7 @@ qx = NaN;
 qy = NaN;
 qz = NaN;
 reset = 0;
+motorPosition = 0;
 readingIMU = NaN;
 
 while (isnan(qw) || isnan(qx) || isnan(qy) || isnan(qz))
@@ -48,6 +49,9 @@ while (isnan(qw) || isnan(qx) || isnan(qy) || isnan(qz))
             qy = str2double(readingIMU(pos5 + 1:pos6 - 1));
             qz = str2double(readingIMU(pos6 + 1:pos7 - 1));
             reset = str2double(readingIMU(pos7 + 1:pos8 - 1));
+            if (n == 2 || n == 4)
+                motorPosition = str2double(readingIMU(pos2 + 1:pos3 - 1));
+            end
             q = [qw, qx, qy, qz];
             if (isnan(reset)), reset = 0; end;
         else
