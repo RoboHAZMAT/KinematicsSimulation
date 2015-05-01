@@ -12,8 +12,8 @@ function Robot = ControlRoboHAZMAT(Robot)
 % Controls for the robot
 control = true;     % Allows for control of the motors
 rightArm = true;    % Allows control of the right arm
-leftArm = false;    % Allows control of the left arm
-head = false;        % Allows control of the head
+leftArm = true;    % Allows control of the left arm
+head = true;        % Allows control of the head
 gripper = true;
 
 % Sets up the Keyboard Control
@@ -192,7 +192,6 @@ while (ready && states.run)
             if (gripper)
                 RobotGripperControl(serialMotorControl, motor,...
                     [motorPositionR(1),motorPositionL(1)]);
-                %RobotGripperControl(serialMotorControl, motor,[180-i,180-i]);
             end
         end
         drawnow;
@@ -214,9 +213,11 @@ while (ready && states.run)
 end
 
 % Reset the arms to home position
-if (control && (rightArm || leftArm))
+if (control && (rightArm || leftArm || head || gripper))
     if (rightArm); DynamixelControl(dynamixelR,serialObjArbotix,ArmHomePosition('r'),'r'); end;
     if (leftArm); DynamixelControl(dynamixelL,serialObjArbotix,ArmHomePosition('l'),'l'); end
+    if (head); RobotHeadControl(serialMotorControl,motor,[0,0,0]); end;
+    if (gripper); RobotGripperControl(serialMotorControl,motor,[motorPositionR(1),motorPositionL(1)]); end;
 end
 
 % Close Serial communication
