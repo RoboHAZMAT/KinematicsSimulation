@@ -14,7 +14,7 @@ X(1) = (X(1));
 X(2) = (X(2));
 
 % Cut off the angles at 0 and 180 degrees
-X(X > 180) = 180;
+X(X > 150) = 150;
 X(X < 0) = 0;
 
 % Move the arm motors
